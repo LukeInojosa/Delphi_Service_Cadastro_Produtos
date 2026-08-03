@@ -44,24 +44,24 @@
 
 ### Notas
 
-| Name                    | Type         | Settings                 | References | Note |
-| ----------------------- | ------------ | ------------------------ | ---------- | ---- |
-| **id**                  | VARCHAR(255) | 🔑 PK, not null          |            |      |
-| **tipo_operacao**       | INTEGER      | not null                 |            |      |
-| **data_registro**       | DATETIME     | not null                 |            |      |
-| **observacao**          | VARCHAR(255) | null                     |            |      |
-| **concluida**           | BOOLEAN      | not null, default: false |            |      |
-| **usuario_responsavel** | BIGINT       | not null                 |            |      |
-| **codigo_almoxarifado** | VARCHAR(255) | not null                 |            |      | 
+| Name                    | Type         | Settings                 | References 			 | Note |
+| ----------------------- | ------------ | ------------------------ | ---------------------  | ---- |
+| **id**                  | VARCHAR(255) | 🔑 PK, not null          |            			 |      |
+| **tipo_operacao**       | INTEGER      | not null                 |            			 |      |
+| **data_registro**       | DATETIME     | not null                 |           			 |      |
+| **observacao**          | VARCHAR(255) | null                     |           			 |      |
+| **concluida**           | BOOLEAN      | not null, default: false |           			 |      |
+| **usuario_responsavel** | BIGINT       | not null                 | **Usuario.id**         |      |
+| **codigo_almoxarifado** | VARCHAR(255) | not null                 | **Almoxarifado.codigo**|      | 
 
 
 ### Estorno_Info
 
-| Name                  | Type         | Settings         | References | Note |
-| --------------------- | ------------ | ---------------- | ---------- | ---- |
-| **id_nota_estorno**   | VARCHAR(255) | 🔑 PK, not null  |            |      |
-| **id_nota_estornada** | VARCHAR(255) | not null, unique |            |      |
-| **motivo**            | VARCHAR(255) | not null         |            |      | 
+| Name                  | Type         | Settings         | References       | Note |
+| --------------------- | ------------ | ---------------- | ---------------- | ---- |
+| **id_nota_estorno**   | VARCHAR(255) | 🔑 PK, not null  | **Notas.codigo** |      |
+| **id_nota_estornada** | VARCHAR(255) | not null, unique | **Notas.codigo** |      |
+| **motivo**            | VARCHAR(255) | not null         |                  |      | 
 
 
 ### Movimentacao
@@ -82,15 +82,15 @@
 | **id**                  | BIGINT       | 🔑 PK, null, autoincrement |            |      |
 | **nome**                | VARCHAR(255) | not null, unique           |            |      |
 | **senha**               | VARCHAR(255) | not null                   |            |      |
-| **codigo_almoxarifado** | VARCHAR(255) | not null                   |            |      | 
+| **codigo_almoxarifado** | VARCHAR(255) | not null                   | **Almoxarifado.codigo**            |      | 
 
 
 ### Estoque
 
 | Name                    | Type         | Settings                | References | Note |
 | ----------------------- | ------------ | ----------------------- | ---------- | ---- |
-| **codigo_produto**      | CHAR(13)     | 🔑 PK, not null         |            |      |
-| **codigo_almoxarifado** | VARCHAR(255) | 🔑 PK, not null         |            |      |
+| **codigo_produto**      | CHAR(13)     | 🔑 PK, not null         | Produto.codigo            |      |
+| **codigo_almoxarifado** | VARCHAR(255) | 🔑 PK, not null         | Almoxarifado.codigo           |      |
 | **quantidade**          | INTEGER      | not null, autoincrement |            |      |
 | **ativo**               | BOOLEAN      | not null, default: true |            |      | 
 
@@ -99,9 +99,9 @@
 
 | Name                    | Type         | Settings                | References | Note |
 | ----------------------- | ------------ | ----------------------- | ---------- | ---- |
-| **id_nota**             | VARCHAR(255) | 🔑 PK, not null         |            |      |
-| **codigo_almoxarifado** | VARCHAR(255) | 🔑 PK, not null         |            |      |
-| **codigo_produto**      | CHAR(13)     | 🔑 PK, not null         |            |      |
+| **id_nota**             | VARCHAR(255) | 🔑 PK, not null         | Notas.id           |      |
+| **codigo_almoxarifado** | VARCHAR(255) | 🔑 PK, not null         | Almoxarifado.codigo           |      |
+| **codigo_produto**      | CHAR(13)     | 🔑 PK, not null         | Produto.codigo           |      |
 | **quantidade**          | INTEGER      | not null, autoincrement |            |      | 
 
 
