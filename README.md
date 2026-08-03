@@ -59,8 +59,8 @@
 
 | Name                  | Type         | Settings         | References       | Note |
 | --------------------- | ------------ | ---------------- | ---------------- | ---- |
-| **id_nota_estorno**   | VARCHAR(255) | 🔑 PK, not null  | **Notas.codigo** |      |
-| **id_nota_estornada** | VARCHAR(255) | not null, unique | **Notas.codigo** |      |
+| **id_nota_estorno**   | VARCHAR(255) | 🔑 PK, not null  | **Notas.id** |      |
+| **id_nota_estornada** | VARCHAR(255) | not null, unique | **Notas.id** |      |
 | **motivo**            | VARCHAR(255) | not null         |                  |      | 
 
 
@@ -107,7 +107,60 @@
 
 ## Relationships
 
+## Relationships
 
+- **Almoxarifados (1) → (N) Usuario**
+  - `Usuario.codigo_almoxarifado` → `Almoxarifados.codigo`
+  - Cada usuário pertence a um almoxarifado, e um almoxarifado pode possuir vários usuários.
+
+- **Usuario (1) → (N) Notas**
+  - `Notas.usuario_responsavel` → `Usuario.id`
+  - Um usuário pode ser responsável por diversas notas.
+
+- **Almoxarifados (1) → (N) Notas**
+  - `Notas.codigo_almoxarifado` → `Almoxarifados.codigo`
+  - Cada nota está associada a um único almoxarifado.
+
+- **Notas (1) → (N) Movimentacao**
+  - `Movimentacao.id_nota` → `Notas.id`
+  - Uma nota pode conter várias movimentações.
+
+- **Produtos (1) → (N) Movimentacao**
+  - `Movimentacao.codigo_produto` → `Produtos.codigo`
+  - Um produto pode aparecer em diversas movimentações.
+
+- **Almoxarifados (1) → (N) Movimentacao**
+  - `Movimentacao.codigo_almoxarifado` → `Almoxarifados.codigo`
+  - Cada movimentação ocorre em um único almoxarifado.
+
+- **Produtos (1) ↔ (N) Estoque**
+  - `Estoque.codigo_produto` → `Produtos.codigo`
+  - Um produto pode possuir um registro de estoque em cada almoxarifado.
+
+- **Almoxarifados (1) ↔ (N) Estoque**
+  - `Estoque.codigo_almoxarifado` → `Almoxarifados.codigo`
+  - Um almoxarifado mantém registros de estoque para diversos produtos.
+
+- **Produtos (1) → (N) Contagem**
+  - `Contagem.codigo_produto` → `Produtos.codigo`
+  - Um produto pode aparecer em diversas contagens de estoque.
+
+- **Almoxarifados (1) → (N) Contagem**
+  - `Contagem.codigo_almoxarifado` → `Almoxarifados.codigo`
+  - Uma contagem é realizada em um único almoxarifado.
+
+- **Notas (1) → (N) Contagem**
+  - `Contagem.id_nota` → `Notas.id`
+  - Uma nota de contagem pode conter vários produtos contados.
+
+- **Notas (1) ↔ (0..1) Estorno_Info (como nota de estorno)**
+  - `Estorno_Info.id_nota_estorno` → `Notas.id`
+  - Uma nota de estorno possui exatamente um registro de informações de estorno.
+
+- **Notas (1) ↔ (0..1) Estorno_Info (como nota estornada)**
+  - `Estorno_Info.id_nota_estornada` → `Notas.id`
+  - Uma nota pode ser estornada por, no máximo, uma nota de estorno.
+  
 ## Database Diagram
 
 ```mermaid
