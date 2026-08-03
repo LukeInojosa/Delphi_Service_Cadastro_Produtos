@@ -89,8 +89,8 @@
 
 | Name                    | Type         | Settings                | References | Note |
 | ----------------------- | ------------ | ----------------------- | ---------- | ---- |
-| **codigo_produto**      | CHAR(13)     | 🔑 PK, not null         | Produto.codigo            |      |
-| **codigo_almoxarifado** | VARCHAR(255) | 🔑 PK, not null         | Almoxarifado.codigo           |      |
+| **codigo_produto**      | CHAR(13)     | 🔑 PK, not null         | **Produto.codigo**            |      |
+| **codigo_almoxarifado** | VARCHAR(255) | 🔑 PK, not null         | **Almoxarifado.codigo**           |      |
 | **quantidade**          | INTEGER      | not null, autoincrement |            |      |
 | **ativo**               | BOOLEAN      | not null, default: true |            |      | 
 
@@ -99,9 +99,9 @@
 
 | Name                    | Type         | Settings                | References | Note |
 | ----------------------- | ------------ | ----------------------- | ---------- | ---- |
-| **id_nota**             | VARCHAR(255) | 🔑 PK, not null         | Notas.id           |      |
-| **codigo_almoxarifado** | VARCHAR(255) | 🔑 PK, not null         | Almoxarifado.codigo           |      |
-| **codigo_produto**      | CHAR(13)     | 🔑 PK, not null         | Produto.codigo           |      |
+| **id_nota**             | VARCHAR(255) | 🔑 PK, not null         | **Notas.id**           |      |
+| **codigo_almoxarifado** | VARCHAR(255) | 🔑 PK, not null         | **Almoxarifado.codigo**           |      |
+| **codigo_produto**      | CHAR(13)     | 🔑 PK, not null         | **Produto.codigo**           |      |
 | **quantidade**          | INTEGER      | not null, autoincrement |            |      | 
 
 
