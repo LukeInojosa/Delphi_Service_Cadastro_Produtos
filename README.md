@@ -351,14 +351,12 @@ ALTER TABLE MOVIMENTACAO
 ```
 
 ## Triggers and Generators
-<details>
-<summary></summary>
+
+<summary>Test</summary>
 -
 ```sql
 ```
-</details>
-
-<details>
+	
 <summary>PEGAR TODO ESTOQUE DE UM ALMOXARIFADO ESPECIFICO POR CODIGO</summary>
 	```sql
 		SET TERM ^ ;
@@ -397,9 +395,7 @@ ALTER TABLE MOVIMENTACAO
 		
 		GRANT EXECUTE ON PROCEDURE ESTOQUE_DE TO SYSDBA;
 	```
-</details>
-
-<details>
+	
 <summary>PEGAR TODA MOVIMENTAÇÃO DE UMA NOTA ESPECÍFICA</summary>
 	```sql
 		SET TERM ^ ;
@@ -437,14 +433,7 @@ ALTER TABLE MOVIMENTACAO
 		
 		GRANT EXECUTE ON PROCEDURE MOVIMENTACAO_POR_NOTA TO SYSDBA;
 	```
-</details>
-
-
-
-
-
-
-<details>
+	
 <summary>Quando alterar o campo NOTAS.concluido para true, adicionar todas as movimentações desta nota em ESTOQUE</summary>
 	```sql
 	/*
@@ -479,7 +468,6 @@ ALTER TABLE MOVIMENTACAO
 	        END
 	    END
 	```
-</details>
 
 END^
 SET TERM ; ^
