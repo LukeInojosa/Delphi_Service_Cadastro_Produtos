@@ -17,6 +17,7 @@
 - [Relationships](#relationships)
 - [Database Diagram](#database-diagram)
 - [Sql Create Tables](#sql-create-tables)
+- [Triggers and Generators](#triggers-and-generators)]
 
 ## Introduction
 
@@ -227,6 +228,10 @@ erDiagram
 
 
 ```sql
+CREATE TABLE PRODUTOS(
+	CODIGO CHAR(13) PRIMARY KEY,
+	DESCRICAO VARCHAR(255) NOT NULL,
+	MEDIDA VARCHAR(10) NOT NULL);
 
 CREATE TABLE ALMOXARIFADO(
     CODIGO CHAR(14) PRIMARY KEY,
@@ -339,4 +344,14 @@ ALTER TABLE CONTAGEM
     ADD CONSTRAINT FK_CONTAGEM_PRODUTO
     FOREIGN KEY (CODIGO_PRODUTO)
     REFERENCES PRODUTOS(CODIGO);
+```
+
+##Triggers and Generators
+
+- Quando alterar o campo NOTAS.concluido para true, adicionar todas as movimentações desta nota em ESTOQUE
+
+```sql
+
+
+
 ```
