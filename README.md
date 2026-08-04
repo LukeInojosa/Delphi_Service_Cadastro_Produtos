@@ -469,3 +469,41 @@ begin
 END^
 SET TERM ; ^
 ```
+- Quando alterar o campo NOTAS.concluido para true, adicionar todas as movimentações desta nota em ESTOQUE utilizando procedures
+```sql
+SET SQL DIALECT 3;
+
+
+
+SET TERM ^ ;
+
+
+
+CREATE OR ALTER TRIGGER TR_MOVIMENTA_ESTOQUE FOR NOTAS
+ACTIVE BEFORE INSERT OR UPDATE POSITION 0
+AS
+declare variable ICodigoProduto         CHAR(13);
+declare variable ICodigoAlmoxarifado    CHAR(14);
+declare variable Iquantidade            INTEGER;
+begin
+   IF (new.CONCLUIDA = 1 AND COALESCE(old.CONCLUIDA,0) = 0) THEN
+    BEGIN
+        FOR SELECT M_NOTA.CODIGO_PRODUTO,
+                  new.CODIGO_ALMOXARIFADO AS CODIGO_ALMOXARIFADO, 
+                  M_NOTA.QUANTIDADE + COALESCE(EST_PROD_NOTA.QUANTIDADE, 0) AS QUANTIDADE
+            FROM MOVIMENTACAO_POR_NOTA(new.ID) M_NOTA
+            LEFT JOIN ESTOQUE_DE(new.CODIGO_ALMOXARIFADO) EST_PROD_NOTA
+            ON EST_PROD_NOTA.CODIGO_PRODUTO = M_NOTA.CODIGO_PRODUTO
+        INTO :ICodigoProduto, :ICodigoAlmoxarifado, :Iquantidade
+        DO
+        BEGIN
+            UPDATE OR INSERT INTO ESTOQUE(CODIGO_PRODUTO, CODIGO_ALMOXARIFADO, QUANTIDADE)
+            VALUES (:ICodigoProduto, :ICodigoAlmoxarifado, :Iquantidade)
+            MATCHING(CODIGO_PRODUTO, CODIGO_ALMOXARIFADO);
+        END
+    END
+END
+^
+
+SET TERM ; ^
+```
