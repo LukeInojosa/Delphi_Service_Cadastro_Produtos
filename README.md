@@ -47,8 +47,8 @@
 | Name                    | Type         | Settings                 | References 			 | Note |
 | ----------------------- | ------------ | ------------------------ | ---------------------  | ---- |
 | **id**                  | VARCHAR(255) | 🔑 PK, not null          |            			 |      |
-| **tipo_operacao**       | INTEGER      | not null                 |            			 |      |
-| **data_registro**       | DATETIME     | not null                 |           			 |      |
+| **tipo_operacao**       | INTEGER      | not null, (entrada, saida, balanço)                 |            			 |      |
+| **data_registro**       | DATETIME     | not null                 |           			 | data + hora      |
 | **observacao**          | VARCHAR(255) | null                     |           			 |      |
 | **concluida**           | BOOLEAN      | not null, default: false |           			 |      |
 | **usuario_responsavel** | BIGINT       | not null                 | **Usuario.id**         |      |
@@ -69,8 +69,8 @@
 | Name                    | Type         | Settings                       | References | Note |
 | ----------------------- | ------------ | ------------------------------ | ---------- | ---- |
 | **id**                  | BIGINT       | 🔑 PK, not null, autoincrement |            |      |
-| **quantidade**          | INTEGER      | not null                       |            |      |
-| **codigo_produto**      | CHAR(13)     | not null                       |            |      |
+| **quantidade**          | INTEGER      | not null, >= 0                       |            |      |
+| **codigo_produto**      | CHAR(13)     | not null,                       |            |      |
 | **codigo_almoxarifado** | VARCHAR(255) | not null                       |            |      |
 | **id_nota**             | VARCHAR(255) | not null                       |            |      | 
 
@@ -91,7 +91,7 @@
 | ----------------------- | ------------ | ----------------------- | ---------- | ---- |
 | **codigo_produto**      | CHAR(13)     | 🔑 PK, not null         | **Produto.codigo**            |      |
 | **codigo_almoxarifado** | VARCHAR(255) | 🔑 PK, not null         | **Almoxarifado.codigo**           |      |
-| **quantidade**          | INTEGER      | not null, autoincrement |            |      |
+| **quantidade**          | INTEGER      | not null, >= 0, default: 0 |            |      |
 | **ativo**               | BOOLEAN      | not null, default: true |            |      | 
 
 
@@ -102,10 +102,9 @@
 | **id_nota**             | VARCHAR(255) | 🔑 PK, not null         | **Notas.id**           |      |
 | **codigo_almoxarifado** | VARCHAR(255) | 🔑 PK, not null         | **Almoxarifado.codigo**           |      |
 | **codigo_produto**      | CHAR(13)     | 🔑 PK, not null         | **Produto.codigo**           |      |
-| **quantidade**          | INTEGER      | not null, autoincrement |            |      | 
+| **quantidade**          | INTEGER      | not null, >= 0, default: 0 			|            |      | 
 
 
-## Relationships
 
 ## Relationships
 
