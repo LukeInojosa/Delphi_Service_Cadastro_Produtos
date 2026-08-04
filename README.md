@@ -62,7 +62,7 @@
 | Name                  | Type         | Settings         | References       | Note |
 | --------------------- | ------------ | ---------------- | ---------------- | ---- |
 | **id_nota_estorno**   | VARCHAR(255) | 🔑 PK, not null  | **Notas.id** |      |
-| **id_nota_estornada** | VARCHAR(255) | not null, unique | **Notas.id** |      |
+| **id_nota_estornada** | VARCHAR(255) | not null | **Notas.id** |      |
 | **motivo**            | VARCHAR(255) | not null         |                  |      | 
 
 
@@ -258,7 +258,7 @@ CREATE TABLE NOTAS(
 
 CREATE TABLE ESTORNO_INFO(
     ID_NOTA_ESTORNO VARCHAR(255) PRIMARY KEY,
-    ID_NOTA_ESTORNADA VARCHAR(255) NOT NULL UNIQUE,
+    ID_NOTA_ESTORNADA VARCHAR(255) NOT NULL,
     MOTIVO VARCHAR(255) NOT NULL
 );
 
@@ -282,7 +282,8 @@ CREATE TABLE CONTAGEM(
     ID_NOTA VARCHAR(255),
     CODIGO_ALMOXARIFADO CHAR(14),
     CODIGO_PRODUTO CHAR(13),
-    QUANTIDADE INTEGER DEFAULT 0 NOT NULL CHECK (QUANTIDADE >= 0)
+    QUANTIDADE INTEGER DEFAULT 0 NOT NULL CHECK (QUANTIDADE >= 0),
+	PRIMARY KEY (ID_NOTA,CODIGO_ALMOXARIFADO, CODIGOO_PRODUTO)
 );
 
 ALTER TABLE NOTAS
