@@ -38,7 +38,7 @@
 
 | Name          | Type         | Settings                | References | Note |
 | ------------- | ------------ | ----------------------- | ---------- | ---- |
-| **codigo**    | VARCHAR(255) | 🔑 PK, not null         |            |      |
+| **codigo**    | CHAR(14) | 🔑 PK, not null         |            |      |
 | **descricao** | VARCHAR(255) | not null                |            |      |
 | **ativo**     | BOOLEAN      | not null, default: true |            |      | 
 
@@ -53,7 +53,7 @@
 | **observacao**          | VARCHAR(255) | null                     |           			 |      |
 | **concluida**           | BOOLEAN      | not null, default: false |           			 |      |
 | **usuario_responsavel** | BIGINT       | not null                 | **Usuario.id**         |      |
-| **codigo_almoxarifado** | VARCHAR(255) | not null                 | **Almoxarifado.codigo**|      | 
+| **codigo_almoxarifado** | CHAR(14) | not null                 | **Almoxarifado.codigo**|      | 
 
 
 ### Estorno_Info
@@ -71,9 +71,9 @@
 | ----------------------- | ------------ | ------------------------------ | ---------- | ---- |
 | **id**                  | BIGINT       | 🔑 PK, not null, autoincrement |            |      |
 | **quantidade**          | INTEGER      | not null, >= 0                       |            |      |
-| **codigo_produto**      | CHAR(13)     | not null,                       |            |      |
-| **codigo_almoxarifado** | VARCHAR(255) | not null                       |            |      |
-| **id_nota**             | VARCHAR(255) | not null                       |            |      | 
+| **codigo_produto**      | CHAR(13)     | not null,                       | **Produto.codigo**           |      |
+| **codigo_almoxarifado** | CHAR(14) | not null                       |   **Almoxarifado.codigo**        |      |
+| **id_nota**             | VARCHAR(255) | not null                       | **Notas.id**           |      | 
 
 
 ### Usuario
@@ -83,7 +83,7 @@
 | **id**                  | BIGINT       | 🔑 PK, null, autoincrement |            |      |
 | **nome**                | VARCHAR(255) | not null, unique           |            |      |
 | **senha**               | VARCHAR(255) | not null                   |            |      |
-| **codigo_almoxarifado** | VARCHAR(255) | not null                   | **Almoxarifado.codigo**            |      | 
+| **codigo_almoxarifado** | CHAR(14) | not null                   | **Almoxarifado.codigo**            |      | 
 
 
 ### Estoque
@@ -91,7 +91,7 @@
 | Name                    | Type         | Settings                | References | Note |
 | ----------------------- | ------------ | ----------------------- | ---------- | ---- |
 | **codigo_produto**      | CHAR(13)     | 🔑 PK, not null         | **Produto.codigo**            |      |
-| **codigo_almoxarifado** | VARCHAR(255) | 🔑 PK, not null         | **Almoxarifado.codigo**           |      |
+| **codigo_almoxarifado** | CHAR(14) | 🔑 PK, not null         | **Almoxarifado.codigo**           |      |
 | **quantidade**          | INTEGER      | not null, >= 0, default: 0 |            |      |
 | **ativo**               | BOOLEAN      | not null, default: true |            |      | 
 
@@ -101,7 +101,7 @@
 | Name                    | Type         | Settings                | References | Note |
 | ----------------------- | ------------ | ----------------------- | ---------- | ---- |
 | **id_nota**             | VARCHAR(255) | 🔑 PK, not null         | **Notas.id**           |      |
-| **codigo_almoxarifado** | VARCHAR(255) | 🔑 PK, not null         | **Almoxarifado.codigo**           |      |
+| **codigo_almoxarifado** | CHAR(14) | 🔑 PK, not null         | **Almoxarifado.codigo**           |      |
 | **codigo_produto**      | CHAR(13)     | 🔑 PK, not null         | **Produto.codigo**           |      |
 | **quantidade**          | INTEGER      | not null, >= 0, default: 0 			|            |      | 
 
@@ -226,28 +226,117 @@ erDiagram
 ## Sql Create Tables
 
 
-```mermaid
+```sql
 
 CREATE TABLE ALMOXARIFADO(
-	CODIGO CHAR(14) PRIMARY KEY,
-	DESCRICAO VARCHAR(255) NOT NULL,
-	ATIVO BOOLEAN NOT NULL DEFAULT 1);
+    CODIGO CHAR(14) PRIMARY KEY,
+    DESCRICAO VARCHAR(255) NOT NULL,
+    ATIVO CHAR(1) DEFAULT 1 NOT NULL
+);
 
-CREATE TABLE ALMOXARIFADO(
-	CODIGO CHAR(14) PRIMARY KEY,
- 	DESCRICAO VARCHAR(255) NOT NULL,
-	ATIVO CHAR(1) DEFAULT 1 NOT NULL);
-CREATE TABLE USUARIO (
-	ID
-	
-CREATE TABLE NOTAS (
-	ID VARCHAR(255) PRIMARY KEY,
- 	TIPO_OPERACAO INTEGER NOT NULL,
- 	DATA_REGISTRO DATETIME NOT NULL,
- 	OBSERVACAO VARCHAR(255),
- 	CONCLUIDA CHAR(1) DEFAULT 0 NOT NULL,
- 	USUARIO_RESPONSAVEL BIGINT NOT NULL,
- 	CODIGO_ALMOXARIFADO VARCHAR(255) NOT NULL);
-	
+CREATE TABLE USUARIO(
+    ID BIGINT PRIMARY KEY,
+    NOME VARCHAR(255) NOT NULL UNIQUE,
+    SENHA VARCHAR(255) NOT NULL,
+    CODIGO_ALMOXARIFADO VARCHAR(14) NOT NULL
+);
 
+CREATE TABLE NOTAS(
+    ID VARCHAR(255) PRIMARY KEY,
+    TIPO_OPERACAO INTEGER NOT NULL,
+    DATA_REGISTRO TIMESTAMP NOT NULL,
+    OBSERVACAO VARCHAR(255),
+    CONCLUIDA CHAR(1) DEFAULT 0 NOT NULL,
+    USUARIO_RESPONSAVEL BIGINT NOT NULL,
+    CODIGO_ALMOXARIFADO VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE ESTORNO_INFO(
+    ID_NOTA_ESTORNO VARCHAR(255) PRIMARY KEY,
+    ID_NOTA_ESTORNADA VARCHAR(255) NOT NULL UNIQUE,
+    MOTIVO VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE MOVIMENTACAO(
+    ID BIGINT PRIMARY KEY,
+    QUANTIDADE INTEGER NOT NULL CHECK (QUANTIDADE >= 0),
+    CODIGO_PRODUTO CHAR(13) NOT NULL,
+    CODIGO_ALMOXARIFADO CHAR(14) NOT NULL,
+    ID_NOTA VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE ESTOQUE(
+    CODIGO_PRODUTO CHAR(13),
+    CODIGO_ALMOXARIFADO CHAR(14),
+    QUANTIDADE INTEGER DEFAULT 0 NOT NULL CHECK (QUANTIDADE >= 0),
+    ATIVO CHAR(1) DEFAULT 1 NOT NULL,
+    PRIMARY KEY (CODIGO_PRODUTO, CODIGO_ALMOXARIFADO)
+);
+
+CREATE TABLE CONTAGEM(
+    ID_NOTA VARCHAR(255),
+    CODIGO_ALMOXARIFADO CHAR(14),
+    CODIGO_PRODUTO CHAR(13),
+    QUANTIDADE INTEGER DEFAULT 0 NOT NULL CHECK (QUANTIDADE >= 0)
+);
+
+ALTER TABLE NOTAS
+    ADD CONSTRAINT FK_NOTAS_USUARIO
+    FOREIGN KEY (USUARIO_RESPONSAVEL)
+    REFERENCES USUARIO(ID);
+
+ALTER TABLE NOTAS
+    ADD CONSTRAINT FK_NOTAS_ALMOXARIFADO
+    FOREIGN KEY (CODIGO_ALMOXARIFADO)
+    REFERENCES ALMOXARIFADO(CODIGO);
+
+ALTER TABLE ESTORNO_INFO
+    ADD CONSTRAINT FK_ESTORNO_NOTAS
+    FOREIGN KEY (ID_NOTA_ESTORNO)
+    REFERENCES NOTAS(ID);
+
+ALTER TABLE ESTORNO_INFO
+    ADD CONSTRAINT FK_ESTORNO_NOTAS_ESTORNADA
+    FOREIGN KEY (ID_NOTA_ESTORNADA)
+    REFERENCES NOTAS(ID);
+
+ALTER TABLE MOVIMENTACAO
+    ADD CONSTRAINT FK_MOVIMENTACAO_PRODUTO
+    FOREIGN KEY (CODIGO_PRODUTO)
+    REFERENCES PRODUTOS(CODIGO);
+
+ALTER TABLE MOVIMENTACAO
+    ADD CONSTRAINT FK_MOVIMENTACAO_ALMOXARIFADO
+    FOREIGN KEY (CODIGO_ALMOXARIFADO)
+    REFERENCES ALMOXARIFADO(CODIGO);
+
+ALTER TABLE MOVIMENTACAO
+    ADD CONSTRAINT FK_MOVIMENTACAO_NOTA
+    FOREIGN KEY (ID_NOTA)
+    REFERENCES NOTAS(ID);
+
+ALTER TABLE ESTOQUE
+    ADD CONSTRAINT FK_ESTOQUE_PRODUTO
+    FOREIGN KEY (CODIGO_PRODUTO)
+    REFERENCES PRODUTOS(CODIGO);
+
+ALTER TABLE ESTOQUE
+    ADD CONSTRAINT FK_ESTOQUE_ALMOXARIFADO
+    FOREIGN KEY (CODIGO_ALMOXARIFADO)
+    REFERENCES ALMOXARIFADO(CODIGO);
+
+ALTER TABLE CONTAGEM
+    ADD CONSTRAINT FK_CONTAGEM_NOTAS
+    FOREIGN KEY (ID_NOTA)
+    REFERENCES NOTAS(ID);
+
+ALTER TABLE CONTAGEM
+    ADD CONSTRAINT FK_CONTAGEM_ALMOXARIFADO
+    FOREIGN KEY (CODIGO_ALMOXARIFADO)
+    REFERENCES ALMOXARIFADO(CODIGO);
+
+ALTER TABLE CONTAGEM
+    ADD CONSTRAINT FK_CONTAGEM_PRODUTO
+    FOREIGN KEY (CODIGO_PRODUTO)
+    REFERENCES PRODUTOS(CODIGO);
 ```
