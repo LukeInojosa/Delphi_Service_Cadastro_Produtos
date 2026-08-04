@@ -16,7 +16,9 @@
 	- [Contagem](#contagem)
 - [Relationships](#relationships)
 - [Sql Create Tables](#sql-create-tables)
-- [Triggers and Generators](#triggers-and-generators)
+- [Generators](#generators)
+- [Procedures](#procedures)
+- [Triggers](#triggers)
 
 ## Introduction
 
@@ -290,89 +292,94 @@ ALTER TABLE CONTAGEM
 ALTER TABLE MOVIMENTACAO
 	ADD CONSTRAINT U_CODIGO_PRODUTO_ID_NOTA UNIQUE (ID_PRODUTO, ID_NOTA);
 ```
-
-## Triggers and Generators
-
+## Generators
+```sql
+CREATE SEQUENCE GEN_ID_USUARIO;
+ALTER SEQUENCE GEN_ID_USUARIO RESTART WITH 0;
+*/
+```
+## Procedures
 -
 ```sql
 ```
-	
 - PEGAR TODO ESTOQUE DE UM ALMOXARIFADO ESPECIFICO POR CODIGO
 ```sql
-	SET TERM ^ ;
-	
-	create or alter procedure ESTOQUE_DE (
-		IID_ALMOXARIFADO BIGINT)
-	returns (
-		ID_PRODUTO BIGINT,
-		ID_ALMOXARIFADO BIGINT,
-		ATIVO char(1),
-		QUANTIDADE integer)
-	as
-	begin
-		FOR SELECT
-				ID_PRODUTO,
-				ID_ALMOXARIFADO,
-				QUANTIDADE,
-				ATIVO
-			FROM ESTOQUE
-			WHERE CODIGO_ALMOXARIFADO =  :Iid_almoxarifado
-		INTO
-			:id_produto,
-			:id_almoxarifado,
-			:quantidade,
-			:ativo
-		do suspend;
-	end^
-	
-	SET TERM ; ^
-	
-	/* Following GRANT statements are generated automatically */
-	
-	GRANT SELECT ON ESTOQUE TO PROCEDURE ESTOQUE_DE;
-	
-	/* Existing privileges on this procedure */
-	
-	GRANT EXECUTE ON PROCEDURE ESTOQUE_DE TO SYSDBA;
+SET TERM ^ ;
+
+create or alter procedure ESTOQUE_DE (
+  IID_ALMOXARIFADO BIGINT)
+returns (
+  ID_PRODUTO BIGINT,
+  ID_ALMOXARIFADO BIGINT,
+  ATIVO char(1),
+  QUANTIDADE integer)
+as
+begin
+  FOR SELECT
+      ID_PRODUTO,
+      ID_ALMOXARIFADO,
+      QUANTIDADE,
+      ATIVO
+    FROM ESTOQUE
+    WHERE CODIGO_ALMOXARIFADO =  :Iid_almoxarifado
+  INTO
+    :id_produto,
+    :id_almoxarifado,
+    :quantidade,
+    :ativo
+  do suspend;
+end^
+
+SET TERM ; ^
+
+/* Following GRANT statements are generated automatically */
+
+GRANT SELECT ON ESTOQUE TO PROCEDURE ESTOQUE_DE;
+
+/* Existing privileges on this procedure */
+
+GRANT EXECUTE ON PROCEDURE ESTOQUE_DE TO SYSDBA;
 ```
 	
 - PEGAR TODA MOVIMENTAÇÃO DE UMA NOTA ESPECÍFICA
 ```sql
-	SET TERM ^ ;
-	
-	create or alter procedure MOVIMENTACAO_POR_NOTA (
-		IID_NOTA varchar(255))
-	returns (
-		ID bigint,
-		QUANTIDADE integer,
-		ID_PRODUTO BIGINT,
-		ID_ALMOXARIFADO BIGINT,
-		ID_NOTA varchar(255))
-	as
-	begin
-		FOR SELECT ID, QUANTIDADE, ID_PRODUTO,ID_ALMOXARIFADO, ID_NOTA
-			FROM MOVIMENTACAO
-			WHERE ID_NOTA = :iid_nota
-		INTO
-			:id,
-			:quantidade,
-			:id_produto,
-			:id_almoxarifado,
-			:id_nota
-	
-		do suspend;
-	end^
-	
-	SET TERM ; ^
-	
-	/* Following GRANT statements are generated automatically */
-	
-	GRANT SELECT ON MOVIMENTACAO TO PROCEDURE MOVIMENTACAO_POR_NOTA;
-	
-	/* Existing privileges on this procedure */
-	
-	GRANT EXECUTE ON PROCEDURE MOVIMENTACAO_POR_NOTA TO SYSDBA;
+SET TERM ^ ;
+
+create or alter procedure MOVIMENTACAO_POR_NOTA (
+  IID_NOTA varchar(255))
+returns (
+  ID bigint,
+  QUANTIDADE integer,
+  ID_PRODUTO BIGINT,
+  ID_ALMOXARIFADO BIGINT,
+  ID_NOTA varchar(255))
+as
+begin
+  FOR SELECT ID, QUANTIDADE, ID_PRODUTO,ID_ALMOXARIFADO, ID_NOTA
+    FROM MOVIMENTACAO
+    WHERE ID_NOTA = :iid_nota
+  INTO
+    :id,
+    :quantidade,
+    :id_produto,
+    :id_almoxarifado,
+    :id_nota
+
+  do suspend;
+end^
+
+SET TERM ; ^
+
+/* Following GRANT statements are generated automatically */
+
+GRANT SELECT ON MOVIMENTACAO TO PROCEDURE MOVIMENTACAO_POR_NOTA;
+
+/* Existing privileges on this procedure */
+
+GRANT EXECUTE ON PROCEDURE MOVIMENTACAO_POR_NOTA TO SYSDBA;
 ```
+
+## Triggers
 	
 - Quando alterar o campo NOTAS.concluido para true, adicionar todas as movimentações desta nota em ESTOQUE
 ```sql
@@ -423,24 +430,24 @@ SET TERM ^ ;
 CREATE OR ALTER TRIGGER TR_MOVIMENTA_ESTOQUE FOR NOTAS
 ACTIVE BEFORE INSERT OR UPDATE POSITION 0
 AS
-declare variable ICodigoProduto         CHAR(13);
-declare variable ICodigoAlmoxarifado    CHAR(14);
+declare variable Iid_produto         BIGINT;
+declare variable Iid_almoxarifado    BIGINT;
 declare variable Iquantidade            INTEGER;
 begin
    IF (new.CONCLUIDA = 1 AND COALESCE(old.CONCLUIDA,0) = 0) THEN
     BEGIN
-        FOR SELECT M_NOTA.CODIGO_PRODUTO,
-                  new.CODIGO_ALMOXARIFADO AS CODIGO_ALMOXARIFADO, 
+        FOR SELECT M_NOTA.ID_PRODUTO,
+                  new.ID_ALMOXARIFADO AS ID_ALMOXARIFADO, 
                   M_NOTA.QUANTIDADE + COALESCE(EST_PROD_NOTA.QUANTIDADE, 0) AS QUANTIDADE
             FROM MOVIMENTACAO_POR_NOTA(new.ID) M_NOTA
-            LEFT JOIN ESTOQUE_DE(new.CODIGO_ALMOXARIFADO) EST_PROD_NOTA
-            ON EST_PROD_NOTA.CODIGO_PRODUTO = M_NOTA.CODIGO_PRODUTO
-        INTO :ICodigoProduto, :ICodigoAlmoxarifado, :Iquantidade
+            LEFT JOIN ESTOQUE_DE(new.ID_ALMOXARIFADO) EST_PROD_NOTA
+            ON EST_PROD_NOTA.ID_PRODUTO = M_NOTA.ID_PRODUTO
+        INTO :Iid_produto, :Iid_almoxarifado, :Iquantidade
         DO
         BEGIN
-            UPDATE OR INSERT INTO ESTOQUE(CODIGO_PRODUTO, CODIGO_ALMOXARIFADO, QUANTIDADE)
-            VALUES (:ICodigoProduto, :ICodigoAlmoxarifado, :Iquantidade)
-            MATCHING(CODIGO_PRODUTO, CODIGO_ALMOXARIFADO);
+            UPDATE OR INSERT INTO ESTOQUE(ID_PRODUTO, ID_ALMOXARIFADO, QUANTIDADE)
+            VALUES (:Iid_produto, :Iid_almoxarifado, :Iquantidade)
+            MATCHING(ID_PRODUTO, ID_ALMOXARIFADO);
         END
     END
 END
