@@ -13,7 +13,6 @@
 	- [Movimentacao](#movimentacao)
 	- [Usuario](#usuario)
 	- [Estoque](#estoque)
-	- [Contagem](#contagem)
 - [Sql Create Tables](#sql-create-tables)
 - [Generators](#generators)
 - [Procedures](#procedures)
@@ -98,14 +97,6 @@
 | **ativo**               | BOOLEAN      | not null, default: true |            |      | 
 
 
-### Contagem
-
-| Name                    | Type         | Settings                | References | Note |
-| ----------------------- | ------------ | ----------------------- | ---------- | ---- |
-| **id_nota**             | VARCHAR(255) | 🔑 PK, not null         | **Notas.id**           |      |
-| **id_produto**      | BIGINT     | 🔑 PK, not null         | **Produto.id**           |      |
-| **quantidade**          | INTEGER      | not null, >= 0, default: 0 			|            |      | 
-
 
 ## Sql Create Tables
 
@@ -162,13 +153,6 @@ CREATE TABLE ESTOQUE(
     PRIMARY KEY (ID_PRODUTO, ID_ALMOXARIFADO)
 );
 
-CREATE TABLE CONTAGEM(
-    ID_NOTA BIGINT,
-    ID_PRODUTO BIGINT,
-    QUANTIDADE INTEGER DEFAULT 0 NOT NULL CHECK (QUANTIDADE >= 0),
-	PRIMARY KEY (ID_NOTA, ID_PRODUTO)
-);
-
 ALTER TABLE USUARIO
     ADD CONSTRAINT FK_USUARIO_ALMOXARIFADO
     FOREIGN KEY (ID_ALMOXARIFADO)
@@ -213,16 +197,6 @@ ALTER TABLE ESTOQUE
     ADD CONSTRAINT FK_ESTOQUE_ALMOXARIFADO
     FOREIGN KEY (ID_ALMOXARIFADO)
     REFERENCES ALMOXARIFADO(ID);
-
-ALTER TABLE CONTAGEM
-    ADD CONSTRAINT FK_CONTAGEM_NOTAS
-    FOREIGN KEY (ID_NOTA)
-    REFERENCES NOTAS(ID);
-
-ALTER TABLE CONTAGEM
-    ADD CONSTRAINT FK_CONTAGEM_PRODUTO
-    FOREIGN KEY (ID_PRODUTO)
-    REFERENCES PRODUTOS(ID);
 
 ALTER TABLE MOVIMENTACAO
 	ADD CONSTRAINT U_ID_PRODUTO_ID_NOTA UNIQUE (ID_PRODUTO, ID_NOTA);
