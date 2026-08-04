@@ -351,15 +351,96 @@ ALTER TABLE MOVIMENTACAO
 ```
 
 ## Triggers and Generators
+-
+```sql
+```
+
+- PEGAR TODO ESTOQUE DE UM ALMOXARIFADO ESPECIFICO POR CODIGO
+```sql
+SET TERM ^ ;
+
+create or alter procedure ESTOQUE_DE (
+    ICODIGO_ALMOXARIFADO char(14))
+returns (
+    CODIGO_PRODUTO char(13),
+    CODIGO_ALMOXARIFADO char(14),
+    ATIVO char(1),
+    QUANTIDADE integer)
+as
+begin
+    FOR SELECT
+            CODIGO_PRODUTO,
+            CODIGO_ALMOXARIFADO,
+            QUANTIDADE,
+            ATIVO
+        FROM ESTOQUE
+        WHERE CODIGO_ALMOXARIFADO =  :Icodigo_almoxarifado
+    INTO
+        :codigo_produto,
+        :codigo_almoxarifado,
+        :quantidade,
+        :ativo
+    do suspend;
+end^
+
+SET TERM ; ^
+
+/* Following GRANT statements are generated automatically */
+
+GRANT SELECT ON ESTOQUE TO PROCEDURE ESTOQUE_DE;
+
+/* Existing privileges on this procedure */
+
+GRANT EXECUTE ON PROCEDURE ESTOQUE_DE TO SYSDBA;
+```
+
+
+- PEGAR TODA MOVIMENTAÇÃO DE UMA NOTA ESPECÍFICA
+```sql
+SET TERM ^ ;
+
+create or alter procedure MOVIMENTACAO_POR_NOTA (
+    IID_NOTA varchar(255))
+returns (
+    ID bigint,
+    QUANTIDADE integer,
+    CODIGO_PRODUTO char(13),
+    CODIGO_ALMOXARIFADO char(14),
+    ID_NOTA varchar(255))
+as
+begin
+    FOR SELECT ID, QUANTIDADE, CODIGO_PRODUTO,CODIGO_ALMOXARIFADO, ID_NOTA
+        FROM MOVIMENTACAO
+        WHERE ID_NOTA = :iid_nota
+    INTO
+        :id,
+        :quantidade,
+        :codigo_produto,
+        :codigo_almoxarifado,
+        :id_nota
+
+    do suspend;
+end^
+
+SET TERM ; ^
+
+/* Following GRANT statements are generated automatically */
+
+GRANT SELECT ON MOVIMENTACAO TO PROCEDURE MOVIMENTACAO_POR_NOTA;
+
+/* Existing privileges on this procedure */
+
+GRANT EXECUTE ON PROCEDURE MOVIMENTACAO_POR_NOTA TO SYSDBA;
+```
+
+
+
+
+
+
+
 
 - Quando alterar o campo NOTAS.concluido para true, adicionar todas as movimentações desta nota em ESTOQUE
-
-
-
-
-
-
-
 ```sql
 /*
 	INSERE DADOS DE UMA NOTA ESPECÍFICA EM UM ESTOQUE ESPECÍFICO 
@@ -394,17 +475,5 @@ begin
     END
 END^
 SET TERM ; ^
-
-
-  
-  
-; 
-
-/*
-SELECIONA TODA MOVIMENTACAO DE UMA NOTA ESPECIFICA
-*/
-SELECT CODIGO_PRODUTO CODIGO_ALMOXARIFADO 
-FROM MOVIMENTACAO M 
-WHERE M.ID_NOTA = 'N000001'
 
 ```
