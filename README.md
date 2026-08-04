@@ -14,7 +14,6 @@
 	- [Usuario](#usuario)
 	- [Estoque](#estoque)
 	- [Contagem](#contagem)
-- [Relationships](#relationships)
 - [Sql Create Tables](#sql-create-tables)
 - [Generators](#generators)
 - [Procedures](#procedures)
@@ -76,7 +75,6 @@
 | **id**                  | BIGINT       | 🔑 PK, not null, autoincrement |            |      |
 | **quantidade**          | INTEGER      | not null, >= 0                       |            |      |
 | **id_produto**      | BIGINT     | not null, unique(id_produto, id_nota)                       | **Produto.id**           |      |
-| **id_almoxarifado** | BIGINT | not null                       |   **Almoxarifado.id**        |      |
 | **id_nota**             | VARCHAR(255) | not null, unique(id_produto, id_nota)                       | **Notas.id**           |      | 
 
 
@@ -105,65 +103,9 @@
 | Name                    | Type         | Settings                | References | Note |
 | ----------------------- | ------------ | ----------------------- | ---------- | ---- |
 | **id_nota**             | VARCHAR(255) | 🔑 PK, not null         | **Notas.id**           |      |
-| **id_almoxarifado** | BIGINT | 🔑 PK, not null         | **Almoxarifado.id**           |      |
 | **id_produto**      | BIGINT     | 🔑 PK, not null         | **Produto.id**           |      |
 | **quantidade**          | INTEGER      | not null, >= 0, default: 0 			|            |      | 
 
-
-
-## Relationships
-
-- **Almoxarifados (1) → (N) Usuario**
-  - `Usuario.id_almoxarifado` → `Almoxarifados.id`
-  - Cada usuário pertence a um almoxarifado, e um almoxarifado pode possuir vários usuários.
-
-- **Usuario (1) → (N) Notas**
-  - `Notas.usuario_responsavel` → `Usuario.id`
-  - Um usuário pode ser responsável por diversas notas.
-
-- **Almoxarifados (1) → (N) Notas**
-  - `Notas.id_almoxarifado` → `Almoxarifados.id`
-  - Cada nota está associada a um único almoxarifado.
-
-- **Notas (1) → (N) Movimentacao**
-  - `Movimentacao.id_nota` → `Notas.id`
-  - Uma nota pode conter várias movimentações.
-
-- **Produtos (1) → (N) Movimentacao**
-  - `Movimentacao.id_produto` → `Produtos.id`
-  - Um produto pode aparecer em diversas movimentações.
-
-- **Almoxarifados (1) → (N) Movimentacao**
-  - `Movimentacao.id_almoxarifado` → `Almoxarifados.id`
-  - Cada movimentação ocorre em um único almoxarifado.
-
-- **Produtos (1) ↔ (N) Estoque**
-  - `Estoque.id_produto` → `Produtos.id`
-  - Um produto pode possuir um registro de estoque em cada almoxarifado.
-
-- **Almoxarifados (1) ↔ (N) Estoque**
-  - `Estoque.id_almoxarifado` → `Almoxarifados.id`
-  - Um almoxarifado mantém registros de estoque para diversos produtos.
-
-- **Produtos (1) → (N) Contagem**
-  - `Contagem.id_produto` → `Produtos.id`
-  - Um produto pode aparecer em diversas contagens de estoque.
-
-- **Almoxarifados (1) → (N) Contagem**
-  - `Contagem.id_almoxarifado` → `Almoxarifados.id`
-  - Uma contagem é realizada em um único almoxarifado.
-
-- **Notas (1) → (N) Contagem**
-  - `Contagem.id_nota` → `Notas.id`
-  - Uma nota de contagem pode conter vários produtos contados.
-
-- **Notas (1) ↔ (0..1) Estorno_Info (como nota de estorno)**
-  - `Estorno_Info.id_nota_estorno` → `Notas.id`
-  - Uma nota de estorno possui exatamente um registro de informações de estorno.
-
-- **Notas (1) ↔ (0..1) Estorno_Info (como nota estornada)**
-  - `Estorno_Info.id_nota_estornada` → `Notas.id`
-  - Uma nota pode ser estornada por, no máximo, uma nota de estorno.
 
 ## Sql Create Tables
 
@@ -209,7 +151,6 @@ CREATE TABLE MOVIMENTACAO(
     ID BIGINT PRIMARY KEY,
     QUANTIDADE INTEGER NOT NULL CHECK (QUANTIDADE >= 0),
     ID_PRODUTO BIGINT NOT NULL,
-    ID_ALMOXARIFADO BIGINT NOT NULL,
     ID_NOTA BIGINT NOT NULL
 );
 
@@ -223,11 +164,15 @@ CREATE TABLE ESTOQUE(
 
 CREATE TABLE CONTAGEM(
     ID_NOTA BIGINT,
-    ID_ALMOXARIFADO BIGINT,
     ID_PRODUTO BIGINT,
     QUANTIDADE INTEGER DEFAULT 0 NOT NULL CHECK (QUANTIDADE >= 0),
-	PRIMARY KEY (ID_NOTA,ID_ALMOXARIFADO, ID_PRODUTO)
+	PRIMARY KEY (ID_NOTA, ID_PRODUTO)
 );
+
+ALTER TABLE USUARIO
+    ADD CONSTRAINT FK_USUARIO_ALMOXARIFADO
+    FOREIGN KEY (ID_ALMOXARIFADO)
+    REFERENCES ALMOXARIFADO(ID);
 
 ALTER TABLE NOTAS
     ADD CONSTRAINT FK_NOTAS_USUARIO
@@ -255,11 +200,6 @@ ALTER TABLE MOVIMENTACAO
     REFERENCES PRODUTOS(ID);
 
 ALTER TABLE MOVIMENTACAO
-    ADD CONSTRAINT FK_MOVIMENTACAO_ALMOXARIFADO
-    FOREIGN KEY (ID_ALMOXARIFADO)
-    REFERENCES ALMOXARIFADO(ID);
-
-ALTER TABLE MOVIMENTACAO
     ADD CONSTRAINT FK_MOVIMENTACAO_NOTA
     FOREIGN KEY (ID_NOTA)
     REFERENCES NOTAS(ID);
@@ -280,17 +220,12 @@ ALTER TABLE CONTAGEM
     REFERENCES NOTAS(ID);
 
 ALTER TABLE CONTAGEM
-    ADD CONSTRAINT FK_CONTAGEM_ALMOXARIFADO
-    FOREIGN KEY (ID_ALMOXARIFADO)
-    REFERENCES ALMOXARIFADO(ID);
-
-ALTER TABLE CONTAGEM
     ADD CONSTRAINT FK_CONTAGEM_PRODUTO
     FOREIGN KEY (ID_PRODUTO)
     REFERENCES PRODUTOS(ID);
 
 ALTER TABLE MOVIMENTACAO
-	ADD CONSTRAINT U_CODIGO_PRODUTO_ID_NOTA UNIQUE (ID_PRODUTO, ID_NOTA);
+	ADD CONSTRAINT U_ID_PRODUTO_ID_NOTA UNIQUE (ID_PRODUTO, ID_NOTA);
 ```
 ## Generators
 ```sql
@@ -331,16 +266,11 @@ begin
 end^
 
 SET TERM ; ^
-
-/* Following GRANT statements are generated automatically */
-
 GRANT SELECT ON ESTOQUE TO PROCEDURE ESTOQUE_DE;
-
-/* Existing privileges on this procedure */
-
 GRANT EXECUTE ON PROCEDURE ESTOQUE_DE TO SYSDBA;
 ```
-	
+
+
 - PEGAR TODA MOVIMENTAÇÃO DE UMA NOTA ESPECÍFICA
 ```sql
 SET TERM ^ ;
@@ -351,31 +281,23 @@ returns (
   ID bigint,
   QUANTIDADE integer,
   ID_PRODUTO BIGINT,
-  ID_ALMOXARIFADO BIGINT,
   ID_NOTA varchar(255))
 as
 begin
-  FOR SELECT ID, QUANTIDADE, ID_PRODUTO,ID_ALMOXARIFADO, ID_NOTA
+  FOR SELECT ID, QUANTIDADE, ID_PRODUTO, ID_NOTA
     FROM MOVIMENTACAO
     WHERE ID_NOTA = :iid_nota
   INTO
     :id,
     :quantidade,
     :id_produto,
-    :id_almoxarifado,
     :id_nota
 
   do suspend;
 end^
 
 SET TERM ; ^
-
-/* Following GRANT statements are generated automatically */
-
 GRANT SELECT ON MOVIMENTACAO TO PROCEDURE MOVIMENTACAO_POR_NOTA;
-
-/* Existing privileges on this procedure */
-
 GRANT EXECUTE ON PROCEDURE MOVIMENTACAO_POR_NOTA TO SYSDBA;
 ```
 
@@ -390,9 +312,9 @@ SET TERM ^ ;
 CREATE TRIGGER TR_MOVIMENTA_ESTOQUE for NOTAS
 ACTIVE BEFORE UPDATE OR INSERT
 AS
-declare variable Iid_produto         CHAR(13);
-declare variable Iid_almoxarifado    CHAR(14);
-declare variable Iquantidade            INTEGER;
+declare variable Vid_produto         CHAR(13);
+declare variable Vid_almoxarifado    CHAR(14);
+declare variable Vquantidade            INTEGER;
 begin
    IF (new.CONCLUIDA = 1 AND COALESCE(old.CONCLUIDA,0) = 0) THEN
 	BEGIN
@@ -406,11 +328,11 @@ begin
 						FROM ESTOQUE 
 						WHERE ESTOQUE.ID_ALMOXARIFADO = new.ID_ALMOXARIFADO) EST_PROD_NOTA
 			ON EST_PROD_NOTA.ID_PRODUTO = M_NOTA.ID_PRODUTO
-		INTO :Iid_Produto, :Iid_almoxarifado, :Iquantidade
+		INTO :Vid_Produto, :Vid_almoxarifado, :Vquantidade
 		DO
 		BEGIN
 			UPDATE OR INSERT INTO ESTOQUE(ID_PRODUTO, ID_ALMOXARIFADO, QUANTIDADE)
-			VALUES (:Iid_produto, :Iid_almoxarifado, :Iquantidade)
+			VALUES (:Vid_produto, :Vid_almoxarifado, :Vquantidade)
 			MATCHING(ID_PRODUTO, ID_ALMOXARIFADO);
 		END
 	END
@@ -430,9 +352,9 @@ SET TERM ^ ;
 CREATE OR ALTER TRIGGER TR_MOVIMENTA_ESTOQUE FOR NOTAS
 ACTIVE BEFORE INSERT OR UPDATE POSITION 0
 AS
-declare variable Iid_produto         BIGINT;
-declare variable Iid_almoxarifado    BIGINT;
-declare variable Iquantidade            INTEGER;
+declare variable Vid_produto         BIGINT;
+declare variable Vid_almoxarifado    BIGINT;
+declare variable Vquantidade            INTEGER;
 begin
    IF (new.CONCLUIDA = 1 AND COALESCE(old.CONCLUIDA,0) = 0) THEN
     BEGIN
@@ -442,11 +364,11 @@ begin
             FROM MOVIMENTACAO_POR_NOTA(new.ID) M_NOTA
             LEFT JOIN ESTOQUE_DE(new.ID_ALMOXARIFADO) EST_PROD_NOTA
             ON EST_PROD_NOTA.ID_PRODUTO = M_NOTA.ID_PRODUTO
-        INTO :Iid_produto, :Iid_almoxarifado, :Iquantidade
+        INTO :Vid_produto, :Vid_almoxarifado, :Vquantidade
         DO
         BEGIN
             UPDATE OR INSERT INTO ESTOQUE(ID_PRODUTO, ID_ALMOXARIFADO, QUANTIDADE)
-            VALUES (:Iid_produto, :Iid_almoxarifado, :Iquantidade)
+            VALUES (:Vid_produto, :Vid_almoxarifado, :Vquantidade)
             MATCHING(ID_PRODUTO, ID_ALMOXARIFADO);
         END
     END
