@@ -30,7 +30,7 @@
 
 | Name          | Type         | Settings        | References | Note |
 | ------------- | ------------ | --------------- | ---------- | ---- |
-| **id**    | BIGINT    | 🔑 PK, not null |            |      |
+| **id**    | BIGINT    | 🔑 PK, not null, , autoincrement |            |      |
 | **codigo**    | CHAR(13)     | unique |            |      |
 | **descricao** | VARCHAR(255) | not null        |            |      |
 | **medida**    | VARCHAR(10)  | not null        |            |      | 
@@ -40,7 +40,7 @@
 
 | Name          | Type         | Settings                | References | Note |
 | ------------- | ------------ | ----------------------- | ---------- | ---- |
-| **id**    | BIGINT | 🔑 PK, not null         |            |      |
+| **id**    | BIGINT | 🔑 PK, not null, autoincrement         |            |      |
 | **codigo**    | CHAR(14) | unique       |            |      |
 | **descricao** | VARCHAR(255) | not null                |            |      |
 | **ativo**     | BOOLEAN      | not null, default: true |            |      | 
@@ -50,7 +50,7 @@
 
 | Name                    | Type         | Settings                 | References 			 | Note |
 | ----------------------- | ------------ | ------------------------ | ---------------------  | ---- |
-| **id**                  | VARCHAR(255) | 🔑 PK, not null          |            			 |      |
+| **id**                  | BIGINT | 🔑 PK, not null, autoincrement          |            			 |      |
 | **tipo_operacao**       | INTEGER      | not null, (entrada, saida, balanço)                 |            			 |      |
 | **data_registro**       | DATETIME     | not null                 |           			 | data + hora      |
 | **observacao**          | VARCHAR(255) | null                     |           			 |      |
@@ -63,8 +63,8 @@
 
 | Name                  | Type         | Settings         | References       | Note |
 | --------------------- | ------------ | ---------------- | ---------------- | ---- |
-| **id_nota_estorno**   | VARCHAR(255) | 🔑 PK, not null  | **Notas.id** |      |
-| **id_nota_estornada** | VARCHAR(255) | not null | **Notas.id** |      |
+| **id_nota_estorno**   | BIGINT | 🔑 PK, not null  | **Notas.id** |      |
+| **id_nota_estornada** | BIGINT | not null | **Notas.id** |      |
 | **motivo**            | VARCHAR(255) | not null         |                  |      | 
 
 
@@ -229,8 +229,65 @@ ALTER TABLE MOVIMENTACAO
 ```
 ## Generators
 ```sql
+CREATE SEQUENCE GEN_ID_PRODUTOS;
+ALTER SEQUENCE  GEN_ID_PRODUTOS RESTART WITH 0;
+
+SET TERM ^ ;
+CREATE OR ALTER TRIGGER TR_GEN_ID_PRODUTOS FOR PRODUTOS
+ACTIVE BEFORE INSERT
+AS
+begin
+	new.id = GEN_ID(GEN_ID_PRODUTOS,1);
+END^
+SET TERM ; ^
+
 CREATE SEQUENCE GEN_ID_USUARIO;
 ALTER SEQUENCE GEN_ID_USUARIO RESTART WITH 0;
+
+SET TERM ^ ;
+CREATE OR ALTER TRIGGER TR_GEN_ID_USUARIO FOR PRODUTOS
+ACTIVE BEFORE INSERT
+AS
+begin
+	new.id = GEN_ID(GEN_ID_USUARIO,1);
+END^
+SET TERM ; ^
+
+CREATE SEQUENCE GEN_ID_ALMOXARIFADO ;
+ALTER SEQUENCE GEN_ID_ALMOXARIFADO RESTART WITH 0;
+
+SET TERM ^ ;
+CREATE OR ALTER TRIGGER TR_GEN_ID_ALMOXARIFADO FOR PRODUTOS
+ACTIVE BEFORE INSERT
+AS
+begin
+	new.id = GEN_ID(GEN_ID_ALMOXARIFADO,1);
+END^
+SET TERM ; ^
+
+CREATE SEQUENCE GEN_ID_NOTAS ;
+ALTER SEQUENCE GEN_ID_NOTAS RESTART WITH 0;
+
+SET TERM ^ ;
+CREATE OR ALTER TRIGGER TR_GEN_ID_NOTAS FOR PRODUTOS
+ACTIVE BEFORE INSERT
+AS
+begin
+	new.id = GEN_ID(GEN_ID_NOTAS,1);
+END^
+SET TERM ; ^
+
+CREATE SEQUENCE GEN_ID_MOVIMENTACAO ;
+ALTER SEQUENCE GEN_ID_MOVIMENTACAO RESTART WITH 0;
+
+SET TERM ^ ;
+CREATE OR ALTER TRIGGER TR_GEN_ID_MOVIMENTACAO FOR PRODUTOS
+ACTIVE BEFORE INSERT
+AS
+begin
+	new.id = GEN_ID(GEN_ID_MOVIMENTACAO,1);
+END^
+SET TERM ; ^
 */
 ```
 ## Procedures
