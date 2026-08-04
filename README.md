@@ -351,128 +351,135 @@ ALTER TABLE MOVIMENTACAO
 ```
 
 ## Triggers and Generators
+<details>
+<summary></summary>
 -
 ```sql
 ```
+</details>
 
-- PEGAR TODO ESTOQUE DE UM ALMOXARIFADO ESPECIFICO POR CODIGO
-```sql
-SET TERM ^ ;
+<details>
+<summary>PEGAR TODO ESTOQUE DE UM ALMOXARIFADO ESPECIFICO POR CODIGO</summary>
+	```sql
+	SET TERM ^ ;
+	
+	create or alter procedure ESTOQUE_DE (
+	    ICODIGO_ALMOXARIFADO char(14))
+	returns (
+	    CODIGO_PRODUTO char(13),
+	    CODIGO_ALMOXARIFADO char(14),
+	    ATIVO char(1),
+	    QUANTIDADE integer)
+	as
+	begin
+	    FOR SELECT
+	            CODIGO_PRODUTO,
+	            CODIGO_ALMOXARIFADO,
+	            QUANTIDADE,
+	            ATIVO
+	        FROM ESTOQUE
+	        WHERE CODIGO_ALMOXARIFADO =  :Icodigo_almoxarifado
+	    INTO
+	        :codigo_produto,
+	        :codigo_almoxarifado,
+	        :quantidade,
+	        :ativo
+	    do suspend;
+	end^
+	
+	SET TERM ; ^
+	
+	/* Following GRANT statements are generated automatically */
+	
+	GRANT SELECT ON ESTOQUE TO PROCEDURE ESTOQUE_DE;
+	
+	/* Existing privileges on this procedure */
+	
+	GRANT EXECUTE ON PROCEDURE ESTOQUE_DE TO SYSDBA;
+	```
+</details>
 
-create or alter procedure ESTOQUE_DE (
-    ICODIGO_ALMOXARIFADO char(14))
-returns (
-    CODIGO_PRODUTO char(13),
-    CODIGO_ALMOXARIFADO char(14),
-    ATIVO char(1),
-    QUANTIDADE integer)
-as
-begin
-    FOR SELECT
-            CODIGO_PRODUTO,
-            CODIGO_ALMOXARIFADO,
-            QUANTIDADE,
-            ATIVO
-        FROM ESTOQUE
-        WHERE CODIGO_ALMOXARIFADO =  :Icodigo_almoxarifado
-    INTO
-        :codigo_produto,
-        :codigo_almoxarifado,
-        :quantidade,
-        :ativo
-    do suspend;
-end^
-
-SET TERM ; ^
-
-/* Following GRANT statements are generated automatically */
-
-GRANT SELECT ON ESTOQUE TO PROCEDURE ESTOQUE_DE;
-
-/* Existing privileges on this procedure */
-
-GRANT EXECUTE ON PROCEDURE ESTOQUE_DE TO SYSDBA;
-```
-
-
-- PEGAR TODA MOVIMENTAÇÃO DE UMA NOTA ESPECÍFICA
-```sql
-SET TERM ^ ;
-
-create or alter procedure MOVIMENTACAO_POR_NOTA (
-    IID_NOTA varchar(255))
-returns (
-    ID bigint,
-    QUANTIDADE integer,
-    CODIGO_PRODUTO char(13),
-    CODIGO_ALMOXARIFADO char(14),
-    ID_NOTA varchar(255))
-as
-begin
-    FOR SELECT ID, QUANTIDADE, CODIGO_PRODUTO,CODIGO_ALMOXARIFADO, ID_NOTA
-        FROM MOVIMENTACAO
-        WHERE ID_NOTA = :iid_nota
-    INTO
-        :id,
-        :quantidade,
-        :codigo_produto,
-        :codigo_almoxarifado,
-        :id_nota
-
-    do suspend;
-end^
-
-SET TERM ; ^
-
-/* Following GRANT statements are generated automatically */
-
-GRANT SELECT ON MOVIMENTACAO TO PROCEDURE MOVIMENTACAO_POR_NOTA;
-
-/* Existing privileges on this procedure */
-
-GRANT EXECUTE ON PROCEDURE MOVIMENTACAO_POR_NOTA TO SYSDBA;
-```
-
-
-
-
-
-
+<details>
+<summary>PEGAR TODA MOVIMENTAÇÃO DE UMA NOTA ESPECÍFICA</summary>
+	```sql
+	SET TERM ^ ;
+	
+	create or alter procedure MOVIMENTACAO_POR_NOTA (
+	    IID_NOTA varchar(255))
+	returns (
+	    ID bigint,
+	    QUANTIDADE integer,
+	    CODIGO_PRODUTO char(13),
+	    CODIGO_ALMOXARIFADO char(14),
+	    ID_NOTA varchar(255))
+	as
+	begin
+	    FOR SELECT ID, QUANTIDADE, CODIGO_PRODUTO,CODIGO_ALMOXARIFADO, ID_NOTA
+	        FROM MOVIMENTACAO
+	        WHERE ID_NOTA = :iid_nota
+	    INTO
+	        :id,
+	        :quantidade,
+	        :codigo_produto,
+	        :codigo_almoxarifado,
+	        :id_nota
+	
+	    do suspend;
+	end^
+	
+	SET TERM ; ^
+	
+	/* Following GRANT statements are generated automatically */
+	
+	GRANT SELECT ON MOVIMENTACAO TO PROCEDURE MOVIMENTACAO_POR_NOTA;
+	
+	/* Existing privileges on this procedure */
+	
+	GRANT EXECUTE ON PROCEDURE MOVIMENTACAO_POR_NOTA TO SYSDBA;
+	```
+</details>
 
 
-- Quando alterar o campo NOTAS.concluido para true, adicionar todas as movimentações desta nota em ESTOQUE
-```sql
-/*
-	INSERE DADOS DE UMA NOTA ESPECÍFICA EM UM ESTOQUE ESPECÍFICO 
- */
-SET TERM ^ ;
-CREATE TRIGGER TR_MOVIMENTA_ESTOQUE for NOTAS
-ACTIVE BEFORE UPDATE OR INSERT
-AS
-declare variable ICodigoProduto         CHAR(13);
-declare variable ICodigoAlmoxarifado    CHAR(14);
-declare variable Iquantidade            INTEGER;
-begin
-   IF (new.CONCLUIDA = 1 AND COALESCE(old.CONCLUIDA,0) = 0) THEN
-    BEGIN
-        FOR SELECT M_NOTA.CODIGO_PRODUTO,
-                  new.CODIGO_ALMOXARIFADO AS CODIGO_ALMOXARIFADO, 
-                  M_NOTA.QUANTIDADE + COALESCE(EST_PROD_NOTA.QUANTIDADE, 0) AS QUANTIDADE
-            FROM (SELECT MOVIMENTACAO.CODIGO_PRODUTO, MOVIMENTACAO.QUANTIDADE
-                  FROM MOVIMENTACAO
-                  WHERE MOVIMENTACAO.ID_NOTA = new.ID) M_NOTA
-            LEFT JOIN (SELECT ESTOQUE.CODIGO_PRODUTO, ESTOQUE.QUANTIDADE 
-                        FROM ESTOQUE 
-                        WHERE ESTOQUE.CODIGO_ALMOXARIFADO = new.CODIGO_ALMOXARIFADO) EST_PROD_NOTA
-            ON EST_PROD_NOTA.CODIGO_PRODUTO = M_NOTA.CODIGO_PRODUTO
-        INTO :ICodigoProduto, :ICodigoAlmoxarifado, :Iquantidade
-        DO
-        BEGIN
-            UPDATE OR INSERT INTO ESTOQUE(CODIGO_PRODUTO, CODIGO_ALMOXARIFADO, QUANTIDADE)
-            VALUES (:ICodigoProduto, :ICodigoAlmoxarifado, :Iquantidade)
-            MATCHING(CODIGO_PRODUTO, CODIGO_ALMOXARIFADO);
-        END
-    END
+
+
+
+
+<details>
+<summary>Quando alterar o campo NOTAS.concluido para true, adicionar todas as movimentações desta nota em ESTOQUE</summary>
+	```sql
+	/*
+		INSERE DADOS DE UMA NOTA ESPECÍFICA EM UM ESTOQUE ESPECÍFICO 
+	 */
+	SET TERM ^ ;
+	CREATE TRIGGER TR_MOVIMENTA_ESTOQUE for NOTAS
+	ACTIVE BEFORE UPDATE OR INSERT
+	AS
+	declare variable ICodigoProduto         CHAR(13);
+	declare variable ICodigoAlmoxarifado    CHAR(14);
+	declare variable Iquantidade            INTEGER;
+	begin
+	   IF (new.CONCLUIDA = 1 AND COALESCE(old.CONCLUIDA,0) = 0) THEN
+	    BEGIN
+	        FOR SELECT M_NOTA.CODIGO_PRODUTO,
+	                  new.CODIGO_ALMOXARIFADO AS CODIGO_ALMOXARIFADO, 
+	                  M_NOTA.QUANTIDADE + COALESCE(EST_PROD_NOTA.QUANTIDADE, 0) AS QUANTIDADE
+	            FROM (SELECT MOVIMENTACAO.CODIGO_PRODUTO, MOVIMENTACAO.QUANTIDADE
+	                  FROM MOVIMENTACAO
+	                  WHERE MOVIMENTACAO.ID_NOTA = new.ID) M_NOTA
+	            LEFT JOIN (SELECT ESTOQUE.CODIGO_PRODUTO, ESTOQUE.QUANTIDADE 
+	                        FROM ESTOQUE 
+	                        WHERE ESTOQUE.CODIGO_ALMOXARIFADO = new.CODIGO_ALMOXARIFADO) EST_PROD_NOTA
+	            ON EST_PROD_NOTA.CODIGO_PRODUTO = M_NOTA.CODIGO_PRODUTO
+	        INTO :ICodigoProduto, :ICodigoAlmoxarifado, :Iquantidade
+	        DO
+	        BEGIN
+	            UPDATE OR INSERT INTO ESTOQUE(CODIGO_PRODUTO, CODIGO_ALMOXARIFADO, QUANTIDADE)
+	            VALUES (:ICodigoProduto, :ICodigoAlmoxarifado, :Iquantidade)
+	            MATCHING(CODIGO_PRODUTO, CODIGO_ALMOXARIFADO);
+	        END
+	    END
+</details>
+
 END^
 SET TERM ; ^
 
