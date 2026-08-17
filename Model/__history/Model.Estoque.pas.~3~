@@ -1,0 +1,51 @@
+unit Model.Estoque;
+interface uses
+  Model,
+  GBSwagger.Model.Attributes,
+  System.SysUtils,
+  Database.Query,
+  System.Generics.Collections,
+  Helper.TObject,
+  System.Rtti;
+
+type TEstoque = class(TModel)
+  private
+    FId : uInt64;
+    FIdProduto : Integer;
+    FIdAlmoxarifado : uInt64;
+    FQuantidade : Integer;
+    FAtivo: Boolean;
+
+    procedure SetId(data : uInt64);
+    procedure SetQuantidade(data : Integer);
+    procedure SetIdProduto(data : uInt64);
+    procedure SetIdNota(data : uInt64);
+  public
+
+    [SwagProp('id','',True, True)]
+    property id: uInt64 read FId write SetId;
+
+    [SwagProp('quantidade','')]
+    property quantidade: Integer read FQuantidade write SetQuantidade;
+
+    [SwagProp('id_produto','', True)]
+    property id_produto: uInt64 read FIdProduto write SetIdProduto;
+
+    [SwagProp('id_nota','', True)]
+    property id_nota: uInt64 read FIdNota write SetIdNota;
+
+    constructor Create();
+    procedure Show();
+end;
+
+type REstoque = Record
+  id : uInt64;
+  quantidade : Integer;
+  id_produto : uInt64;
+  id_nota : uInt64;
+End;
+
+implementation
+
+
+end.

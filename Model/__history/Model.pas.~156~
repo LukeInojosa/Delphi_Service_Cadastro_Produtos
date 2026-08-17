@@ -1,0 +1,157 @@
+unit Model;
+
+interface uses
+  System.Generics.Collections,
+  System.Rtti,Helper.TObject;
+
+  function checkValueInArray(value: String; arr: TArray<String>): Boolean;
+
+  type TModel = class
+    public
+      isFilled: TDictionary<String, Boolean>;
+      constructor Create();
+      Destructor Destroy;
+      function getAllFields(OnlyFilled: Boolean = False; prefix : String = '';NotInclude: TArray<String> = []): String;
+      function getFilledFields(): TList<String>;
+      function fieldIsDate(fieldName: String): Boolean;
+      procedure ClearFilled();
+      function updateStringFields(OnlyFilled: Boolean = True; prefix: String = ''): String;
+      function castDateField(str: String):string;
+  end;
+implementation uses
+  System.SysUtils,
+  StrUtils;
+
+function checkValueInArray(value: String; arr: TArray<String>): Boolean;
+var
+  v:String;
+begin
+  for v in arr do
+   if value = v then
+      Exit(True);
+  Exit(False);
+end;
+
+{ TModel }
+
+function TModel.castDateField(str: String): string;
+begin
+  Result := '(' + 'Cast( ' + str + ' As Timestamp' + ' )'
+end;
+
+procedure TModel.ClearFilled;
+var
+  key: String;
+  keyArray: TArray<String>;
+begin
+  keyArray := Self.isFilled.Keys.ToArray;
+  for key in keyArray do
+  begin
+    Self.isFilled.Items[key] := False;
+  end;
+end;
+
+constructor TModel.Create;
+begin
+  isFilled :=  TDictionary<String, Boolean>.Create();
+end;
+
+destructor TModel.Destroy;
+begin
+  Self.isFilled.Free;
+end;
+
+function TModel.fieldIsDate(fieldName: String): Boolean;
+var
+  dateString: TArray<String>;
+  value : String;
+begin
+  dateString := ['data', 'date'];
+  Result := False;
+  for value in dateString do
+  begin
+    if containsText(fieldName, value) then
+      Exit(True);
+  end;
+end;
+
+function TModel.getAllFields(OnlyFilled: Boolean = False; prefix : String = '';NotInclude: TArray<String> = []): String;
+var
+  key: String;
+  keyArray: TArray<String>;
+  value:String;
+begin
+  Result := '';
+  keyArray := Self.isFilled.Keys.ToArray;
+  for key in keyArray do
+  begin
+    if checkValueInArray(key,NotInclude) then
+      continue;
+
+    if OnlyFilled and Self.isFilled.Items[key] then
+    begin
+      if ((prefix = ':') and fieldIsDate(key)) then
+      begin
+        Result := Result + ',' + 'CAST(' + prefix + key + ' AS TIMESTAMP' + ')';
+        continue;
+      end;
+
+      Result := Result +  ',' + prefix + key;
+    end;
+
+    if not OnlyFilled then
+    begin
+      if ((prefix = ':') and fieldIsDate(key)) then
+      begin
+        Result := Result + ',' + 'CAST(' + prefix + key + ' AS TIMESTAMP' + ')';
+        continue;
+      end;
+
+      Result := Result +  ',' + prefix + key;
+    end;
+  end;
+  Result := Result.Remove(0,1);
+end;
+
+
+function TModel.getFilledFields: TList<String>;
+var
+  key: String;
+begin
+  Result := TList<String>.Create();
+  for key in Self.isFilled.Keys.ToArray do
+  begin
+    if Self.isFilled.Items[key] then
+      Result.Add(key);
+  end;
+end;
+
+
+function TModel.updateStringFields(OnlyFilled: Boolean; prefix: String): String;
+var
+  paramName:String;
+  canSet: Boolean;
+begin
+  Result := '';
+  for paramName in Self.isFilled.Keys do
+  begin
+    canSet := False;
+    if (not OnlyFilled) or Self.isFilled.Items[paramName] then
+      canSet := True;
+
+    if canSet then
+    begin
+      if fieldIsDate(paramName) then
+      begin
+        Result := Result + ',' + paramName + ' = ' + Self.castDateField(':'+prefix+paramName);
+      end
+      else
+      begin
+        Result := Result + ',' + paramName + ' = ' + ':' + prefix + paramName;
+      end;
+    end;
+  end;
+  Result := Result.Remove(0,1);
+end;
+
+end.

@@ -1,0 +1,206 @@
+unit Controller.Notas;
+
+interface
+
+uses Controller;
+
+type
+  TController = Controller.TController;
+
+type
+  TControllerNotas = class(Controller.TController)
+  public
+    class procedure Get(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Post(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Put(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Delete(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+  end;
+
+implementation uses
+  Service.Notas,
+  GBJSON.Helper,
+  Horse.Commons,
+  System.SysUtils,
+  System.Generics.Collections,
+  System.JSON, System.Rtti, Utils, Service.Usuario;
+var
+  FServiceNotas: TServiceNotas;
+  FServiceUsuario: TServiceUsuario;
+
+
+
+{ TControllerNotas }
+
+class procedure TControllerNotas.Delete(Req: THorseRequest; Res: THorseResponse;
+  Next: TNextProc);
+var
+  id: UInt64;
+  Nota: TNotas;
+begin
+  try
+    Nota := TNotas.Create;
+    if TryStrToUInt64(Req.Params['id'], id) then
+      Nota.id := id;
+
+    Nota := FServiceNotas.Excluir(Nota);
+
+    Res
+      .Status(THttpStatus.OK)
+      .Send(
+        TJSONObject.Create
+        .AddPair('data', Nota.ToJSONObject)
+      );
+  finally
+
+  end;
+end;
+
+class procedure TControllerNotas.Get(Req: THorseRequest; Res: THorseResponse;
+  Next: TNextProc);
+var
+  listNotas: TObjectList<TNotas>;
+  jsonArray: TJSONArray;
+  Nota : TNotas;
+  RecNota: RNotas;
+begin
+  try
+    Nota := TNotas.create();
+
+    if TryStrToUInt64(Req.Params['id'], RecNota.id) then
+      Nota.id := RecNota.id;
+
+    if TryStrToInt(Req.Query['tipo_operacao'], RecNota.tipo_operacao) then
+      Nota.tipo_operacao := RecNota.tipo_operacao;
+
+    if TryStrToDateTime(Req.Query['data_registro'], RecNota.data_registro) then
+      Nota.data_registro := RecNota.data_registro;
+
+    if TryStrToBool(Req.Query['concluida'], RecNota.concluida) then
+      Nota.concluida := RecNota.concluida;
+
+    if TryStrToUInt64(Req.Query['usuario_responsavel'], RecNota.usuario_responsavel) then
+      Nota.usuario_responsavel := RecNota.usuario_responsavel;
+
+    if TryStrToUInt64(Req.Query['id_almoxarifado'], RecNota.id_almoxarifado) then
+      Nota.id_almoxarifado := RecNota.id_almoxarifado;
+
+    listNotas := FServiceNotas.Consulta(Nota);
+
+    // construindo resposta
+    jsonArray := TGBJSONDefault.Deserializer<TNotas>
+                               .ListToJSONArray(listNotas);
+    Res
+      .Status(THttpStatus.OK)
+      .Send(
+        TJSONObject.Create
+        .AddPair('data', jsonArray)
+      );
+
+  finally
+    Nota.Free;
+  end;
+end;
+
+class procedure TControllerNotas.Post(Req: THorseRequest; Res: THorseResponse;
+  Next: TNextProc);
+var
+  jsonBody: TJSONObject;
+  Nota: TNotas;
+  RecNota: RNotas;
+  Session: TUserSession;
+  listUsuario: TObjectList<TUsuario>;
+  Usuario: TUsuario;
+begin
+  Session := Req.Sessions.Session[TUserSession] as TUserSession;
+  jsonBody := Req.Body<TJSONObject>;
+  try
+    // pega informacoes do usuario que esta criando a nota
+    Usuario := TUsuario.Create;
+    Usuario.nome := Session.Nome;
+    listUsuario := FServiceUsuario.Consulta(Usuario);
+
+    if listUsuario.Count = 0 then
+      raise Exception.Create('nao foi possivel achar o usuario');
+
+    // cria nota
+    Nota := TNotas.Create;
+
+    if (
+      jsonBody.TryGetValue<Integer>('tipo_operacao', RecNota.tipo_operacao) and
+      jsonBody.TryGetValue<TDateTime>('data_registro', RecNota.data_registro)
+    )then
+    begin
+      Nota.data_registro := RecNota.data_registro;
+      Nota.tipo_operacao := RecNota.tipo_operacao;
+      Nota.usuario_responsavel := listUsuario[0].id;
+      Nota.id_almoxarifado := listUsuario[0].id_almoxarifado;
+    end;
+
+    Nota :=  FServiceNotas.Criar(Nota);
+
+    Res
+      .Status(THTTPStatus.Created)
+      .Send<TJSONObject>(Nota.ToJSONObject());
+  finally
+    Nota.Free;
+    Usuario.Free;
+  end;
+end;
+
+class procedure TControllerNotas.Put(Req: THorseRequest; Res: THorseResponse;
+  Next: TNextProc);
+var
+  Nota: TNotas;
+  RecNota: RNotas;
+  jsonBody: TJSONObject;
+  listNotas: TObjectList<TNotas>;
+  arrJson: TJSONArray;
+begin
+  try
+    Nota := TNotas.Create;
+    jsonBody := Req.Body<TJSONObject>;
+
+    if System.SysUtils.TryStrToUInt64(Req.Params['id'], RecNota.id) then
+       Nota.id := RecNota.id;
+
+    if jsonBody.TryGetValue<Integer>('tipo_operacao', RecNota.tipo_operacao) then
+      Nota.tipo_operacao := RecNota.tipo_operacao;
+    if jsonBody.TryGetValue<TDateTime>('data_registro', RecNota.data_registro) then
+      Nota.data_registro := RecNota.data_registro;
+    if jsonBody.TryGetValue<Boolean>('concluida', RecNota.concluida) then
+      Nota.concluida := RecNota.concluida;
+    if jsonBody.TryGetValue<UInt64>('id_almoxarifado', RecNota.id_almoxarifado) then
+      Nota.id_almoxarifado := RecNota.id_almoxarifado;
+    if jsonBody.TryGetValue<String>(RecNota.observacao) then
+      Nota.observacao := RecNota.observacao;
+    if jsonBody.TryGetValue<UInt64>(RecNota.usuario_responsavel) then
+      Nota.usuario_responsavel := RecNota.usuario_responsavel;
+
+    listNotas := FServiceNotas.Alterar(Nota);
+
+    arrJSON := TGBJSONDefault.Deserializer<TNotas>
+                             .ListToJSONArray(listNotas);
+
+    Res.Status(THttpStatus.Created)
+       .Send<TJSONObject>(
+          TJSONObject.Create
+            .AddPair('data', arrJSON)
+       );
+  finally
+    Nota.Free;
+  end;
+end;
+
+initialization
+
+FServiceNotas := TServiceNotas.Create();
+FServiceUsuario := TServiceUsuario.Create;
+finalization
+
+FServiceNotas.Free;
+FServiceUsuario.Free;
+end.

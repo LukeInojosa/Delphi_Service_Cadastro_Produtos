@@ -1,0 +1,311 @@
+unit Database.Query;
+
+interface uses
+  FireDAC.Comp.Client,
+  System.JSON, Helper.TObject,
+  FireDAC.Stan.Param, System.Rtti,
+  Model,
+  GBJSON.DateTime.Helper;
+
+type TFDQuery = FireDAC.Comp.Client.TFDQuery;
+     TFDConnection = FireDAC.Comp.Client.TFDConnection;
+
+type TFDQueryHelper = class helper for TFDQuery
+  public
+  function StartQuery(): TFDQuery; // inicializa nova query
+  function AddToQuery(query: String): TFDQuery; // adiciona novas linhas a consulta
+  function ConvertQueryToJSONArray(resInRet: Boolean = False; fieldsToGet: TArray<String> = []): TJSONArray;
+  function ConnectToDatabase(databaseConnection: TFDConnection): TFDQuery;
+  function SetQuery(query: String): TFDQuery;
+  function SetParam(paramName:String; paramValue: String ): TFDQuery; overload;
+  function SetParam(paramName:String; paramValue: integer): TFDQuery; overload;
+  function SetParam(paramName:String; paramValue: UInt64): TFDQuery; overload;
+  function SetParam(paramName:String; paramValue: SmallInt): TFDQuery; overload;
+  function SetParam(paramName:String; paramValue: Char): TFDQuery; overload;
+  function SetParam(paramName:String; paramValue: Boolean): TFDQuery; overload;
+  function SetParam(paramName:String; paramValue: ShortString): TFDQuery; overload;
+  function SetParam(paramName:String; paramvalue: TValue; TypeName: String = '' ): TFDQuery; overload;
+  function SetAllParams<T: TModel>(obj: T; prefix: String = ''): TFDQuery;
+end;
+
+implementation uses
+  Data.DB,
+  FieldHelper,
+  System.SysUtils, System.Generics.Collections,
+  Utils;
+
+{ TFDQueryHelper }
+
+function TFDQueryHelper.AddToQuery(query: String): TFDQuery;
+begin
+  Self.SQL.Add(query);
+  Result := Self;
+end;
+
+function TFDQueryHelper.ConnectToDatabase(databaseConnection: TFDConnection): TFDQuery;
+begin
+  Self.Connection := databaseConnection;
+  Result:= Self;
+end;
+
+
+function TFDQueryHelper.SetQuery(query: String): TFDQuery;
+begin
+  Self.StartQuery();
+  Self.SQL.Text := query;
+  Result := Self;
+end;
+
+function TFDQueryHelper.StartQuery(): TFDQuery;
+begin
+  Self.Close();
+  Self.SQL.Clear();
+  Result := Self;
+end;
+
+function TFDQueryHelper.SetParam(paramName: String; paramValue: Char): TFDQuery;
+var
+  FParam :TFDParam;
+begin
+  FParam := Self.FindParam(paramName);
+  if Assigned(FParam) then
+    FParam.AsString := paramValue;
+  //Self.ParamByName(paramName).AsString := paramValue;
+  Result := Self;
+end;
+
+function TFDQueryHelper.SetParam(paramName: String; paramValue: Boolean): TFDQuery;
+var
+  realValue: Integer;
+  FParam :TFDParam;
+begin
+  if paramValue then
+  begin
+    realValue := 1;
+  end else
+    realValue := 0;
+
+  FParam := Self.FindParam(paramName);
+  if Assigned(FParam) then
+    FParam.AsInteger := realValue;
+
+  //Self.ParamByName(paramName).AsInteger := realValue;
+  Result := Self;
+end;
+
+
+function TFDQueryHelper.ConvertQueryToJSONArray(resInRet: Boolean; fieldsToGet: TArray<String>): TJSONArray;
+var
+  arr: TJSONArray;
+  obj: TJSONObject;
+  I: Integer;
+  bookmark: TBookmark;
+  value: boolean;
+  field: TField;
+  fieldName:String;
+begin
+  arr := TJSONArray.Create;
+  if resInRet then
+  begin
+    obj := TJSONObject.Create();
+    for fieldName in fieldsToGet do
+    begin
+      field := Self.FindField(fieldName);
+      if not Assigned(field) then
+        continue;
+
+      if (field.isChar(1)) then
+      begin
+        if field.AsString.Trim = '0' then
+        begin
+          value := False;
+        end else
+          value := True;
+
+        obj.AddPair(
+          fieldName.ToLower,
+          TJSONBool.Create(value));
+        continue;
+      end
+      else if field.isDate() then
+      begin
+        obj.AddPair(
+            fieldName.ToLower,
+            ConvertDateToJSONFormat(field.AsString));
+        continue;
+      end;
+
+      obj.AddPair(
+            fieldName,
+            field.AsString);
+    end;
+
+    arr.AddElement(obj);
+
+    writeln(arr.ToString);
+    Exit(arr);
+  end;
+//  bookmark := Self.GetBookmark; // marca onde estava o cursor
+
+  // itera sobre os dados
+  Self.First;
+  while not Self.Eof do
+  begin
+    obj := TJSONObject.Create;
+
+    for I := 0 to Self.FieldCount - 1 do
+    begin
+      if (Self.Fields[I].isChar(1)) then
+      begin
+        if Self.Fields[I].AsString.Trim = '0' then
+        begin
+          value := False;
+        end else
+          value := True;
+
+        obj.AddPair(
+          Self.Fields[I].FieldName.ToLower,
+          TJSONBool.Create(value));
+      end else if (Self.Fields[I].isNumeric()) then
+        obj.AddPair(
+          Self.Fields[I].FieldName.ToLower,
+          TJSONNumber.Create(Self.Fields[I].AsString))
+      else if (Self.Fields[I].isString()) then
+        obj.AddPair(
+          Self.Fields[I].FieldName.ToLower,
+          Self.Fields[I].AsString)
+      else if (Self.Fields[I].isDate()) then
+        obj.AddPair(
+          Self.Fields[I].FieldName.ToLower,
+          ConvertDateToJSONFormat(Self.Fields[I].AsString));
+    end;
+
+    arr.AddElement(obj);
+    Self.Next;
+  end;
+
+//  if not Self.BookmarkValid(bookmark) then
+//    Result := arr;
+//    Exit;
+
+//  Self.GotoBookmark(bookmark); // retorna o cursor para o valor original
+
+  Result := arr;
+end;
+
+function TFDQueryHelper.SetParam(paramName: String;
+  paramValue: ShortString): TFDQuery;
+var
+  FParam :TFDParam;
+begin
+  FParam := Self.FindParam(paramName);
+  if Assigned(FParam) then
+    FParam.AsString := paramValue;
+  //Self.ParamByName(paramName).AsString := paramValue;
+  Result := Self;
+end;
+
+function TFDQueryHelper.SetParam(paramName:String; paramValue:String): TFDQuery;
+var
+  FParam :TFDParam;
+begin
+  FParam := Self.FindParam(paramName);
+  if Assigned(FParam) then
+    FParam.AsString := paramValue;
+   //Self.ParamByName(paramName).AsString := paramValue;
+  Result := Self;
+end;
+
+function TFDQueryHelper.SetParam(paramName:String; paramValue:Integer): TFDQuery;
+var
+  FParam :TFDParam;
+begin
+  FParam := Self.FindParam(paramName);
+  if Assigned(FParam) then
+    FParam.AsInteger := paramValue;
+  //Self.ParamByName(paramName).AsInteger := paramValue;
+  Result := Self;
+end;
+
+function TFDQueryHelper.SetParam(paramName:String; paramValue:UInt64): TFDQuery;
+var
+  FParam :TFDParam;
+begin
+  FParam := Self.FindParam(paramName);
+  if Assigned(FParam) then
+    FParam.AsInteger := paramValue;
+  //Self.ParamByName(paramName).AsInteger := paramValue;
+  Result := Self;
+end;
+
+function TFDQueryHelper.SetParam(paramName:String; paramValue:SmallInt): TFDQuery;
+var
+  FParam :TFDParam;
+begin
+  FParam := Self.FindParam(paramName);
+  if Assigned(FParam) then
+    FParam.AsShortInt := paramValue;
+  //Self.ParamByName(paramName).AsShortInt := paramValue;
+  Result := Self;
+end;
+
+
+
+function TFDQueryHelper.SetAllParams<T>(obj: T; prefix: String = ''): TFDQuery;
+var
+  paramName: String;
+  typeNameAndPropValue: TPair<String, TValue>;
+begin
+  Result := Self;
+  for paramName in obj.getPropNames() do
+  begin
+    typeNameAndPropValue := obj.getPropValue(paramName);
+    Self.SetParam(prefix + paramName, typeNameAndPropValue.value, typeNameAndPropValue.key);
+  end;
+end;
+
+function TFDQueryHelper.SetParam(paramName: String; paramValue: TValue;
+  TypeName: String): TFDQuery;
+var
+  FParam :TFDParam;
+  realValue: Integer;
+begin
+  Result := Self;
+  FParam := Self.FindParam(paramName);
+  Writeln('typename in set Param : ' + typename.toLower);
+  if not Assigned(FParam) then
+    Exit;
+  if typeName.ToLower = 'string' then
+  begin
+    FParam.AsString := paramValue.AsString;
+  end
+  else if typeName.ToLower = 'integer' then
+  begin
+    FParam.AsInteger := paramValue.AsInteger;
+  end
+  else if typename.ToLower = 'uint64' then
+  begin
+    FParam.AsInteger := paramValue.AsInteger;
+  end
+  else if typename.ToLower = 'boolean' then
+  begin
+    if paramValue.AsBoolean then
+    begin
+      realValue := 1;
+    end else
+      realValue := 0;
+
+    FParam.AsInteger := realValue;
+  end
+  else if typename.ToLower = 'tdatetime' then
+  begin
+    writeln(paramValue.AsType<TDateTime>.Format('yyyy-mm-dd'));
+    FParam.AsString := (paramValue.AsType<TDateTime>).Format('yyyy-mm-dd');
+  end
+  else
+  begin
+     FParam.AsString := paramValue.AsString;
+  end;
+end;
+
+end.

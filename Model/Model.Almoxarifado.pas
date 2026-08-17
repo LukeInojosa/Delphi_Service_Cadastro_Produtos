@@ -1,0 +1,100 @@
+unit Model.Almoxarifado;
+
+interface uses
+  Model,
+  GBSwagger.Model.Attributes,
+  System.SysUtils,
+  Database.Query,
+  System.Generics.Collections,
+  Helper.TObject,
+  System.Rtti;
+
+type TAlmoxarifado  = class(TModel)
+  private
+    FId : uInt64;
+    FCodigo : String;
+    FDescricao : String;
+    FAtivo : Boolean;
+
+    procedure SetId(data : uInt64);
+    procedure SetCodigo(data : String);
+    procedure SetDescricao(data : String);
+    procedure SetAtivo(data : Boolean);
+
+  public
+
+    [SwagProp('id','',True, True)]
+    property id: uInt64 read FId write SetId;
+
+    [SwagProp('codigo','')]
+    property codigo: String read FCodigo write SetCodigo;
+
+    [SwagProp('descricao','', True)]
+    property descricao: String read FDescricao write SetDescricao;
+
+    [SwagProp('ativo','', True)]
+    property ativo: Boolean read FAtivo write SetAtivo;
+
+    constructor Create();
+    procedure Show();
+end;
+
+type RAlmoxarifado = Record
+  id:uInt64;
+  codigo:String;
+  descricao:String;
+  ativo:Boolean;
+End;
+
+implementation
+
+{ TAlmoxarifado }
+
+constructor TAlmoxarifado.Create;
+var
+  paramName: String;
+begin
+  inherited;
+  for paramName in Self.getPropNames() do
+    isFilled.AddOrSetValue(paramName, False);
+
+  FId := 0;
+  FCodigo := '';
+  FDescricao := '';
+  FAtivo := false;
+end;
+
+procedure TAlmoxarifado.SetAtivo(data: Boolean);
+begin
+  isFilled.Items['ativo'] := True;
+  FAtivo := data;
+end;
+
+procedure TAlmoxarifado.SetCodigo(data: String);
+begin
+  isFilled.Items['codigo'] := True;
+  FCodigo := data;
+end;
+
+procedure TAlmoxarifado.SetDescricao(data: String);
+begin
+  isFilled.Items['descricao'] := True;
+  FDescricao := data;
+end;
+
+procedure TAlmoxarifado.SetId(data: uInt64);
+begin
+  isFilled.Items['id'] := True;
+  FId := data;
+end;
+
+procedure TAlmoxarifado.Show;
+begin
+  Writeln(Format('{ id: %s, codigo: %s, descricao, %s, ativo: %s}',
+          [id.ToString,codigo,descricao,ativo.ToString]));
+end;
+
+end.
+
+
+

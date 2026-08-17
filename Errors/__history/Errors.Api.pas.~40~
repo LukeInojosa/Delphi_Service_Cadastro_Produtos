@@ -1,0 +1,13 @@
+unit Errors.Api;
+
+interface uses
+  System.SysUtils,
+  Horse.Commons;
+
+type EValidation = class(Exception)
+  function Status: Integer;
+end;
+
+implementation
+{ EValidation }
+end.

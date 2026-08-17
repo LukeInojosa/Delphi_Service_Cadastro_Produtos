@@ -1,0 +1,16 @@
+{
+	"name": "FirstProject",
+	"description": "",
+	"version": "1.0.0",
+	"homepage": "",
+	"mainsrc": "./src",
+	"projects": [],
+	"dependencies": {
+		"github.com/hashload/horse": "^3.2.0",
+		"github.com/hashload/horse-basic-auth": "^1.2.6",
+		"github.com/hashload/horse-cors": "^1.0.8",
+		"github.com/hashload/jhonson": "^1.2.3",
+		"https://github.com/gabrielbaltazar/gbjson": "^1.2.0",
+		"https://github.com/gabrielbaltazar/gbswagger": "^3.1.0"
+	}
+}

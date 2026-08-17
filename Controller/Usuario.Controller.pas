@@ -1,0 +1,63 @@
+unit Usuario.Controller;
+
+interface uses
+  Horse,
+  Controller;
+type
+  TController = Controller.TController;
+
+
+  type TUsuarioController = class(TController)
+    public
+      procedure Get(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+      procedure Post(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+      procedure Put(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+      procedure Delete(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+  end;
+
+implementation uses
+  System.JSON,
+  Database.Connection,
+  System.SysUtils,
+  Service.Usuario;
+type
+  TDatabaseConnection = Database.Connection.TDatabaseConnection;
+  IServiceUsuario = Service.Usuario.IServiceUsuario;
+  TServiceUsuario = Service.Usuario.TServiceUsuario;
+
+procedure TUsuarioController.Get(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+begin
+
+  Res.Status(THTTPStatus.OK).Send('usuario controller');
+end;
+
+procedure TUsuarioController.Post(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+var
+  Usuario : IServiceUsuario;
+  JsonStringResponse: String;
+begin
+  Usuario := TServiceUsuario.Create(
+    'bdbxf',
+    '123@gmail.com',
+    '123456'
+  );
+
+  JsonStringResponse := Usuario.Save();
+
+  Res.Status(THTTPStatus.OK)
+     .ContentType('application/json')
+     .Send(JsonStringResponse);
+end;
+
+procedure TUsuarioController.Put(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+begin
+  raise ENotImplemented.Create('not implemented yet.');
+end;
+
+procedure TUsuarioController.Delete(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+begin
+  raise ENotImplemented.Create('not implemented yet.');
+end;
+
+end.
+

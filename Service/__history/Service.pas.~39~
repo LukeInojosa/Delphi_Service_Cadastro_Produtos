@@ -1,0 +1,56 @@
+unit Service;
+
+interface
+
+uses
+  FireDAC.Comp.Client,
+  GBJSON.Interfaces;
+
+type
+  TFDConnection = FireDAC.Comp.Client.TFDConnection;
+  TFDQuery = FireDAC.Comp.Client.TFDQuery;
+  TGBJSONDefault = GBJSON.Interfaces.TGBJSONDefault;
+type
+  IService = interface
+    ['{C6B946F2-B32A-4AA9-88DC-034E77543CEB}']
+  end;
+
+type
+  TService = class(TInterfacedObject, IService)
+  protected
+    FConnection: TFDConnection;
+  public
+    constructor Create();
+    destructor Destroy(); override;
+    function Criar(data: TProdutos): TProdutos;
+    function Consulta(data: TProdutos): TObjectList<TProdutos>;
+    function Excluir(data:TProdutos):  TObjectList<TProdutos>;
+    function Alterar(data: TProdutos): TObjectList<TProdutos>;
+  end;
+
+implementation
+
+uses
+  Database.Connection,
+  GBJSON.Config;
+
+type
+  TDatabaseConnection = Database.Connection.TDatabaseConnection;
+
+constructor TService.Create();
+begin
+  inherited Create;
+  Self.FConnection := TDatabaseConnection.GetConnection();
+end;
+
+destructor TService.Destroy();
+begin
+  Self.FConnection.Free;
+  inherited Destroy;
+end;
+
+initialization
+
+TGBJSONConfig.GetInstance.CaseDefinition(TCaseDefinition.cdLower);
+
+end.

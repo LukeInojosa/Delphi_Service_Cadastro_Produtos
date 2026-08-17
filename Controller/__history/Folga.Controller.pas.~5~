@@ -1,0 +1,45 @@
+unit Folga.Controller;
+
+interface
+  uses
+    Horse,
+    Controller;
+
+  type TFolgaController = class(TController)
+    public
+      procedure Get(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+      procedure Post(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+      procedure Put(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+      procedure Delete(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+  end;
+
+implementation
+  uses
+    System.JSON,
+    Database.Connection,
+    FireDAC.Comp.Client,
+    System.SysUtils,
+    ModelHelper,
+    Service.Usuario;
+
+procedure TFolgaController.Get(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+begin
+  Res.Status(THTTPStatus.OK).Send('folga controller');
+end;
+
+procedure TFolgaController.Post(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+begin
+
+end;
+
+procedure TFolgaController.Put(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+begin
+  raise ENotImplemented.Create('not implemented yet.');
+end;
+
+procedure TFolgaController.Delete(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
+begin
+  raise ENotImplemented.Create('not implemented yet.');
+end;
+
+end.

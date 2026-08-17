@@ -1,0 +1,96 @@
+unit Model.Estoque;
+interface uses
+  Model,
+  GBSwagger.Model.Attributes,
+  System.SysUtils,
+  Database.Query,
+  System.Generics.Collections,
+  Helper.TObject,
+  System.Rtti;
+
+type TEstoque = class(TModel)
+  private
+    FId : uInt64;
+    FIdProduto : uInt64;
+    FIdAlmoxarifado : uInt64;
+    FQuantidade : Integer;
+    FAtivo: Boolean;
+
+    procedure SetId(data : uInt64);
+    procedure SetIdProduto(data : uInt64);
+    procedure SetIdAlmoxarifado(data : uInt64);
+    procedure SetQuantidade(data : Integer);
+    procedure SetAtivo(data : Boolean);
+  public
+
+    property id: uInt64 read FId write SetId;
+
+    property id_produto: uInt64 read FIdProduto write SetIdProduto;
+
+    property id_almoxarifado: uInt64 read FIdAlmoxarifado write SetIdAlmoxarifado;
+
+    property quantidade: Integer read FQuantidade write SetQuantidade;
+
+    property ativo: Boolean read FAtivo write SetAtivo;
+
+    constructor Create();
+    procedure Show();
+end;
+
+type REstoque = Record
+  id : uInt64;
+  id_produto : uInt64;
+  id_almoxarifado : uInt64;
+  quantidade : Integer;
+  ativo: Boolean;
+End;
+
+implementation
+
+
+{ TEstoque }
+
+constructor TEstoque.Create;
+begin
+  inherited;
+  for paramName in Self.getPropNames() do
+    isFilled.AddOrSetValue(paramName, False);
+
+  FId := 0;
+  FIdProduto := 0;
+  FIdAlmoxarifado := 0;
+  FQuantidade := 0;
+  FAtivo := False ;
+end;
+
+procedure TEstoque.SetAtivo(data: Boolean);
+begin
+
+end;
+
+procedure TEstoque.SetId(data: uInt64);
+begin
+
+end;
+
+procedure TEstoque.SetIdAlmoxarifado(data: uInt64);
+begin
+
+end;
+
+procedure TEstoque.SetIdProduto(data: uInt64);
+begin
+
+end;
+
+procedure TEstoque.SetQuantidade(data: Integer);
+begin
+
+end;
+
+procedure TEstoque.Show;
+begin
+
+end;
+
+end.

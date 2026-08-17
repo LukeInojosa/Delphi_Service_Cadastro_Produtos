@@ -1,0 +1,1572 @@
+--- new start of FireDAC Trace ---
+3850837960001 14:03:06.838 -=#!!! FireDAC Tracer started !!!#=-
+3850838280001 14:03:06.866  . CreateConnection [ConnectionDef=""]
+3850838280001 14:03:06.866  . CreateTransaction [ConnectionDef=""]
+3850838280001 14:03:06.866  . CreateTransaction [ConnectionDef=""]
+3850838280001 14:03:06.867 >> Open [ConnectionDef=""]
+3850838280001 14:03:06.867     >> Definition [Name=""]
+3850838280001 14:03:06.867          . DriverID=FB
+3850838280001 14:03:06.867          . Database=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB
+3850838280001 14:03:06.867          . User_Name=SYSDBA
+3850838280001 14:03:06.867          . Password=*****
+3850838280001 14:03:06.867          . MonitorBy=FlatFile
+3850838280001 14:03:06.867     << Definition [Name=""]
+3850838280001 14:03:06.867     >> FireDAC info
+3850838280001 14:03:06.867          . Tool=RAD Studio 10.2
+3850838280001 14:03:06.867          . FireDAC=16.0.0 (Build 88974)
+3850838280001 14:03:06.867          . Platform=Windows 32 bit
+3850838280001 14:03:06.867          . Defines=FireDAC_NOLOCALE_META;FireDAC_MONITOR
+3850838280001 14:03:06.867     << FireDAC info
+3850838430001 14:03:06.885      . isc_attach_database [dbname="C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB", params="user_name=SYSDBA,password=*********,sql_dialect=3,utf8_filename"]
+3850838750001 14:03:06.916      . isc_database_info [db_handle=$00000001, info=103]
+3850838750001 14:03:06.917     >> Driver log
+3850838750001 14:03:06.917          . Loading driver FB ...
+3850838750001 14:03:06.917     << Driver log
+3850838750001 14:03:06.917      . isc_database_info [db_handle=$00000001, info=103]
+3850838750001 14:03:06.917     >> Client info
+3850838750001 14:03:06.917          . Brand=Firebird
+3850838750001 14:03:06.917          . Client version=205089900
+3850838750001 14:03:06.917          . Client DLL name=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Win32\Debug\fbclient.dll
+3850838750001 14:03:06.917     << Client info
+3850838750001 14:03:06.917      . isc_database_info [db_handle=$00000001, info=103]
+3850838750001 14:03:06.917     >> Session info
+3850838750001 14:03:06.917          . Current catalog=
+3850838750001 14:03:06.917          . Current schema=
+3850838750001 14:03:06.917          . Server version=WI-V2.5.8.27089 Firebird 2.5
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+
+3850838750001 14:03:06.917     << Session info
+3850838750001 14:03:06.917 << Open [ConnectionDef=""]
+3850838750001 14:03:06.917  . CreateConnection [ConnectionDef=""]
+3850838750001 14:03:06.917  . CreateTransaction [ConnectionDef=""]
+3850838750001 14:03:06.917  . CreateTransaction [ConnectionDef=""]
+3850838750001 14:03:06.918 >> Open [ConnectionDef=""]
+3850838750001 14:03:06.918     >> Definition [Name=""]
+3850838750001 14:03:06.918          . DriverID=FB
+3850838750001 14:03:06.918          . Database=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB
+3850838750001 14:03:06.918          . User_Name=SYSDBA
+3850838750001 14:03:06.918          . Password=*****
+3850838750001 14:03:06.918          . MonitorBy=FlatFile
+3850838750001 14:03:06.918     << Definition [Name=""]
+3850838750001 14:03:06.918     >> FireDAC info
+3850838750001 14:03:06.918          . Tool=RAD Studio 10.2
+3850838750001 14:03:06.918          . FireDAC=16.0.0 (Build 88974)
+3850838750001 14:03:06.918          . Platform=Windows 32 bit
+3850838750001 14:03:06.918          . Defines=FireDAC_NOLOCALE_META;FireDAC_MONITOR
+3850838750001 14:03:06.918     << FireDAC info
+3850838750001 14:03:06.918      . isc_attach_database [dbname="C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB", params="user_name=SYSDBA,password=*********,sql_dialect=3,utf8_filename"]
+3850839210001 14:03:06.955      . isc_database_info [db_handle=$00000002, info=103]
+3850839210001 14:03:06.955     >> Driver log
+3850839210001 14:03:06.955          . Loading driver FB ...
+3850839210001 14:03:06.955     << Driver log
+3850839210001 14:03:06.955      . isc_database_info [db_handle=$00000002, info=103]
+3850839210001 14:03:06.956     >> Client info
+3850839210001 14:03:06.956          . Brand=Firebird
+3850839210001 14:03:06.956          . Client version=205089900
+3850839210001 14:03:06.956          . Client DLL name=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Win32\Debug\fbclient.dll
+3850839210001 14:03:06.956     << Client info
+3850839210001 14:03:06.956      . isc_database_info [db_handle=$00000002, info=103]
+3850839210001 14:03:06.956     >> Session info
+3850839210001 14:03:06.956          . Current catalog=
+3850839210001 14:03:06.956          . Current schema=
+3850839210001 14:03:06.956          . Server version=WI-V2.5.8.27089 Firebird 2.5
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+
+3850839210001 14:03:06.956     << Session info
+3850839210001 14:03:06.956 << Open [ConnectionDef=""]
+3850839210001 14:03:06.956  . CreateConnection [ConnectionDef=""]
+3850839210001 14:03:06.956  . CreateTransaction [ConnectionDef=""]
+3850839210001 14:03:06.956  . CreateTransaction [ConnectionDef=""]
+3850839210001 14:03:06.957 >> Open [ConnectionDef=""]
+3850839210001 14:03:06.957     >> Definition [Name=""]
+3850839210001 14:03:06.957          . DriverID=FB
+3850839210001 14:03:06.957          . Database=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB
+3850839210001 14:03:06.957          . User_Name=SYSDBA
+3850839210001 14:03:06.957          . Password=*****
+3850839210001 14:03:06.957          . MonitorBy=FlatFile
+3850839210001 14:03:06.957     << Definition [Name=""]
+3850839210001 14:03:06.957     >> FireDAC info
+3850839210001 14:03:06.957          . Tool=RAD Studio 10.2
+3850839210001 14:03:06.957          . FireDAC=16.0.0 (Build 88974)
+3850839210001 14:03:06.957          . Platform=Windows 32 bit
+3850839210001 14:03:06.957          . Defines=FireDAC_NOLOCALE_META;FireDAC_MONITOR
+3850839210001 14:03:06.957     << FireDAC info
+3850839210001 14:03:06.957      . isc_attach_database [dbname="C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB", params="user_name=SYSDBA,password=*********,sql_dialect=3,utf8_filename"]
+3850839210001 14:03:06.960      . isc_database_info [db_handle=$00000003, info=103]
+3850839210001 14:03:06.960     >> Driver log
+3850839210001 14:03:06.960          . Loading driver FB ...
+3850839210001 14:03:06.960     << Driver log
+3850839210001 14:03:06.960      . isc_database_info [db_handle=$00000003, info=103]
+3850839210001 14:03:06.960     >> Client info
+3850839210001 14:03:06.960          . Brand=Firebird
+3850839210001 14:03:06.960          . Client version=205089900
+3850839210001 14:03:06.960          . Client DLL name=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Win32\Debug\fbclient.dll
+3850839210001 14:03:06.960     << Client info
+3850839210001 14:03:06.960      . isc_database_info [db_handle=$00000003, info=103]
+3850839210001 14:03:06.960     >> Session info
+3850839210001 14:03:06.960          . Current catalog=
+3850839210001 14:03:06.960          . Current schema=
+3850839210001 14:03:06.960          . Server version=WI-V2.5.8.27089 Firebird 2.5
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+
+3850839210001 14:03:06.960     << Session info
+3850839210001 14:03:06.960 << Open [ConnectionDef=""]
+3850839210001 14:03:06.960  . CreateConnection [ConnectionDef=""]
+3850839210001 14:03:06.960  . CreateTransaction [ConnectionDef=""]
+3850839210001 14:03:06.960  . CreateTransaction [ConnectionDef=""]
+3850839210001 14:03:06.961 >> Open [ConnectionDef=""]
+3850839210001 14:03:06.961     >> Definition [Name=""]
+3850839210001 14:03:06.961          . DriverID=FB
+3850839210001 14:03:06.961          . Database=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB
+3850839210001 14:03:06.961          . User_Name=SYSDBA
+3850839210001 14:03:06.961          . Password=*****
+3850839210001 14:03:06.961          . MonitorBy=FlatFile
+3850839210001 14:03:06.961     << Definition [Name=""]
+3850839210001 14:03:06.961     >> FireDAC info
+3850839210001 14:03:06.961          . Tool=RAD Studio 10.2
+3850839210001 14:03:06.961          . FireDAC=16.0.0 (Build 88974)
+3850839210001 14:03:06.961          . Platform=Windows 32 bit
+3850839210001 14:03:06.961          . Defines=FireDAC_NOLOCALE_META;FireDAC_MONITOR
+3850839210001 14:03:06.961     << FireDAC info
+3850839210001 14:03:06.961      . isc_attach_database [dbname="C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB", params="user_name=SYSDBA,password=*********,sql_dialect=3,utf8_filename"]
+3850839210001 14:03:06.963      . isc_database_info [db_handle=$00000004, info=103]
+3850839210001 14:03:06.965     >> Driver log
+3850839210001 14:03:06.965          . Loading driver FB ...
+3850839210001 14:03:06.965     << Driver log
+3850839210001 14:03:06.965      . isc_database_info [db_handle=$00000004, info=103]
+3850839210001 14:03:06.965     >> Client info
+3850839210001 14:03:06.965          . Brand=Firebird
+3850839210001 14:03:06.965          . Client version=205089900
+3850839210001 14:03:06.965          . Client DLL name=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Win32\Debug\fbclient.dll
+3850839210001 14:03:06.965     << Client info
+3850839210001 14:03:06.965      . isc_database_info [db_handle=$00000004, info=103]
+3850839210001 14:03:06.965     >> Session info
+3850839210001 14:03:06.965          . Current catalog=
+3850839210001 14:03:06.965          . Current schema=
+3850839210001 14:03:06.965          . Server version=WI-V2.5.8.27089 Firebird 2.5
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+
+3850839210001 14:03:06.965     << Session info
+3850839210001 14:03:06.965 << Open [ConnectionDef=""]
+3850839210001 14:03:06.965  . CreateConnection [ConnectionDef=""]
+3850839210001 14:03:06.965  . CreateTransaction [ConnectionDef=""]
+3850839210001 14:03:06.965  . CreateTransaction [ConnectionDef=""]
+3850839210001 14:03:06.966 >> Open [ConnectionDef=""]
+3850839210001 14:03:06.966     >> Definition [Name=""]
+3850839210001 14:03:06.966          . DriverID=FB
+3850839210001 14:03:06.966          . Database=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB
+3850839210001 14:03:06.966          . User_Name=SYSDBA
+3850839210001 14:03:06.966          . Password=*****
+3850839210001 14:03:06.966          . MonitorBy=FlatFile
+3850839210001 14:03:06.966     << Definition [Name=""]
+3850839210001 14:03:06.966     >> FireDAC info
+3850839210001 14:03:06.966          . Tool=RAD Studio 10.2
+3850839210001 14:03:06.966          . FireDAC=16.0.0 (Build 88974)
+3850839210001 14:03:06.966          . Platform=Windows 32 bit
+3850839210001 14:03:06.966          . Defines=FireDAC_NOLOCALE_META;FireDAC_MONITOR
+3850839210001 14:03:06.966     << FireDAC info
+3850839210001 14:03:06.966      . isc_attach_database [dbname="C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB", params="user_name=SYSDBA,password=*********,sql_dialect=3,utf8_filename"]
+3850839210001 14:03:06.969      . isc_database_info [db_handle=$00000005, info=103]
+3850839210001 14:03:06.969     >> Driver log
+3850839210001 14:03:06.969          . Loading driver FB ...
+3850839210001 14:03:06.969     << Driver log
+3850839210001 14:03:06.969      . isc_database_info [db_handle=$00000005, info=103]
+3850839210001 14:03:06.969     >> Client info
+3850839210001 14:03:06.969          . Brand=Firebird
+3850839210001 14:03:06.969          . Client version=205089900
+3850839210001 14:03:06.969          . Client DLL name=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Win32\Debug\fbclient.dll
+3850839210001 14:03:06.969     << Client info
+3850839210001 14:03:06.969      . isc_database_info [db_handle=$00000005, info=103]
+3850839210001 14:03:06.969     >> Session info
+3850839210001 14:03:06.969          . Current catalog=
+3850839210001 14:03:06.969          . Current schema=
+3850839210001 14:03:06.969          . Server version=WI-V2.5.8.27089 Firebird 2.5
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+
+3850839210001 14:03:06.969     << Session info
+3850839210001 14:03:06.969 << Open [ConnectionDef=""]
+3850839210001 14:03:06.969  . CreateConnection [ConnectionDef=""]
+3850839210001 14:03:06.969  . CreateTransaction [ConnectionDef=""]
+3850839210001 14:03:06.969  . CreateTransaction [ConnectionDef=""]
+3850839210001 14:03:06.969 >> Open [ConnectionDef=""]
+3850839210001 14:03:06.969     >> Definition [Name=""]
+3850839210001 14:03:06.969          . DriverID=FB
+3850839210001 14:03:06.969          . Database=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB
+3850839210001 14:03:06.969          . User_Name=SYSDBA
+3850839210001 14:03:06.969          . Password=*****
+3850839210001 14:03:06.969          . MonitorBy=FlatFile
+3850839210001 14:03:06.969     << Definition [Name=""]
+3850839210001 14:03:06.969     >> FireDAC info
+3850839210001 14:03:06.969          . Tool=RAD Studio 10.2
+3850839210001 14:03:06.969          . FireDAC=16.0.0 (Build 88974)
+3850839210001 14:03:06.969          . Platform=Windows 32 bit
+3850839210001 14:03:06.969          . Defines=FireDAC_NOLOCALE_META;FireDAC_MONITOR
+3850839210001 14:03:06.969     << FireDAC info
+3850839210001 14:03:06.969      . isc_attach_database [dbname="C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB", params="user_name=SYSDBA,password=*********,sql_dialect=3,utf8_filename"]
+3850839370001 14:03:06.972      . isc_database_info [db_handle=$00000006, info=103]
+3850839370001 14:03:06.972     >> Driver log
+3850839370001 14:03:06.972          . Loading driver FB ...
+3850839370001 14:03:06.972     << Driver log
+3850839370001 14:03:06.972      . isc_database_info [db_handle=$00000006, info=103]
+3850839370001 14:03:06.972     >> Client info
+3850839370001 14:03:06.972          . Brand=Firebird
+3850839370001 14:03:06.972          . Client version=205089900
+3850839370001 14:03:06.972          . Client DLL name=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Win32\Debug\fbclient.dll
+3850839370001 14:03:06.972     << Client info
+3850839370001 14:03:06.972      . isc_database_info [db_handle=$00000006, info=103]
+3850839370001 14:03:06.972     >> Session info
+3850839370001 14:03:06.972          . Current catalog=
+3850839370001 14:03:06.972          . Current schema=
+3850839370001 14:03:06.972          . Server version=WI-V2.5.8.27089 Firebird 2.5
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+
+3850839370001 14:03:06.972     << Session info
+3850839370001 14:03:06.972 << Open [ConnectionDef=""]
+3850839370001 14:03:06.972  . CreateConnection [ConnectionDef=""]
+3850839370001 14:03:06.972  . CreateTransaction [ConnectionDef=""]
+3850839370001 14:03:06.972  . CreateTransaction [ConnectionDef=""]
+3850839370001 14:03:06.973 >> Open [ConnectionDef=""]
+3850839370001 14:03:06.973     >> Definition [Name=""]
+3850839370001 14:03:06.973          . DriverID=FB
+3850839370001 14:03:06.973          . Database=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB
+3850839370001 14:03:06.973          . User_Name=SYSDBA
+3850839370001 14:03:06.973          . Password=*****
+3850839370001 14:03:06.973          . MonitorBy=FlatFile
+3850839370001 14:03:06.973     << Definition [Name=""]
+3850839370001 14:03:06.973     >> FireDAC info
+3850839370001 14:03:06.973          . Tool=RAD Studio 10.2
+3850839370001 14:03:06.973          . FireDAC=16.0.0 (Build 88974)
+3850839370001 14:03:06.973          . Platform=Windows 32 bit
+3850839370001 14:03:06.973          . Defines=FireDAC_NOLOCALE_META;FireDAC_MONITOR
+3850839370001 14:03:06.973     << FireDAC info
+3850839370001 14:03:06.973      . isc_attach_database [dbname="C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB", params="user_name=SYSDBA,password=*********,sql_dialect=3,utf8_filename"]
+3850839370001 14:03:06.975      . isc_database_info [db_handle=$00000007, info=103]
+3850839370001 14:03:06.975     >> Driver log
+3850839370001 14:03:06.975          . Loading driver FB ...
+3850839370001 14:03:06.975     << Driver log
+3850839370001 14:03:06.975      . isc_database_info [db_handle=$00000007, info=103]
+3850839370001 14:03:06.975     >> Client info
+3850839370001 14:03:06.975          . Brand=Firebird
+3850839370001 14:03:06.975          . Client version=205089900
+3850839370001 14:03:06.975          . Client DLL name=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Win32\Debug\fbclient.dll
+3850839370001 14:03:06.975     << Client info
+3850839370001 14:03:06.975      . isc_database_info [db_handle=$00000007, info=103]
+3850839370001 14:03:06.975     >> Session info
+3850839370001 14:03:06.975          . Current catalog=
+3850839370001 14:03:06.975          . Current schema=
+3850839370001 14:03:06.975          . Server version=WI-V2.5.8.27089 Firebird 2.5
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+
+3850839370001 14:03:06.975     << Session info
+3850839370001 14:03:06.975 << Open [ConnectionDef=""]
+3850839370001 14:03:06.976  . CreateConnection [ConnectionDef=""]
+3850839370001 14:03:06.976  . CreateTransaction [ConnectionDef=""]
+3850839370001 14:03:06.976  . CreateTransaction [ConnectionDef=""]
+3850839370001 14:03:06.976 >> Open [ConnectionDef=""]
+3850839370001 14:03:06.976     >> Definition [Name=""]
+3850839370001 14:03:06.976          . DriverID=FB
+3850839370001 14:03:06.976          . Database=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB
+3850839370001 14:03:06.976          . User_Name=SYSDBA
+3850839370001 14:03:06.976          . Password=*****
+3850839370001 14:03:06.976          . MonitorBy=FlatFile
+3850839370001 14:03:06.976     << Definition [Name=""]
+3850839370001 14:03:06.976     >> FireDAC info
+3850839370001 14:03:06.976          . Tool=RAD Studio 10.2
+3850839370001 14:03:06.976          . FireDAC=16.0.0 (Build 88974)
+3850839370001 14:03:06.976          . Platform=Windows 32 bit
+3850839370001 14:03:06.976          . Defines=FireDAC_NOLOCALE_META;FireDAC_MONITOR
+3850839370001 14:03:06.976     << FireDAC info
+3850839370001 14:03:06.976      . isc_attach_database [dbname="C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB", params="user_name=SYSDBA,password=*********,sql_dialect=3,utf8_filename"]
+3850839370001 14:03:06.979      . isc_database_info [db_handle=$00000008, info=103]
+3850839370001 14:03:06.979     >> Driver log
+3850839370001 14:03:06.979          . Loading driver FB ...
+3850839370001 14:03:06.979     << Driver log
+3850839370001 14:03:06.979      . isc_database_info [db_handle=$00000008, info=103]
+3850839370001 14:03:06.979     >> Client info
+3850839370001 14:03:06.979          . Brand=Firebird
+3850839370001 14:03:06.979          . Client version=205089900
+3850839370001 14:03:06.979          . Client DLL name=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Win32\Debug\fbclient.dll
+3850839370001 14:03:06.979     << Client info
+3850839370001 14:03:06.979      . isc_database_info [db_handle=$00000008, info=103]
+3850839370001 14:03:06.979     >> Session info
+3850839370001 14:03:06.979          . Current catalog=
+3850839370001 14:03:06.979          . Current schema=
+3850839370001 14:03:06.979          . Server version=WI-V2.5.8.27089 Firebird 2.5
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+
+3850839370001 14:03:06.979     << Session info
+3850839370001 14:03:06.979 << Open [ConnectionDef=""]
+3850839370001 14:03:06.979  . CreateConnection [ConnectionDef=""]
+3850839370001 14:03:06.979  . CreateTransaction [ConnectionDef=""]
+3850839370001 14:03:06.979  . CreateTransaction [ConnectionDef=""]
+3850839370001 14:03:06.980 >> Open [ConnectionDef=""]
+3850839370001 14:03:06.980     >> Definition [Name=""]
+3850839370001 14:03:06.980          . DriverID=FB
+3850839370001 14:03:06.980          . Database=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB
+3850839370001 14:03:06.980          . User_Name=SYSDBA
+3850839370001 14:03:06.980          . Password=*****
+3850839370001 14:03:06.980          . MonitorBy=FlatFile
+3850839370001 14:03:06.980     << Definition [Name=""]
+3850839370001 14:03:06.980     >> FireDAC info
+3850839370001 14:03:06.980          . Tool=RAD Studio 10.2
+3850839370001 14:03:06.980          . FireDAC=16.0.0 (Build 88974)
+3850839370001 14:03:06.980          . Platform=Windows 32 bit
+3850839370001 14:03:06.980          . Defines=FireDAC_NOLOCALE_META;FireDAC_MONITOR
+3850839370001 14:03:06.980     << FireDAC info
+3850839370001 14:03:06.980      . isc_attach_database [dbname="C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB", params="user_name=SYSDBA,password=*********,sql_dialect=3,utf8_filename"]
+3850839370001 14:03:06.982      . isc_database_info [db_handle=$00000009, info=103]
+3850839370001 14:03:06.982     >> Driver log
+3850839370001 14:03:06.982          . Loading driver FB ...
+3850839370001 14:03:06.982     << Driver log
+3850839370001 14:03:06.982      . isc_database_info [db_handle=$00000009, info=103]
+3850839370001 14:03:06.982     >> Client info
+3850839370001 14:03:06.982          . Brand=Firebird
+3850839370001 14:03:06.982          . Client version=205089900
+3850839370001 14:03:06.982          . Client DLL name=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Win32\Debug\fbclient.dll
+3850839370001 14:03:06.982     << Client info
+3850839370001 14:03:06.982      . isc_database_info [db_handle=$00000009, info=103]
+3850839370001 14:03:06.982     >> Session info
+3850839370001 14:03:06.982          . Current catalog=
+3850839370001 14:03:06.982          . Current schema=
+3850839370001 14:03:06.982          . Server version=WI-V2.5.8.27089 Firebird 2.5
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+
+3850839370001 14:03:06.982     << Session info
+3850839370001 14:03:06.982 << Open [ConnectionDef=""]
+3850839370001 14:03:06.983  . CreateConnection [ConnectionDef=""]
+3850839370001 14:03:06.983  . CreateTransaction [ConnectionDef=""]
+3850839370001 14:03:06.983  . CreateTransaction [ConnectionDef=""]
+3850839370001 14:03:06.983 >> Open [ConnectionDef=""]
+3850839370001 14:03:06.983     >> Definition [Name=""]
+3850839370001 14:03:06.983          . DriverID=FB
+3850839370001 14:03:06.983          . Database=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB
+3850839370001 14:03:06.983          . User_Name=SYSDBA
+3850839370001 14:03:06.983          . Password=*****
+3850839370001 14:03:06.983          . MonitorBy=FlatFile
+3850839370001 14:03:06.983     << Definition [Name=""]
+3850839370001 14:03:06.983     >> FireDAC info
+3850839370001 14:03:06.983          . Tool=RAD Studio 10.2
+3850839370001 14:03:06.983          . FireDAC=16.0.0 (Build 88974)
+3850839370001 14:03:06.983          . Platform=Windows 32 bit
+3850839370001 14:03:06.983          . Defines=FireDAC_NOLOCALE_META;FireDAC_MONITOR
+3850839370001 14:03:06.983     << FireDAC info
+3850839370001 14:03:06.983      . isc_attach_database [dbname="C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Data\DB.FDB", params="user_name=SYSDBA,password=*********,sql_dialect=3,utf8_filename"]
+3850839530001 14:03:06.985      . isc_database_info [db_handle=$0000000A, info=103]
+3850839530001 14:03:06.985     >> Driver log
+3850839530001 14:03:06.985          . Loading driver FB ...
+3850839530001 14:03:06.985     << Driver log
+3850839530001 14:03:06.985      . isc_database_info [db_handle=$0000000A, info=103]
+3850839530001 14:03:06.985     >> Client info
+3850839530001 14:03:06.985          . Brand=Firebird
+3850839530001 14:03:06.986          . Client version=205089900
+3850839530001 14:03:06.986          . Client DLL name=C:\Users\CTI\Documents\ProjetoControleEstoque\ConsoleApplication\Win32\Debug\fbclient.dll
+3850839530001 14:03:06.986     << Client info
+3850839530001 14:03:06.986      . isc_database_info [db_handle=$0000000A, info=103]
+3850839530001 14:03:06.986     >> Session info
+3850839530001 14:03:06.986          . Current catalog=
+3850839530001 14:03:06.986          . Current schema=
+3850839530001 14:03:06.986          . Server version=WI-V2.5.8.27089 Firebird 2.5
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+WI-V2.5.8.27089 Firebird 2.5/XNet (DESKTOP-820PKST)/P12
+
+3850839530001 14:03:06.986     << Session info
+3850839530001 14:03:06.986 << Open [ConnectionDef=""]
+3850873590001 14:03:10.394 >> TFDCustomCommand.Prepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.394      . CreateCommand [ConnectionDef=""]
+3850873590001 14:03:10.394     >> Prepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.394          . Preprocessed [CMD="SELECT * FROM USUARIO
+WHERE NOME = ?
+AND SENHA = ?", FROM="USUARIO", VP=0, VPE=0, OBP=0, CK=1]
+3850873590001 14:03:10.395         >> StartTransaction [ConnectionDef=""]
+3850873590001 14:03:10.395              . isc_start_multiple [count=1, params="write,read_committed,rec_version,nowait"]
+3850873590001 14:03:10.398         << StartTransaction [ConnectionDef=""]
+3850873590001 14:03:10.398          . isc_dsql_allocate_statement [db_handle=$00000003]
+3850873590001 14:03:10.398          . isc_dsql_prepare [tra_handle=$0000000B, stmt_handle=$0000000C, sql="SELECT * FROM USUARIO
+WHERE NOME = ?
+AND SENHA = ?", dialect=3]
+3850873590001 14:03:10.398          . isc_dsql_sql_info [stmt_handle=$0000000C, info=21]
+3850873590001 14:03:10.398          . isc_dsql_describe [stmt_handle=$0000000C, dialect=3]
+3850873590001 14:03:10.398          . isc_dsql_describe_bind [stmt_handle=$0000000C, dialect=3]
+3850873590001 14:03:10.398          . isc_dsql_describe_bind [stmt_handle=$0000000C, dialect=3]
+3850873590001 14:03:10.399     << Prepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.399 << TFDCustomCommand.Prepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.399 >> Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.399      . CreateMetaInfoCommand [ConnectionDef=""]
+3850873590001 14:03:10.399     >> Prepare [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.399         >> StartTransaction [ConnectionDef=""]
+3850873590001 14:03:10.399              . isc_start_multiple [count=1, params="read,read_committed,rec_version,nowait"]
+3850873590001 14:03:10.399         << StartTransaction [ConnectionDef=""]
+3850873590001 14:03:10.399          . isc_dsql_allocate_statement [db_handle=$00000003]
+3850873590001 14:03:10.399          . isc_dsql_prepare [tra_handle=$0000000D, stmt_handle=$0000000E, sql="SELECT CAST(NULL AS NUMERIC) AS RECNO, CAST(NULL AS VARCHAR(67)) AS CATALOG_NAME, CAST(NULL AS VARCHAR(67)) AS SCHEMA_NAME, C.RDB$RELATION_NAME AS TABLE_NAME, C.RDB$INDEX_NAME AS INDEX_NAME, S.RDB$FIELD_NAME AS COLUMN_NAME, S.RDB$FIELD_POSITION + 1 AS COLUMN_POSITION, 'A' AS SORT_ORDER, CAST(NULL AS VARCHAR(67)) AS FILTER_ FROM RDB$RELATION_CONSTRAINTS C LEFT JOIN RDB$INDEX_SEGMENTS S ON C.RDB$INDEX_NAME = S.RDB$INDEX_NAME WHERE C.RDB$CONSTRAINT_TYPE = 'PRIMARY KEY' AND C.RDB$RELATION_NAME = ? ORDER BY 7", dialect=3]
+3850873590001 14:03:10.400          . isc_dsql_sql_info [stmt_handle=$0000000E, info=21]
+3850873590001 14:03:10.400          . isc_dsql_describe [stmt_handle=$0000000E, dialect=3]
+3850873590001 14:03:10.400          . isc_dsql_describe_bind [stmt_handle=$0000000E, dialect=3]
+3850873590001 14:03:10.400     << Prepare [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.400     >> Open [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.400         >> Sent
+3850873590001 14:03:10.400              . Var [N=0, Name="BAS", Type=SQL_TEXT, Prec=0, Scale=0, Size=210, Data(0)='USUARIO']
+3850873590001 14:03:10.400         << Sent
+3850873590001 14:03:10.400          . isc_dsql_execute2 [tra_handle=$0000000D, stmt_handle=$0000000E, dialect=3]
+3850873590001 14:03:10.400     << Open [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.400     >> Fetch [ATable="Table", Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.400          . isc_dsql_fetch [stmt_handle=$0000000E, dialect=3]
+3850873590001 14:03:10.400         >> Fetched
+3850873590001 14:03:10.400              . Var [N=0, Type=SQL_LONG, Prec=0, Scale=0, Size=4, Data=NULL]
+3850873590001 14:03:10.400              . Var [N=1, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850873590001 14:03:10.400              . Var [N=2, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850873590001 14:03:10.400              . Var [N=3, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='USUARIO']
+3850873590001 14:03:10.400              . Var [N=4, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='RDB$PRIMARY5']
+3850873590001 14:03:10.400              . Var [N=5, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='ID']
+3850873590001 14:03:10.400              . Var [N=6, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=1]
+3850873590001 14:03:10.400              . Var [N=7, Type=SQL_TEXT, Prec=0, Scale=0, Size=1, Data='A']
+3850873590001 14:03:10.400              . Var [N=8, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850873590001 14:03:10.400         << Fetched
+3850873590001 14:03:10.400          . isc_dsql_fetch [stmt_handle=$0000000E, dialect=3]
+3850873590001 14:03:10.400          . isc_dsql_free_statement [stmt_handle=$0000000E, option="DSQL_close"]
+3850873590001 14:03:10.400     << Fetch [ATable="Table", Command="Table PKey Fields (USUARIO.USUARIO)", RowsAffected=1]
+3850873590001 14:03:10.400      . Eof reached [ATable="Table", Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.400     >> Close [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.400         >> Commit [ConnectionDef="", Retaining=False]
+3850873590001 14:03:10.401             >> Unprepare [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.401                  . isc_dsql_free_statement [stmt_handle=$0000000E, option="DSQL_drop"]
+3850873590001 14:03:10.401             << Unprepare [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.401              . isc_commit_transaction [tra_handle=$0000000D]
+3850873590001 14:03:10.401         << Commit [ConnectionDef="", Retaining=False]
+3850873590001 14:03:10.401     << Close [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.401      . Destroy [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.401     >> Sent
+3850873590001 14:03:10.401          . Var [N=0, Name="NOME", Type=SQL_VARYING, Prec=0, Scale=0, Size=255, Data(0)='eliel']
+3850873590001 14:03:10.401          . Var [N=1, Name="SENHA", Type=SQL_VARYING, Prec=0, Scale=0, Size=255, Data(0)='0dde5185db7da5c81f0fa71696506e4f']
+3850873590001 14:03:10.401     << Sent
+3850873590001 14:03:10.401      . isc_dsql_execute2 [tra_handle=$0000000B, stmt_handle=$0000000C, dialect=3]
+3850873590001 14:03:10.401      . Col add [Index=1, SrcName="ID", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="USUARIO", OrigColName="ID"]
+3850873590001 14:03:10.401      . Col add [Index=2, SrcName="NOME", SrcType=AnsiString, SrcSize=255, SrcPrec=0, SrcScale=0, Type=AnsiString, Size=255, Prec=0, Scale=0, OrigTabName="USUARIO", OrigColName="NOME"]
+3850873590001 14:03:10.401      . Col add [Index=3, SrcName="SENHA", SrcType=AnsiString, SrcSize=255, SrcPrec=0, SrcScale=0, Type=AnsiString, Size=255, Prec=0, Scale=0, OrigTabName="USUARIO", OrigColName="SENHA"]
+3850873590001 14:03:10.401      . Col add [Index=4, SrcName="ID_ALMOXARIFADO", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="USUARIO", OrigColName="ID_ALMOXARIFADO"]
+3850873590001 14:03:10.401      . Primary key [Cols="ID"]
+3850873590001 14:03:10.401 << Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.401 >> Open [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.401 << Open [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.402 >> TFDCustomCommand.Fetch [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA", AAll=False, ABlocked=True]
+3850873590001 14:03:10.402     >> Fetch [ATable="USUARIO", Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.402          . isc_dsql_fetch [stmt_handle=$0000000C, dialect=3]
+3850873590001 14:03:10.402         >> Fetched
+3850873590001 14:03:10.402              . Var [N=0, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=9]
+3850873590001 14:03:10.402              . Var [N=1, Type=SQL_VARYING, Prec=0, Scale=0, Size=255, Data='eliel']
+3850873590001 14:03:10.402              . Var [N=2, Type=SQL_VARYING, Prec=0, Scale=0, Size=255, Data='0dde5185db7da5c81f0fa71696506e4f']
+3850873590001 14:03:10.402              . Var [N=3, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=23]
+3850873590001 14:03:10.402         << Fetched
+3850873590001 14:03:10.402          . isc_dsql_fetch [stmt_handle=$0000000C, dialect=3]
+3850873590001 14:03:10.402          . isc_dsql_free_statement [stmt_handle=$0000000C, option="DSQL_close"]
+3850873590001 14:03:10.402     << Fetch [ATable="USUARIO", Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA", RowsAffected=1]
+3850873590001 14:03:10.402      . Eof reached [ATable="USUARIO", Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.402     >> Close [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.402         >> Commit [ConnectionDef="", Retaining=False]
+3850873590001 14:03:10.402             >> TFDCustomCommand.Unprepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.402                 >> Unprepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.402                      . isc_dsql_free_statement [stmt_handle=$0000000C, option="DSQL_drop"]
+3850873590001 14:03:10.403                 << Unprepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.403             << TFDCustomCommand.Unprepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.403             >> TFDCustomCommand.Unprepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.403             << TFDCustomCommand.Unprepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.403              . isc_commit_transaction [tra_handle=$0000000B]
+3850873590001 14:03:10.403         << Commit [ConnectionDef="", Retaining=False]
+3850873590001 14:03:10.403     << Close [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.403      . TFDCustomCommand.FetchFinished [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA", AState=2, FRowsAffected=1]
+3850873590001 14:03:10.403      . Destroy [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3850873590001 14:03:10.403 << TFDCustomCommand.Fetch [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA", AAll=False, ABlocked=True]
+3850873590001 14:03:10.404 >> TFDCustomCommand.Prepare [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873590001 14:03:10.404      . CreateCommand [ConnectionDef=""]
+3850873590001 14:03:10.405     >> Prepare [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873590001 14:03:10.405          . Preprocessed [CMD="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = ? ", FROM="USUARIO", VP=0, VPE=0, OBP=0, CK=1]
+3850873590001 14:03:10.405         >> StartTransaction [ConnectionDef=""]
+3850873590001 14:03:10.405              . isc_start_multiple [count=1, params="write,read_committed,rec_version,nowait"]
+3850873590001 14:03:10.405         << StartTransaction [ConnectionDef=""]
+3850873590001 14:03:10.405          . isc_dsql_allocate_statement [db_handle=$00000009]
+3850873590001 14:03:10.405          . isc_dsql_prepare [tra_handle=$0000000F, stmt_handle=$00000010, sql="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = ? ", dialect=3]
+3850873590001 14:03:10.405          . isc_dsql_sql_info [stmt_handle=$00000010, info=21]
+3850873590001 14:03:10.405          . isc_dsql_describe [stmt_handle=$00000010, dialect=3]
+3850873590001 14:03:10.405          . isc_dsql_describe_bind [stmt_handle=$00000010, dialect=3]
+3850873590001 14:03:10.405     << Prepare [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873590001 14:03:10.405 << TFDCustomCommand.Prepare [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873590001 14:03:10.405 >> Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873590001 14:03:10.405      . CreateMetaInfoCommand [ConnectionDef=""]
+3850873590001 14:03:10.405     >> Prepare [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.405         >> StartTransaction [ConnectionDef=""]
+3850873590001 14:03:10.405              . isc_start_multiple [count=1, params="read,read_committed,rec_version,nowait"]
+3850873590001 14:03:10.406         << StartTransaction [ConnectionDef=""]
+3850873590001 14:03:10.406          . isc_dsql_allocate_statement [db_handle=$00000009]
+3850873590001 14:03:10.406          . isc_dsql_prepare [tra_handle=$00000011, stmt_handle=$00000012, sql="SELECT CAST(NULL AS NUMERIC) AS RECNO, CAST(NULL AS VARCHAR(67)) AS CATALOG_NAME, CAST(NULL AS VARCHAR(67)) AS SCHEMA_NAME, C.RDB$RELATION_NAME AS TABLE_NAME, C.RDB$INDEX_NAME AS INDEX_NAME, S.RDB$FIELD_NAME AS COLUMN_NAME, S.RDB$FIELD_POSITION + 1 AS COLUMN_POSITION, 'A' AS SORT_ORDER, CAST(NULL AS VARCHAR(67)) AS FILTER_ FROM RDB$RELATION_CONSTRAINTS C LEFT JOIN RDB$INDEX_SEGMENTS S ON C.RDB$INDEX_NAME = S.RDB$INDEX_NAME WHERE C.RDB$CONSTRAINT_TYPE = 'PRIMARY KEY' AND C.RDB$RELATION_NAME = ? ORDER BY 7", dialect=3]
+3850873590001 14:03:10.406          . isc_dsql_sql_info [stmt_handle=$00000012, info=21]
+3850873590001 14:03:10.406          . isc_dsql_describe [stmt_handle=$00000012, dialect=3]
+3850873590001 14:03:10.406          . isc_dsql_describe_bind [stmt_handle=$00000012, dialect=3]
+3850873590001 14:03:10.406     << Prepare [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.406     >> Open [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.406         >> Sent
+3850873590001 14:03:10.406              . Var [N=0, Name="BAS", Type=SQL_TEXT, Prec=0, Scale=0, Size=210, Data(0)='USUARIO']
+3850873590001 14:03:10.406         << Sent
+3850873590001 14:03:10.406          . isc_dsql_execute2 [tra_handle=$00000011, stmt_handle=$00000012, dialect=3]
+3850873590001 14:03:10.406     << Open [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.406     >> Fetch [ATable="Table", Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.406          . isc_dsql_fetch [stmt_handle=$00000012, dialect=3]
+3850873590001 14:03:10.407         >> Fetched
+3850873590001 14:03:10.407              . Var [N=0, Type=SQL_LONG, Prec=0, Scale=0, Size=4, Data=NULL]
+3850873590001 14:03:10.407              . Var [N=1, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850873590001 14:03:10.407              . Var [N=2, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850873590001 14:03:10.407              . Var [N=3, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='USUARIO']
+3850873590001 14:03:10.407              . Var [N=4, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='RDB$PRIMARY5']
+3850873590001 14:03:10.407              . Var [N=5, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='ID']
+3850873590001 14:03:10.407              . Var [N=6, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=1]
+3850873590001 14:03:10.407              . Var [N=7, Type=SQL_TEXT, Prec=0, Scale=0, Size=1, Data='A']
+3850873590001 14:03:10.407              . Var [N=8, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850873590001 14:03:10.407         << Fetched
+3850873590001 14:03:10.407          . isc_dsql_fetch [stmt_handle=$00000012, dialect=3]
+3850873590001 14:03:10.407          . isc_dsql_free_statement [stmt_handle=$00000012, option="DSQL_close"]
+3850873590001 14:03:10.407     << Fetch [ATable="Table", Command="Table PKey Fields (USUARIO.USUARIO)", RowsAffected=1]
+3850873590001 14:03:10.407      . Eof reached [ATable="Table", Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.407     >> Close [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.407         >> Commit [ConnectionDef="", Retaining=False]
+3850873590001 14:03:10.407             >> Unprepare [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.407                  . isc_dsql_free_statement [stmt_handle=$00000012, option="DSQL_drop"]
+3850873590001 14:03:10.407             << Unprepare [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.407              . isc_commit_transaction [tra_handle=$00000011]
+3850873590001 14:03:10.407         << Commit [ConnectionDef="", Retaining=False]
+3850873590001 14:03:10.407     << Close [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.407      . Destroy [Command="Table PKey Fields (USUARIO.USUARIO)"]
+3850873590001 14:03:10.407     >> Sent
+3850873590001 14:03:10.407          . Var [N=0, Name="NOME", Type=SQL_VARYING, Prec=0, Scale=0, Size=255, Data(0)='eliel']
+3850873590001 14:03:10.407     << Sent
+3850873590001 14:03:10.407      . isc_dsql_execute2 [tra_handle=$0000000F, stmt_handle=$00000010, dialect=3]
+3850873750001 14:03:10.408      . Col add [Index=1, SrcName="ID", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="USUARIO", OrigColName="ID"]
+3850873750001 14:03:10.408      . Col add [Index=2, SrcName="ID_ALMOXARIFADO", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="USUARIO", OrigColName="ID_ALMOXARIFADO"]
+3850873750001 14:03:10.408      . Col add [Index=3, SrcName="NOME", SrcType=AnsiString, SrcSize=255, SrcPrec=0, SrcScale=0, Type=AnsiString, Size=255, Prec=0, Scale=0, OrigTabName="USUARIO", OrigColName="NOME"]
+3850873750001 14:03:10.408      . Primary key [Cols="ID"]
+3850873750001 14:03:10.408 << Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408 >> Open [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408 << Open [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408 >> TFDCustomCommand.Fetch [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome ", AAll=False, ABlocked=True]
+3850873750001 14:03:10.408     >> Fetch [ATable="USUARIO", Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408          . isc_dsql_fetch [stmt_handle=$00000010, dialect=3]
+3850873750001 14:03:10.408         >> Fetched
+3850873750001 14:03:10.408              . Var [N=0, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=9]
+3850873750001 14:03:10.408              . Var [N=1, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=23]
+3850873750001 14:03:10.408              . Var [N=2, Type=SQL_VARYING, Prec=0, Scale=0, Size=255, Data='eliel']
+3850873750001 14:03:10.408         << Fetched
+3850873750001 14:03:10.408          . isc_dsql_fetch [stmt_handle=$00000010, dialect=3]
+3850873750001 14:03:10.408          . isc_dsql_free_statement [stmt_handle=$00000010, option="DSQL_close"]
+3850873750001 14:03:10.408     << Fetch [ATable="USUARIO", Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome ", RowsAffected=1]
+3850873750001 14:03:10.408      . Eof reached [ATable="USUARIO", Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408     >> Close [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408         >> Commit [ConnectionDef="", Retaining=False]
+3850873750001 14:03:10.408             >> TFDCustomCommand.Unprepare [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408                 >> Unprepare [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408                      . isc_dsql_free_statement [stmt_handle=$00000010, option="DSQL_drop"]
+3850873750001 14:03:10.408                 << Unprepare [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408             << TFDCustomCommand.Unprepare [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408             >> TFDCustomCommand.Unprepare [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408             << TFDCustomCommand.Unprepare [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408              . isc_commit_transaction [tra_handle=$0000000F]
+3850873750001 14:03:10.408         << Commit [ConnectionDef="", Retaining=False]
+3850873750001 14:03:10.408     << Close [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408      . TFDCustomCommand.FetchFinished [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome ", AState=2, FRowsAffected=1]
+3850873750001 14:03:10.408      . Destroy [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome "]
+3850873750001 14:03:10.408 << TFDCustomCommand.Fetch [Command="SELECT id,id_almoxarifado,nome
+FROM USUARIO WHERE 1 = 1
+AND nome = :nome ", AAll=False, ABlocked=True]
+3850873900001 14:03:10.432 >> TFDCustomCommand.Prepare [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.432      . CreateCommand [ConnectionDef=""]
+3850873900001 14:03:10.432     >> Prepare [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.432          . Preprocessed [CMD="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(? AS TIMESTAMP),?,?,?)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida", FROM="", VP=86, VPE=121, OBP=0, CK=2]
+3850873900001 14:03:10.432         >> StartTransaction [ConnectionDef=""]
+3850873900001 14:03:10.432              . isc_start_multiple [count=1, params="write,read_committed,rec_version,nowait"]
+3850873900001 14:03:10.433         << StartTransaction [ConnectionDef=""]
+3850873900001 14:03:10.433          . isc_dsql_allocate_statement [db_handle=$00000006]
+3850873900001 14:03:10.433          . isc_dsql_prepare [tra_handle=$00000013, stmt_handle=$00000014, sql="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(? AS TIMESTAMP),?,?,?)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida", dialect=3]
+3850873900001 14:03:10.433          . isc_dsql_sql_info [stmt_handle=$00000014, info=21]
+3850873900001 14:03:10.433          . isc_dsql_describe [stmt_handle=$00000014, dialect=3]
+3850873900001 14:03:10.433          . isc_dsql_describe_bind [stmt_handle=$00000014, dialect=3]
+3850873900001 14:03:10.433          . isc_dsql_describe_bind [stmt_handle=$00000014, dialect=3]
+3850873900001 14:03:10.433     << Prepare [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.433 << TFDCustomCommand.Prepare [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.433 >> Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.433     >> Sent
+3850873900001 14:03:10.433          . Var [N=0, Name="DATA_REGISTRO", Type=SQL_VARYING, Prec=0, Scale=0, Size=255, Data(0)='2003-04-20']
+3850873900001 14:03:10.433          . Var [N=1, Name="TIPO_OPERACAO", Type=SQL_LONG, Prec=0, Scale=0, Size=4, Data(0)=1]
+3850873900001 14:03:10.433          . Var [N=2, Name="USUARIO_RESPONSAVEL", Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data(0)=9]
+3850873900001 14:03:10.433          . Var [N=3, Name="ID_ALMOXARIFADO", Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data(0)=23]
+3850873900001 14:03:10.433     << Sent
+3850873900001 14:03:10.433      . isc_dsql_execute2 [tra_handle=$00000013, stmt_handle=$00000014, dialect=3]
+3850873900001 14:03:10.433     >> Fetched
+3850873900001 14:03:10.433          . Var [N=0, Type=SQL_VARYING, Prec=0, Scale=0, Size=255, Data=NULL]
+3850873900001 14:03:10.434          . Var [N=1, Type=SQL_TIMESTAMP, Prec=0, Scale=0, Size=8, Data=20/04/2003]
+3850873900001 14:03:10.434          . Var [N=2, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=19]
+3850873900001 14:03:10.434          . Var [N=3, Type=SQL_LONG, Prec=0, Scale=0, Size=4, Data=1]
+3850873900001 14:03:10.434          . Var [N=4, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=9]
+3850873900001 14:03:10.434          . Var [N=5, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=23]
+3850873900001 14:03:10.434          . Var [N=6, Type=SQL_TEXT, Prec=0, Scale=0, Size=1, Data='0']
+3850873900001 14:03:10.434     << Fetched
+3850873900001 14:03:10.434      . Col add [Index=1, SrcName="OBSERVACAO", SrcType=AnsiString, SrcSize=255, SrcPrec=0, SrcScale=0, Type=AnsiString, Size=255, Prec=0, Scale=0, OrigTabName="NOTAS", OrigColName="OBSERVACAO"]
+3850873900001 14:03:10.434      . Col add [Index=2, SrcName="DATA_REGISTRO", SrcType=DateTimeStamp, SrcSize=0, SrcPrec=0, SrcScale=0, Type=DateTimeStamp, Size=0, Prec=0, Scale=0, OrigTabName="NOTAS", OrigColName="DATA_REGISTRO"]
+3850873900001 14:03:10.434      . Col add [Index=3, SrcName="ID", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="NOTAS", OrigColName="ID"]
+3850873900001 14:03:10.434      . Col add [Index=4, SrcName="TIPO_OPERACAO", SrcType=Int32, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int32, Size=0, Prec=0, Scale=0, OrigTabName="NOTAS", OrigColName="TIPO_OPERACAO"]
+3850873900001 14:03:10.434      . Col add [Index=5, SrcName="USUARIO_RESPONSAVEL", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="NOTAS", OrigColName="USUARIO_RESPONSAVEL"]
+3850873900001 14:03:10.434      . Col add [Index=6, SrcName="ID_ALMOXARIFADO", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="NOTAS", OrigColName="ID_ALMOXARIFADO"]
+3850873900001 14:03:10.434      . Col add [Index=7, SrcName="CONCLUIDA", SrcType=AnsiString, SrcSize=1, SrcPrec=0, SrcScale=0, Type=AnsiString, Size=1, Prec=0, Scale=0, OrigTabName="NOTAS", OrigColName="CONCLUIDA"]
+3850873900001 14:03:10.434 << Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.434 >> Open [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.434 << Open [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.434 >> TFDCustomCommand.Fetch [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida", AAll=False, ABlocked=True]
+3850873900001 14:03:10.434     >> Fetch [ATable="", Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.434     << Fetch [ATable="", Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida", RowsAffected=1]
+3850873900001 14:03:10.434      . Eof reached [ATable="", Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.434     >> Close [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.434         >> Commit [ConnectionDef="", Retaining=False]
+3850873900001 14:03:10.434             >> TFDCustomCommand.Unprepare [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.434                 >> Unprepare [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.434                      . isc_dsql_free_statement [stmt_handle=$00000014, option="DSQL_drop"]
+3850873900001 14:03:10.434                 << Unprepare [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.434             << TFDCustomCommand.Unprepare [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.434             >> TFDCustomCommand.Unprepare [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.434             << TFDCustomCommand.Unprepare [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.434              . isc_commit_transaction [tra_handle=$00000013]
+3850873900001 14:03:10.435         << Commit [ConnectionDef="", Retaining=False]
+3850873900001 14:03:10.435     << Close [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.435      . TFDCustomCommand.FetchFinished [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida", AState=2, FRowsAffected=1]
+3850873900001 14:03:10.435      . Destroy [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida"]
+3850873900001 14:03:10.435 << TFDCustomCommand.Fetch [Command="INSERT INTO NOTAS 
+(data_registro,tipo_operacao,usuario_responsavel,id_almoxarifado)
+VALUES 
+(CAST(:data_registro AS TIMESTAMP),:tipo_operacao,:usuario_responsavel,:id_almoxarifado)
+RETURNING 
+observacao,data_registro,id,tipo_operacao,usuario_responsavel,id_almoxarifado,concluida", AAll=False, ABlocked=True]
+3850873900001 14:03:10.435 >> TFDCustomCommand.Prepare [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850873900001 14:03:10.435      . CreateCommand [ConnectionDef=""]
+3850873900001 14:03:10.435     >> Prepare [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850873900001 14:03:10.435          . Preprocessed [CMD="SELECT * FROM PRODUTOS WHERE ID = ?", FROM="PRODUTOS", VP=0, VPE=0, OBP=0, CK=1]
+3850873900001 14:03:10.435         >> StartTransaction [ConnectionDef=""]
+3850873900001 14:03:10.435              . isc_start_multiple [count=1, params="write,read_committed,rec_version,nowait"]
+3850873900001 14:03:10.436         << StartTransaction [ConnectionDef=""]
+3850873900001 14:03:10.436          . isc_dsql_allocate_statement [db_handle=$00000007]
+3850873900001 14:03:10.436          . isc_dsql_prepare [tra_handle=$00000015, stmt_handle=$00000016, sql="SELECT * FROM PRODUTOS WHERE ID = ?", dialect=3]
+3850873900001 14:03:10.436          . isc_dsql_sql_info [stmt_handle=$00000016, info=21]
+3850873900001 14:03:10.436          . isc_dsql_describe [stmt_handle=$00000016, dialect=3]
+3850873900001 14:03:10.436          . isc_dsql_describe_bind [stmt_handle=$00000016, dialect=3]
+3850873900001 14:03:10.436     << Prepare [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850873900001 14:03:10.436 << TFDCustomCommand.Prepare [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850873900001 14:03:10.436 >> Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850873900001 14:03:10.436      . CreateMetaInfoCommand [ConnectionDef=""]
+3850873900001 14:03:10.436     >> Prepare [Command="Table PKey Fields (PRODUTOS.PRODUTOS)"]
+3850873900001 14:03:10.436         >> StartTransaction [ConnectionDef=""]
+3850873900001 14:03:10.436              . isc_start_multiple [count=1, params="read,read_committed,rec_version,nowait"]
+3850873900001 14:03:10.436         << StartTransaction [ConnectionDef=""]
+3850873900001 14:03:10.436          . isc_dsql_allocate_statement [db_handle=$00000007]
+3850873900001 14:03:10.436          . isc_dsql_prepare [tra_handle=$00000017, stmt_handle=$00000018, sql="SELECT CAST(NULL AS NUMERIC) AS RECNO, CAST(NULL AS VARCHAR(67)) AS CATALOG_NAME, CAST(NULL AS VARCHAR(67)) AS SCHEMA_NAME, C.RDB$RELATION_NAME AS TABLE_NAME, C.RDB$INDEX_NAME AS INDEX_NAME, S.RDB$FIELD_NAME AS COLUMN_NAME, S.RDB$FIELD_POSITION + 1 AS COLUMN_POSITION, 'A' AS SORT_ORDER, CAST(NULL AS VARCHAR(67)) AS FILTER_ FROM RDB$RELATION_CONSTRAINTS C LEFT JOIN RDB$INDEX_SEGMENTS S ON C.RDB$INDEX_NAME = S.RDB$INDEX_NAME WHERE C.RDB$CONSTRAINT_TYPE = 'PRIMARY KEY' AND C.RDB$RELATION_NAME = ? ORDER BY 7", dialect=3]
+3850873900001 14:03:10.436          . isc_dsql_sql_info [stmt_handle=$00000018, info=21]
+3850873900001 14:03:10.436          . isc_dsql_describe [stmt_handle=$00000018, dialect=3]
+3850873900001 14:03:10.436          . isc_dsql_describe_bind [stmt_handle=$00000018, dialect=3]
+3850873900001 14:03:10.436     << Prepare [Command="Table PKey Fields (PRODUTOS.PRODUTOS)"]
+3850873900001 14:03:10.436     >> Open [Command="Table PKey Fields (PRODUTOS.PRODUTOS)"]
+3850873900001 14:03:10.436         >> Sent
+3850873900001 14:03:10.436              . Var [N=0, Name="BAS", Type=SQL_TEXT, Prec=0, Scale=0, Size=210, Data(0)='PRODUTOS']
+3850873900001 14:03:10.436         << Sent
+3850873900001 14:03:10.436          . isc_dsql_execute2 [tra_handle=$00000017, stmt_handle=$00000018, dialect=3]
+3850873900001 14:03:10.436     << Open [Command="Table PKey Fields (PRODUTOS.PRODUTOS)"]
+3850873900001 14:03:10.438     >> Fetch [ATable="Table", Command="Table PKey Fields (PRODUTOS.PRODUTOS)"]
+3850873900001 14:03:10.438          . isc_dsql_fetch [stmt_handle=$00000018, dialect=3]
+3850873900001 14:03:10.438         >> Fetched
+3850873900001 14:03:10.438              . Var [N=0, Type=SQL_LONG, Prec=0, Scale=0, Size=4, Data=NULL]
+3850873900001 14:03:10.438              . Var [N=1, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850873900001 14:03:10.438              . Var [N=2, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850873900001 14:03:10.438              . Var [N=3, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='PRODUTOS']
+3850873900001 14:03:10.438              . Var [N=4, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='RDB$PRIMARY1']
+3850873900001 14:03:10.438              . Var [N=5, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='ID']
+3850873900001 14:03:10.438              . Var [N=6, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=1]
+3850873900001 14:03:10.438              . Var [N=7, Type=SQL_TEXT, Prec=0, Scale=0, Size=1, Data='A']
+3850873900001 14:03:10.438              . Var [N=8, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850873900001 14:03:10.438         << Fetched
+3850873900001 14:03:10.438          . isc_dsql_fetch [stmt_handle=$00000018, dialect=3]
+3850873900001 14:03:10.438          . isc_dsql_free_statement [stmt_handle=$00000018, option="DSQL_close"]
+3850873900001 14:03:10.438     << Fetch [ATable="Table", Command="Table PKey Fields (PRODUTOS.PRODUTOS)", RowsAffected=1]
+3850873900001 14:03:10.438      . Eof reached [ATable="Table", Command="Table PKey Fields (PRODUTOS.PRODUTOS)"]
+3850873900001 14:03:10.438     >> Close [Command="Table PKey Fields (PRODUTOS.PRODUTOS)"]
+3850873900001 14:03:10.438         >> Commit [ConnectionDef="", Retaining=False]
+3850873900001 14:03:10.438             >> Unprepare [Command="Table PKey Fields (PRODUTOS.PRODUTOS)"]
+3850873900001 14:03:10.438                  . isc_dsql_free_statement [stmt_handle=$00000018, option="DSQL_drop"]
+3850873900001 14:03:10.438             << Unprepare [Command="Table PKey Fields (PRODUTOS.PRODUTOS)"]
+3850873900001 14:03:10.438              . isc_commit_transaction [tra_handle=$00000017]
+3850873900001 14:03:10.438         << Commit [ConnectionDef="", Retaining=False]
+3850873900001 14:03:10.438     << Close [Command="Table PKey Fields (PRODUTOS.PRODUTOS)"]
+3850873900001 14:03:10.438      . Destroy [Command="Table PKey Fields (PRODUTOS.PRODUTOS)"]
+3850873900001 14:03:10.438     >> Sent
+3850873900001 14:03:10.438          . Var [N=0, Name="ID", Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data(0)=9]
+3850873900001 14:03:10.438     << Sent
+3850873900001 14:03:10.438      . isc_dsql_execute2 [tra_handle=$00000015, stmt_handle=$00000016, dialect=3]
+3850873900001 14:03:10.438      . Col add [Index=1, SrcName="ID", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="PRODUTOS", OrigColName="ID"]
+3850873900001 14:03:10.438      . Col add [Index=2, SrcName="CODIGO", SrcType=AnsiString, SrcSize=13, SrcPrec=0, SrcScale=0, Type=AnsiString, Size=13, Prec=0, Scale=0, OrigTabName="PRODUTOS", OrigColName="CODIGO"]
+3850873900001 14:03:10.438      . Col add [Index=3, SrcName="DESCRICAO", SrcType=AnsiString, SrcSize=255, SrcPrec=0, SrcScale=0, Type=AnsiString, Size=255, Prec=0, Scale=0, OrigTabName="PRODUTOS", OrigColName="DESCRICAO"]
+3850873900001 14:03:10.438      . Col add [Index=4, SrcName="MEDIDA", SrcType=AnsiString, SrcSize=10, SrcPrec=0, SrcScale=0, Type=AnsiString, Size=10, Prec=0, Scale=0, OrigTabName="PRODUTOS", OrigColName="MEDIDA"]
+3850873900001 14:03:10.438      . Primary key [Cols="ID"]
+3850873900001 14:03:10.438 << Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850873900001 14:03:10.438 >> Open [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850873900001 14:03:10.438 << Open [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850873900001 14:03:10.438 >> TFDCustomCommand.Fetch [Command="SELECT * FROM PRODUTOS WHERE ID = :ID", AAll=False, ABlocked=True]
+3850873900001 14:03:10.438     >> Fetch [ATable="PRODUTOS", Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850873900001 14:03:10.438          . isc_dsql_fetch [stmt_handle=$00000016, dialect=3]
+3850873900001 14:03:10.438         >> Fetched
+3850873900001 14:03:10.438              . Var [N=0, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=9]
+3850873900001 14:03:10.438              . Var [N=1, Type=SQL_TEXT, Prec=0, Scale=0, Size=13, Data='456']
+3850873900001 14:03:10.438              . Var [N=2, Type=SQL_VARYING, Prec=0, Scale=0, Size=255, Data='castanha do para']
+3850873900001 14:03:10.438              . Var [N=3, Type=SQL_VARYING, Prec=0, Scale=0, Size=10, Data='und']
+3850873900001 14:03:10.438         << Fetched
+3850873900001 14:03:10.438          . isc_dsql_fetch [stmt_handle=$00000016, dialect=3]
+3850873900001 14:03:10.438          . isc_dsql_free_statement [stmt_handle=$00000016, option="DSQL_close"]
+3850874060001 14:03:10.439     << Fetch [ATable="PRODUTOS", Command="SELECT * FROM PRODUTOS WHERE ID = :ID", RowsAffected=1]
+3850874060001 14:03:10.439      . Eof reached [ATable="PRODUTOS", Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850874060001 14:03:10.439     >> Close [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850874060001 14:03:10.439         >> Commit [ConnectionDef="", Retaining=False]
+3850874060001 14:03:10.439             >> TFDCustomCommand.Unprepare [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850874060001 14:03:10.439                 >> Unprepare [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850874060001 14:03:10.439                      . isc_dsql_free_statement [stmt_handle=$00000016, option="DSQL_drop"]
+3850874060001 14:03:10.439                 << Unprepare [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850874060001 14:03:10.439             << TFDCustomCommand.Unprepare [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850874060001 14:03:10.439             >> TFDCustomCommand.Unprepare [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850874060001 14:03:10.439             << TFDCustomCommand.Unprepare [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850874060001 14:03:10.439              . isc_commit_transaction [tra_handle=$00000015]
+3850874060001 14:03:10.439         << Commit [ConnectionDef="", Retaining=False]
+3850874060001 14:03:10.439     << Close [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850874060001 14:03:10.439      . TFDCustomCommand.FetchFinished [Command="SELECT * FROM PRODUTOS WHERE ID = :ID", AState=2, FRowsAffected=1]
+3850874060001 14:03:10.439      . Destroy [Command="SELECT * FROM PRODUTOS WHERE ID = :ID"]
+3850874060001 14:03:10.439 << TFDCustomCommand.Fetch [Command="SELECT * FROM PRODUTOS WHERE ID = :ID", AAll=False, ABlocked=True]
+3850874060001 14:03:10.439 >> TFDCustomCommand.Prepare [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.439      . CreateCommand [ConnectionDef=""]
+3850874060001 14:03:10.439     >> Prepare [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.439          . Preprocessed [CMD="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = ? 
+AND ID_ALMOXARIFADO = ? ", FROM="ESTOQUE", VP=0, VPE=0, OBP=0, CK=1]
+3850874060001 14:03:10.439         >> StartTransaction [ConnectionDef=""]
+3850874060001 14:03:10.439              . isc_start_multiple [count=1, params="write,read_committed,rec_version,nowait"]
+3850874060001 14:03:10.439         << StartTransaction [ConnectionDef=""]
+3850874060001 14:03:10.439          . isc_dsql_allocate_statement [db_handle=$00000007]
+3850874060001 14:03:10.440          . isc_dsql_prepare [tra_handle=$00000019, stmt_handle=$0000001A, sql="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = ? 
+AND ID_ALMOXARIFADO = ? ", dialect=3]
+3850874060001 14:03:10.440          . isc_dsql_sql_info [stmt_handle=$0000001A, info=21]
+3850874060001 14:03:10.440          . isc_dsql_describe_bind [stmt_handle=$0000001A, dialect=3]
+3850874060001 14:03:10.440          . isc_dsql_describe_bind [stmt_handle=$0000001A, dialect=3]
+3850874060001 14:03:10.440     << Prepare [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.440 << TFDCustomCommand.Prepare [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.440 >> Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.440      . CreateMetaInfoCommand [ConnectionDef=""]
+3850874060001 14:03:10.440     >> Prepare [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3850874060001 14:03:10.440         >> StartTransaction [ConnectionDef=""]
+3850874060001 14:03:10.440              . isc_start_multiple [count=1, params="read,read_committed,rec_version,nowait"]
+3850874060001 14:03:10.440         << StartTransaction [ConnectionDef=""]
+3850874060001 14:03:10.440          . isc_dsql_allocate_statement [db_handle=$00000007]
+3850874060001 14:03:10.440          . isc_dsql_prepare [tra_handle=$0000001B, stmt_handle=$0000001C, sql="SELECT CAST(NULL AS NUMERIC) AS RECNO, CAST(NULL AS VARCHAR(67)) AS CATALOG_NAME, CAST(NULL AS VARCHAR(67)) AS SCHEMA_NAME, C.RDB$RELATION_NAME AS TABLE_NAME, C.RDB$INDEX_NAME AS INDEX_NAME, S.RDB$FIELD_NAME AS COLUMN_NAME, S.RDB$FIELD_POSITION + 1 AS COLUMN_POSITION, 'A' AS SORT_ORDER, CAST(NULL AS VARCHAR(67)) AS FILTER_ FROM RDB$RELATION_CONSTRAINTS C LEFT JOIN RDB$INDEX_SEGMENTS S ON C.RDB$INDEX_NAME = S.RDB$INDEX_NAME WHERE C.RDB$CONSTRAINT_TYPE = 'PRIMARY KEY' AND C.RDB$RELATION_NAME = ? ORDER BY 7", dialect=3]
+3850874060001 14:03:10.440          . isc_dsql_sql_info [stmt_handle=$0000001C, info=21]
+3850874060001 14:03:10.440          . isc_dsql_describe [stmt_handle=$0000001C, dialect=3]
+3850874060001 14:03:10.440          . isc_dsql_describe_bind [stmt_handle=$0000001C, dialect=3]
+3850874060001 14:03:10.440     << Prepare [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3850874060001 14:03:10.440     >> Open [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3850874060001 14:03:10.440         >> Sent
+3850874060001 14:03:10.440              . Var [N=0, Name="BAS", Type=SQL_TEXT, Prec=0, Scale=0, Size=210, Data(0)='ESTOQUE']
+3850874060001 14:03:10.440         << Sent
+3850874060001 14:03:10.441          . isc_dsql_execute2 [tra_handle=$0000001B, stmt_handle=$0000001C, dialect=3]
+3850874060001 14:03:10.441     << Open [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3850874060001 14:03:10.441     >> Fetch [ATable="Table", Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3850874060001 14:03:10.441          . isc_dsql_fetch [stmt_handle=$0000001C, dialect=3]
+3850874060001 14:03:10.441         >> Fetched
+3850874060001 14:03:10.441              . Var [N=0, Type=SQL_LONG, Prec=0, Scale=0, Size=4, Data=NULL]
+3850874060001 14:03:10.441              . Var [N=1, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850874060001 14:03:10.441              . Var [N=2, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850874060001 14:03:10.441              . Var [N=3, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='ESTOQUE']
+3850874060001 14:03:10.441              . Var [N=4, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='RDB$PRIMARY10']
+3850874060001 14:03:10.441              . Var [N=5, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='ID_PRODUTO']
+3850874060001 14:03:10.441              . Var [N=6, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=1]
+3850874060001 14:03:10.441              . Var [N=7, Type=SQL_TEXT, Prec=0, Scale=0, Size=1, Data='A']
+3850874060001 14:03:10.441              . Var [N=8, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850874060001 14:03:10.441         << Fetched
+3850874060001 14:03:10.441          . isc_dsql_fetch [stmt_handle=$0000001C, dialect=3]
+3850874060001 14:03:10.441         >> Fetched
+3850874060001 14:03:10.441              . Var [N=0, Type=SQL_LONG, Prec=0, Scale=0, Size=4, Data=NULL]
+3850874060001 14:03:10.441              . Var [N=1, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850874060001 14:03:10.441              . Var [N=2, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850874060001 14:03:10.441              . Var [N=3, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='ESTOQUE']
+3850874060001 14:03:10.441              . Var [N=4, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='RDB$PRIMARY10']
+3850874060001 14:03:10.441              . Var [N=5, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='ID_ALMOXARIFADO']
+3850874060001 14:03:10.441              . Var [N=6, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=2]
+3850874060001 14:03:10.441              . Var [N=7, Type=SQL_TEXT, Prec=0, Scale=0, Size=1, Data='A']
+3850874060001 14:03:10.441              . Var [N=8, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3850874060001 14:03:10.441         << Fetched
+3850874060001 14:03:10.441          . isc_dsql_fetch [stmt_handle=$0000001C, dialect=3]
+3850874060001 14:03:10.441          . isc_dsql_free_statement [stmt_handle=$0000001C, option="DSQL_close"]
+3850874060001 14:03:10.441     << Fetch [ATable="Table", Command="Table PKey Fields (ESTOQUE.ESTOQUE)", RowsAffected=2]
+3850874060001 14:03:10.441      . Eof reached [ATable="Table", Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3850874060001 14:03:10.441     >> Close [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3850874060001 14:03:10.441         >> Commit [ConnectionDef="", Retaining=False]
+3850874060001 14:03:10.441             >> Unprepare [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3850874060001 14:03:10.441                  . isc_dsql_free_statement [stmt_handle=$0000001C, option="DSQL_drop"]
+3850874060001 14:03:10.441             << Unprepare [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3850874060001 14:03:10.441              . isc_commit_transaction [tra_handle=$0000001B]
+3850874060001 14:03:10.441         << Commit [ConnectionDef="", Retaining=False]
+3850874060001 14:03:10.441     << Close [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3850874060001 14:03:10.441      . Destroy [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3850874060001 14:03:10.441     >> Sent
+3850874060001 14:03:10.441          . Var [N=0, Name="ID_PRODUTO", Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data(0)=9]
+3850874060001 14:03:10.441          . Var [N=1, Name="ID_ALMOXARIFADO", Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data(0)=23]
+3850874060001 14:03:10.441     << Sent
+3850874060001 14:03:10.442      . isc_dsql_execute2 [tra_handle=$00000019, stmt_handle=$0000001A, dialect=3]
+3850874060001 14:03:10.442      . Col add [Index=1, SrcName="ATIVO", SrcType=AnsiString, SrcSize=1, SrcPrec=0, SrcScale=0, Type=AnsiString, Size=1, Prec=0, Scale=0, OrigTabName="ESTOQUE", OrigColName="ATIVO"]
+3850874060001 14:03:10.442      . Primary key [Cols="ID_PRODUTO;ID_ALMOXARIFADO"]
+3850874060001 14:03:10.442 << Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442 >> Open [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442 << Open [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442 >> TFDCustomCommand.Fetch [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO ", AAll=False, ABlocked=True]
+3850874060001 14:03:10.442     >> Fetch [ATable="ESTOQUE", Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442          . isc_dsql_fetch [stmt_handle=$0000001A, dialect=3]
+3850874060001 14:03:10.442          . isc_dsql_free_statement [stmt_handle=$0000001A, option="DSQL_close"]
+3850874060001 14:03:10.442     << Fetch [ATable="ESTOQUE", Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO ", RowsAffected=0]
+3850874060001 14:03:10.442      . Eof reached [ATable="ESTOQUE", Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442     >> Close [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442         >> Commit [ConnectionDef="", Retaining=False]
+3850874060001 14:03:10.442             >> TFDCustomCommand.Unprepare [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442                 >> Unprepare [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442                      . isc_dsql_free_statement [stmt_handle=$0000001A, option="DSQL_drop"]
+3850874060001 14:03:10.442                 << Unprepare [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442             << TFDCustomCommand.Unprepare [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442             >> TFDCustomCommand.Unprepare [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442             << TFDCustomCommand.Unprepare [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442              . isc_commit_transaction [tra_handle=$00000019]
+3850874060001 14:03:10.442         << Commit [ConnectionDef="", Retaining=False]
+3850874060001 14:03:10.442     << Close [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442      . TFDCustomCommand.FetchFinished [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO ", AState=2, FRowsAffected=0]
+3850874060001 14:03:10.442      . Destroy [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO "]
+3850874060001 14:03:10.442 << TFDCustomCommand.Fetch [Command="SELECT ATIVO FROM ESTOQUE 
+WHERE ID_PRODUTO = :ID_PRODUTO 
+AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO ", AAll=False, ABlocked=True]
+3850874060001 14:03:10.444 >> TFDCustomCommand.Prepare [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874060001 14:03:10.444      . CreateCommand [ConnectionDef=""]
+3850874060001 14:03:10.444     >> Prepare [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874060001 14:03:10.444          . Preprocessed [CMD="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(?,?,?)
+RETURNING 
+quantidade,id,id_nota,id_produto", FROM="", VP=59, VPE=73, OBP=0, CK=2]
+3850874060001 14:03:10.444         >> StartTransaction [ConnectionDef=""]
+3850874060001 14:03:10.444              . isc_start_multiple [count=1, params="write,read_committed,rec_version,nowait"]
+3850874060001 14:03:10.445         << StartTransaction [ConnectionDef=""]
+3850874060001 14:03:10.445          . isc_dsql_allocate_statement [db_handle=$00000008]
+3850874060001 14:03:10.445          . isc_dsql_prepare [tra_handle=$0000001D, stmt_handle=$0000001E, sql="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(?,?,?)
+RETURNING 
+quantidade,id,id_nota,id_produto", dialect=3]
+3850874060001 14:03:10.445          . isc_dsql_sql_info [stmt_handle=$0000001E, info=21]
+3850874060001 14:03:10.445          . isc_dsql_describe [stmt_handle=$0000001E, dialect=3]
+3850874060001 14:03:10.445          . isc_dsql_describe_bind [stmt_handle=$0000001E, dialect=3]
+3850874060001 14:03:10.445          . isc_dsql_describe_bind [stmt_handle=$0000001E, dialect=3]
+3850874060001 14:03:10.445     << Prepare [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874060001 14:03:10.445 << TFDCustomCommand.Prepare [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874060001 14:03:10.445 >> Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874060001 14:03:10.445     >> Sent
+3850874060001 14:03:10.445          . Var [N=0, Name="QUANTIDADE", Type=SQL_LONG, Prec=0, Scale=0, Size=4, Data(0)=5]
+3850874060001 14:03:10.445          . Var [N=1, Name="ID_NOTA", Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data(0)=19]
+3850874060001 14:03:10.445          . Var [N=2, Name="ID_PRODUTO", Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data(0)=9]
+3850874060001 14:03:10.445     << Sent
+3850874060001 14:03:10.445      . isc_dsql_execute2 [tra_handle=$0000001D, stmt_handle=$0000001E, dialect=3]
+3850874060001 14:03:10.446     >> Fetched
+3850874060001 14:03:10.446          . Var [N=0, Type=SQL_LONG, Prec=0, Scale=0, Size=4, Data=5]
+3850874060001 14:03:10.446          . Var [N=1, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=15]
+3850874060001 14:03:10.446          . Var [N=2, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=19]
+3850874060001 14:03:10.446          . Var [N=3, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=9]
+3850874060001 14:03:10.446     << Fetched
+3850874060001 14:03:10.446      . Col add [Index=1, SrcName="QUANTIDADE", SrcType=Int32, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int32, Size=0, Prec=0, Scale=0, OrigTabName="MOVIMENTACAO", OrigColName="QUANTIDADE"]
+3850874060001 14:03:10.446      . Col add [Index=2, SrcName="ID", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="MOVIMENTACAO", OrigColName="ID"]
+3850874210001 14:03:10.461      . Col add [Index=3, SrcName="ID_NOTA", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="MOVIMENTACAO", OrigColName="ID_NOTA"]
+3850874210001 14:03:10.461      . Col add [Index=4, SrcName="ID_PRODUTO", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="MOVIMENTACAO", OrigColName="ID_PRODUTO"]
+3850874210001 14:03:10.461 << Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.461 >> Open [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.461 << Open [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.461 >> TFDCustomCommand.Fetch [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto", AAll=False, ABlocked=True]
+3850874210001 14:03:10.461     >> Fetch [ATable="", Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.461     << Fetch [ATable="", Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto", RowsAffected=1]
+3850874210001 14:03:10.461      . Eof reached [ATable="", Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.461     >> Close [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.461         >> Commit [ConnectionDef="", Retaining=False]
+3850874210001 14:03:10.461             >> TFDCustomCommand.Unprepare [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.461                 >> Unprepare [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.461                      . isc_dsql_free_statement [stmt_handle=$0000001E, option="DSQL_drop"]
+3850874210001 14:03:10.461                 << Unprepare [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.461             << TFDCustomCommand.Unprepare [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.461             >> TFDCustomCommand.Unprepare [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.461             << TFDCustomCommand.Unprepare [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.462              . isc_commit_transaction [tra_handle=$0000001D]
+3850874210001 14:03:10.464         << Commit [ConnectionDef="", Retaining=False]
+3850874210001 14:03:10.464     << Close [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.464      . TFDCustomCommand.FetchFinished [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto", AState=2, FRowsAffected=1]
+3850874210001 14:03:10.464      . Destroy [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto"]
+3850874210001 14:03:10.464 << TFDCustomCommand.Fetch [Command="INSERT INTO MOVIMENTACAO 
+(quantidade,id_nota,id_produto)
+VALUES 
+(:quantidade,:id_nota,:id_produto)
+RETURNING 
+quantidade,id,id_nota,id_produto", AAll=False, ABlocked=True]
+3850874210001 14:03:10.465 >> TFDCustomCommand.Prepare [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID"]
+3850874210001 14:03:10.465      . CreateCommand [ConnectionDef=""]
+3850874210001 14:03:10.465     >> Prepare [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID"]
+3850874210001 14:03:10.465          . Preprocessed [CMD="UPDATE NOTAS SET CONCLUIDA = ? WHERE ID = ?", FROM="", VP=0, VPE=0, OBP=0, CK=7]
+3850874210001 14:03:10.465         >> StartTransaction [ConnectionDef=""]
+3850874210001 14:03:10.465              . isc_start_multiple [count=1, params="write,read_committed,rec_version,nowait"]
+3850874210001 14:03:10.465         << StartTransaction [ConnectionDef=""]
+3850874210001 14:03:10.465          . isc_dsql_allocate_statement [db_handle=$00000006]
+3850874210001 14:03:10.465          . isc_dsql_prepare [tra_handle=$0000001F, stmt_handle=$00000020, sql="UPDATE NOTAS SET CONCLUIDA = ? WHERE ID = ?", dialect=3]
+3850874210001 14:03:10.465          . isc_dsql_sql_info [stmt_handle=$00000020, info=21]
+3850874210001 14:03:10.465          . isc_dsql_describe_bind [stmt_handle=$00000020, dialect=3]
+3850874210001 14:03:10.465          . isc_dsql_describe_bind [stmt_handle=$00000020, dialect=3]
+3850874210001 14:03:10.465     << Prepare [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID"]
+3850874210001 14:03:10.465 << TFDCustomCommand.Prepare [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID"]
+3850874210001 14:03:10.465 >> TFDCustomCommand.InternalExecute [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID", ATimes=0, AOffset=0, ABlocked=False]
+3850874210001 14:03:10.465     >> Execute [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID", ATimes=0, AOffset=0]
+3850874210001 14:03:10.465         >> Sent
+3850874210001 14:03:10.466              . Var [N=0, Name="CONCLUIDA", Type=SQL_TEXT, Prec=0, Scale=0, Size=1, Data(0)='1']
+3850874210001 14:03:10.466              . Var [N=1, Name="ID", Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data(0)=19]
+3850874210001 14:03:10.466         << Sent
+3850874210001 14:03:10.466          . isc_dsql_execute2 [tra_handle=$0000001F, stmt_handle=$00000020, dialect=3]
+3850874210001 14:03:10.466          . isc_dsql_sql_info [stmt_handle=$00000020, info=23]
+3850874210001 14:03:10.466         >> Commit [ConnectionDef="", Retaining=False]
+3850874210001 14:03:10.466             >> TFDCustomCommand.Unprepare [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID"]
+3850874210001 14:03:10.466                 >> Unprepare [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID"]
+3850874210001 14:03:10.466                      . isc_dsql_free_statement [stmt_handle=$00000020, option="DSQL_drop"]
+3850874210001 14:03:10.466                 << Unprepare [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID"]
+3850874210001 14:03:10.466             << TFDCustomCommand.Unprepare [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID"]
+3850874210001 14:03:10.466              . isc_commit_transaction [tra_handle=$0000001F]
+3850874210001 14:03:10.467         << Commit [ConnectionDef="", Retaining=False]
+3850874210001 14:03:10.467     << Execute [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID", ATimes=1, AOffset=0, RowsAffected=1, RowsAffectedReal=True, ErrorAction=5]
+3850874210001 14:03:10.467      . TFDCustomCommand.InternalExecuteFinished [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID", AState=2, FRowsAffected=1]
+3850874210001 14:03:10.467      . Destroy [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID"]
+3850874210001 14:03:10.467 << TFDCustomCommand.InternalExecute [Command="UPDATE NOTAS SET CONCLUIDA = :CONCLUIDA WHERE ID = :ID", ATimes=0, AOffset=0, ABlocked=False]
+3851068430001 14:03:29.885 >> TFDCustomCommand.Prepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.885      . CreateCommand [ConnectionDef=""]
+3851068430001 14:03:29.885     >> Prepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.885          . Preprocessed [CMD="SELECT * FROM USUARIO
+WHERE NOME = ?
+AND SENHA = ?", FROM="USUARIO", VP=0, VPE=0, OBP=0, CK=1]
+3851068430001 14:03:29.885         >> StartTransaction [ConnectionDef=""]
+3851068430001 14:03:29.885              . isc_start_multiple [count=1, params="write,read_committed,rec_version,nowait"]
+3851068430001 14:03:29.886         << StartTransaction [ConnectionDef=""]
+3851068430001 14:03:29.886          . isc_dsql_allocate_statement [db_handle=$00000003]
+3851068430001 14:03:29.886          . isc_dsql_prepare [tra_handle=$00000021, stmt_handle=$00000022, sql="SELECT * FROM USUARIO
+WHERE NOME = ?
+AND SENHA = ?", dialect=3]
+3851068430001 14:03:29.886          . isc_dsql_sql_info [stmt_handle=$00000022, info=21]
+3851068430001 14:03:29.886          . isc_dsql_describe [stmt_handle=$00000022, dialect=3]
+3851068430001 14:03:29.886          . isc_dsql_describe_bind [stmt_handle=$00000022, dialect=3]
+3851068430001 14:03:29.886          . isc_dsql_describe_bind [stmt_handle=$00000022, dialect=3]
+3851068430001 14:03:29.886     << Prepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.886 << TFDCustomCommand.Prepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.886 >> Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.886     >> Sent
+3851068430001 14:03:29.886          . Var [N=0, Name="NOME", Type=SQL_VARYING, Prec=0, Scale=0, Size=255, Data(0)='eliel']
+3851068430001 14:03:29.886          . Var [N=1, Name="SENHA", Type=SQL_VARYING, Prec=0, Scale=0, Size=255, Data(0)='0dde5185db7da5c81f0fa71696506e4f']
+3851068430001 14:03:29.886     << Sent
+3851068430001 14:03:29.886      . isc_dsql_execute2 [tra_handle=$00000021, stmt_handle=$00000022, dialect=3]
+3851068430001 14:03:29.887      . Col add [Index=1, SrcName="ID", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="USUARIO", OrigColName="ID"]
+3851068430001 14:03:29.887      . Col add [Index=2, SrcName="NOME", SrcType=AnsiString, SrcSize=255, SrcPrec=0, SrcScale=0, Type=AnsiString, Size=255, Prec=0, Scale=0, OrigTabName="USUARIO", OrigColName="NOME"]
+3851068430001 14:03:29.887      . Col add [Index=3, SrcName="SENHA", SrcType=AnsiString, SrcSize=255, SrcPrec=0, SrcScale=0, Type=AnsiString, Size=255, Prec=0, Scale=0, OrigTabName="USUARIO", OrigColName="SENHA"]
+3851068430001 14:03:29.887      . Col add [Index=4, SrcName="ID_ALMOXARIFADO", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="USUARIO", OrigColName="ID_ALMOXARIFADO"]
+3851068430001 14:03:29.887      . Primary key [Cols="ID"]
+3851068430001 14:03:29.887 << Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.887 >> Open [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.887 << Open [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.887 >> TFDCustomCommand.Fetch [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA", AAll=False, ABlocked=True]
+3851068430001 14:03:29.887     >> Fetch [ATable="USUARIO", Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.887          . isc_dsql_fetch [stmt_handle=$00000022, dialect=3]
+3851068430001 14:03:29.887         >> Fetched
+3851068430001 14:03:29.887              . Var [N=0, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=9]
+3851068430001 14:03:29.887              . Var [N=1, Type=SQL_VARYING, Prec=0, Scale=0, Size=255, Data='eliel']
+3851068430001 14:03:29.887              . Var [N=2, Type=SQL_VARYING, Prec=0, Scale=0, Size=255, Data='0dde5185db7da5c81f0fa71696506e4f']
+3851068430001 14:03:29.887              . Var [N=3, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=23]
+3851068430001 14:03:29.887         << Fetched
+3851068430001 14:03:29.887          . isc_dsql_fetch [stmt_handle=$00000022, dialect=3]
+3851068430001 14:03:29.887          . isc_dsql_free_statement [stmt_handle=$00000022, option="DSQL_close"]
+3851068430001 14:03:29.887     << Fetch [ATable="USUARIO", Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA", RowsAffected=1]
+3851068430001 14:03:29.887      . Eof reached [ATable="USUARIO", Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.887     >> Close [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.887         >> Commit [ConnectionDef="", Retaining=False]
+3851068430001 14:03:29.887             >> TFDCustomCommand.Unprepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.887                 >> Unprepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.887                      . isc_dsql_free_statement [stmt_handle=$00000022, option="DSQL_drop"]
+3851068430001 14:03:29.887                 << Unprepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.887             << TFDCustomCommand.Unprepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.887             >> TFDCustomCommand.Unprepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.887             << TFDCustomCommand.Unprepare [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.887              . isc_commit_transaction [tra_handle=$00000021]
+3851068430001 14:03:29.888         << Commit [ConnectionDef="", Retaining=False]
+3851068430001 14:03:29.888     << Close [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.888      . TFDCustomCommand.FetchFinished [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA", AState=2, FRowsAffected=1]
+3851068430001 14:03:29.888      . Destroy [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA"]
+3851068430001 14:03:29.888 << TFDCustomCommand.Fetch [Command="SELECT * FROM USUARIO
+WHERE NOME = :NOME
+AND SENHA = :SENHA", AAll=False, ABlocked=True]
+3851068430001 14:03:29.888 >> TFDCustomCommand.Prepare [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068430001 14:03:29.888      . CreateCommand [ConnectionDef=""]
+3851068430001 14:03:29.888     >> Prepare [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068430001 14:03:29.889          . Preprocessed [CMD="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 ", FROM="ESTOQUE", VP=0, VPE=0, OBP=0, CK=1]
+3851068430001 14:03:29.889         >> StartTransaction [ConnectionDef=""]
+3851068430001 14:03:29.889              . isc_start_multiple [count=1, params="write,read_committed,rec_version,nowait"]
+3851068430001 14:03:29.889         << StartTransaction [ConnectionDef=""]
+3851068430001 14:03:29.889          . isc_dsql_allocate_statement [db_handle=$0000000A]
+3851068430001 14:03:29.889          . isc_dsql_prepare [tra_handle=$00000023, stmt_handle=$00000024, sql="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 ", dialect=3]
+3851068430001 14:03:29.889          . isc_dsql_sql_info [stmt_handle=$00000024, info=21]
+3851068430001 14:03:29.889          . isc_dsql_describe [stmt_handle=$00000024, dialect=3]
+3851068430001 14:03:29.889          . isc_dsql_describe_bind [stmt_handle=$00000024, dialect=3]
+3851068430001 14:03:29.889     << Prepare [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068430001 14:03:29.889 << TFDCustomCommand.Prepare [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068430001 14:03:29.890 >> Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068430001 14:03:29.890      . CreateMetaInfoCommand [ConnectionDef=""]
+3851068430001 14:03:29.890     >> Prepare [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3851068430001 14:03:29.890         >> StartTransaction [ConnectionDef=""]
+3851068430001 14:03:29.890              . isc_start_multiple [count=1, params="read,read_committed,rec_version,nowait"]
+3851068430001 14:03:29.890         << StartTransaction [ConnectionDef=""]
+3851068430001 14:03:29.890          . isc_dsql_allocate_statement [db_handle=$0000000A]
+3851068430001 14:03:29.890          . isc_dsql_prepare [tra_handle=$00000025, stmt_handle=$00000026, sql="SELECT CAST(NULL AS NUMERIC) AS RECNO, CAST(NULL AS VARCHAR(67)) AS CATALOG_NAME, CAST(NULL AS VARCHAR(67)) AS SCHEMA_NAME, C.RDB$RELATION_NAME AS TABLE_NAME, C.RDB$INDEX_NAME AS INDEX_NAME, S.RDB$FIELD_NAME AS COLUMN_NAME, S.RDB$FIELD_POSITION + 1 AS COLUMN_POSITION, 'A' AS SORT_ORDER, CAST(NULL AS VARCHAR(67)) AS FILTER_ FROM RDB$RELATION_CONSTRAINTS C LEFT JOIN RDB$INDEX_SEGMENTS S ON C.RDB$INDEX_NAME = S.RDB$INDEX_NAME WHERE C.RDB$CONSTRAINT_TYPE = 'PRIMARY KEY' AND C.RDB$RELATION_NAME = ? ORDER BY 7", dialect=3]
+3851068430001 14:03:29.890          . isc_dsql_sql_info [stmt_handle=$00000026, info=21]
+3851068430001 14:03:29.890          . isc_dsql_describe [stmt_handle=$00000026, dialect=3]
+3851068430001 14:03:29.890          . isc_dsql_describe_bind [stmt_handle=$00000026, dialect=3]
+3851068430001 14:03:29.890     << Prepare [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3851068430001 14:03:29.890     >> Open [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3851068430001 14:03:29.891         >> Sent
+3851068430001 14:03:29.891              . Var [N=0, Name="BAS", Type=SQL_TEXT, Prec=0, Scale=0, Size=210, Data(0)='ESTOQUE']
+3851068430001 14:03:29.891         << Sent
+3851068430001 14:03:29.891          . isc_dsql_execute2 [tra_handle=$00000025, stmt_handle=$00000026, dialect=3]
+3851068430001 14:03:29.891     << Open [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3851068430001 14:03:29.891     >> Fetch [ATable="Table", Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3851068430001 14:03:29.891          . isc_dsql_fetch [stmt_handle=$00000026, dialect=3]
+3851068430001 14:03:29.891         >> Fetched
+3851068430001 14:03:29.891              . Var [N=0, Type=SQL_LONG, Prec=0, Scale=0, Size=4, Data=NULL]
+3851068430001 14:03:29.891              . Var [N=1, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3851068430001 14:03:29.891              . Var [N=2, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3851068430001 14:03:29.891              . Var [N=3, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='ESTOQUE']
+3851068430001 14:03:29.891              . Var [N=4, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='RDB$PRIMARY10']
+3851068430001 14:03:29.891              . Var [N=5, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='ID_PRODUTO']
+3851068430001 14:03:29.891              . Var [N=6, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=1]
+3851068430001 14:03:29.891              . Var [N=7, Type=SQL_TEXT, Prec=0, Scale=0, Size=1, Data='A']
+3851068430001 14:03:29.891              . Var [N=8, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3851068430001 14:03:29.891         << Fetched
+3851068430001 14:03:29.891          . isc_dsql_fetch [stmt_handle=$00000026, dialect=3]
+3851068430001 14:03:29.891         >> Fetched
+3851068430001 14:03:29.891              . Var [N=0, Type=SQL_LONG, Prec=0, Scale=0, Size=4, Data=NULL]
+3851068430001 14:03:29.891              . Var [N=1, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3851068430001 14:03:29.891              . Var [N=2, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3851068430001 14:03:29.891              . Var [N=3, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='ESTOQUE']
+3851068430001 14:03:29.891              . Var [N=4, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='RDB$PRIMARY10']
+3851068430001 14:03:29.891              . Var [N=5, Type=SQL_TEXT, Prec=0, Scale=0, Size=93, Data='ID_ALMOXARIFADO']
+3851068430001 14:03:29.891              . Var [N=6, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=2]
+3851068430001 14:03:29.891              . Var [N=7, Type=SQL_TEXT, Prec=0, Scale=0, Size=1, Data='A']
+3851068430001 14:03:29.891              . Var [N=8, Type=SQL_VARYING, Prec=0, Scale=0, Size=67, Data=NULL]
+3851068430001 14:03:29.891         << Fetched
+3851068430001 14:03:29.891          . isc_dsql_fetch [stmt_handle=$00000026, dialect=3]
+3851068430001 14:03:29.891          . isc_dsql_free_statement [stmt_handle=$00000026, option="DSQL_close"]
+3851068430001 14:03:29.891     << Fetch [ATable="Table", Command="Table PKey Fields (ESTOQUE.ESTOQUE)", RowsAffected=2]
+3851068430001 14:03:29.891      . Eof reached [ATable="Table", Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3851068430001 14:03:29.891     >> Close [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3851068590001 14:03:29.892         >> Commit [ConnectionDef="", Retaining=False]
+3851068590001 14:03:29.892             >> Unprepare [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3851068590001 14:03:29.892                  . isc_dsql_free_statement [stmt_handle=$00000026, option="DSQL_drop"]
+3851068590001 14:03:29.892             << Unprepare [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3851068590001 14:03:29.892              . isc_commit_transaction [tra_handle=$00000025]
+3851068590001 14:03:29.892         << Commit [ConnectionDef="", Retaining=False]
+3851068590001 14:03:29.892     << Close [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3851068590001 14:03:29.892      . Destroy [Command="Table PKey Fields (ESTOQUE.ESTOQUE)"]
+3851068590001 14:03:29.892      . isc_dsql_execute2 [tra_handle=$00000023, stmt_handle=$00000024, dialect=3]
+3851068590001 14:03:29.892      . Col add [Index=1, SrcName="ID_PRODUTO", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="ESTOQUE", OrigColName="ID_PRODUTO"]
+3851068590001 14:03:29.892      . Col add [Index=2, SrcName="ID_ALMOXARIFADO", SrcType=Int64, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int64, Size=0, Prec=0, Scale=0, OrigTabName="ESTOQUE", OrigColName="ID_ALMOXARIFADO"]
+3851068590001 14:03:29.892      . Col add [Index=3, SrcName="QUANTIDADE", SrcType=Int32, SrcSize=0, SrcPrec=0, SrcScale=0, Type=Int32, Size=0, Prec=0, Scale=0, OrigTabName="ESTOQUE", OrigColName="QUANTIDADE"]
+3851068590001 14:03:29.892      . Col add [Index=4, SrcName="ATIVO", SrcType=AnsiString, SrcSize=1, SrcPrec=0, SrcScale=0, Type=AnsiString, Size=1, Prec=0, Scale=0, OrigTabName="ESTOQUE", OrigColName="ATIVO"]
+3851068590001 14:03:29.892      . Primary key [Cols="ID_PRODUTO;ID_ALMOXARIFADO"]
+3851068590001 14:03:29.892 << Define(TFDDatSManager) [ADatSManager="Manager", ATable="<nil>", Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.892 >> Open [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.892 << Open [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.892 >> TFDCustomCommand.Fetch [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 ", AAll=False, ABlocked=True]
+3851068590001 14:03:29.892     >> Fetch [ATable="ESTOQUE", Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.892          . isc_dsql_fetch [stmt_handle=$00000024, dialect=3]
+3851068590001 14:03:29.893         >> Fetched
+3851068590001 14:03:29.893              . Var [N=0, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=7]
+3851068590001 14:03:29.893              . Var [N=1, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=23]
+3851068590001 14:03:29.893              . Var [N=2, Type=SQL_LONG, Prec=0, Scale=0, Size=4, Data=2]
+3851068590001 14:03:29.893              . Var [N=3, Type=SQL_TEXT, Prec=0, Scale=0, Size=1, Data='1']
+3851068590001 14:03:29.893         << Fetched
+3851068590001 14:03:29.893          . isc_dsql_fetch [stmt_handle=$00000024, dialect=3]
+3851068590001 14:03:29.893         >> Fetched
+3851068590001 14:03:29.893              . Var [N=0, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=9]
+3851068590001 14:03:29.893              . Var [N=1, Type=SQL_INT64, Prec=0, Scale=0, Size=8, Data=23]
+3851068590001 14:03:29.893              . Var [N=2, Type=SQL_LONG, Prec=0, Scale=0, Size=4, Data=5]
+3851068590001 14:03:29.893              . Var [N=3, Type=SQL_TEXT, Prec=0, Scale=0, Size=1, Data='1']
+3851068590001 14:03:29.893         << Fetched
+3851068590001 14:03:29.893          . isc_dsql_fetch [stmt_handle=$00000024, dialect=3]
+3851068590001 14:03:29.893          . isc_dsql_free_statement [stmt_handle=$00000024, option="DSQL_close"]
+3851068590001 14:03:29.893     << Fetch [ATable="ESTOQUE", Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 ", RowsAffected=2]
+3851068590001 14:03:29.893      . Eof reached [ATable="ESTOQUE", Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.893     >> Close [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.893         >> Commit [ConnectionDef="", Retaining=False]
+3851068590001 14:03:29.893             >> TFDCustomCommand.Unprepare [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.893                 >> Unprepare [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.893                      . isc_dsql_free_statement [stmt_handle=$00000024, option="DSQL_drop"]
+3851068590001 14:03:29.893                 << Unprepare [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.893             << TFDCustomCommand.Unprepare [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.893             >> TFDCustomCommand.Unprepare [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.893             << TFDCustomCommand.Unprepare [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.893              . isc_commit_transaction [tra_handle=$00000023]
+3851068590001 14:03:29.893         << Commit [ConnectionDef="", Retaining=False]
+3851068590001 14:03:29.893     << Close [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.893      . TFDCustomCommand.FetchFinished [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 ", AState=2, FRowsAffected=2]
+3851068590001 14:03:29.893      . Destroy [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 "]
+3851068590001 14:03:29.893 << TFDCustomCommand.Fetch [Command="SELECT * FROM ESTOQUE 
+WHERE 1 = 1 ", AAll=False, ABlocked=True]

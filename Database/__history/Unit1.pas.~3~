@@ -1,0 +1,20 @@
+unit Database.Connection;
+
+interface
+
+uses
+  FireDAC.Comp.Client,
+  FireDAC.Phys.FB,
+  FireDAC.Phys,
+  FireDAC.Stan.Def,
+  FireDAC.Stan.Async,
+  FireDAC.Stan.Param;
+
+type TDatabaseConnection = class
+public
+  class function GetConnection: TFDConnection;
+end;
+
+implementation
+
+end.

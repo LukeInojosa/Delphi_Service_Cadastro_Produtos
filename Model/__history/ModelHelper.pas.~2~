@@ -1,0 +1,58 @@
+unit ModelHelper;
+
+interface
+
+uses
+  FireDAC.Comp.Client,
+  System.JSON, Data.DB;
+
+  type TQueryHelper = class helper for TFDQuery
+
+  public
+    function ToJSONArray(): TJSONArray;
+
+  end;
+implementation
+
+uses
+  System.SysUtils;
+
+  function TQueryHelper.ToJSONArray(): TJSONArray;
+  var
+    arr: TJSONArray;
+    obj: TJSONObject;
+    I: Integer;
+    bookmark: TBookmark;
+  begin
+    arr := TJSONArray.Create;
+
+    bookmark := Self.GetBookmark; // marca onde estava o cursor
+
+    // itera sobre os dados
+    Self.First;
+    while not Self.Eof do
+    begin
+      obj := TJSONObject.Create;
+
+      for I := 0 to Self.FieldCount - 1 do
+      begin
+        Obj.AddPair(
+          Self.Fields[I].FieldName,
+          Self.Fields[I].AsString
+        );
+      end;
+
+      arr.AddElement(obj);
+      Self.Next;
+    end;
+
+    if not Self.BookmarkValid(bookmark) then
+        Abort;
+
+    Self.GotoBookmark(bookmark); // retorna o cursor para o valor original
+
+    Result := arr;
+
+  end;
+
+end.

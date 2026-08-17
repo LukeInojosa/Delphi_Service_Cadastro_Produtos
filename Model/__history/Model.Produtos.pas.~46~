@@ -1,0 +1,132 @@
+unit Model.Produtos;
+
+interface uses
+  Model,
+  GBSwagger.Model.Attributes,
+  System.SysUtils,
+  System.Generics.Collections;
+
+type TProdutos  = class(TModel)
+  private
+    FId : uInt64;
+    FCodigo : String;
+    FDescricao : String;
+    FMedida : String;
+
+    procedure SetId(data : uInt64);
+    procedure SetCodigo(data : String);
+    procedure SetDescricao(data : String);
+    procedure SetMedida(data : String);
+
+  public
+
+    [SwagProp('id','',True, True)]
+    property id: uInt64 read FId write SetId;
+
+    [SwagProp('codigo','')]
+    property codigo: String read FCodigo write SetCodigo;
+
+    [SwagProp('descricao','', True)]
+    property descricao: String read FDescricao write SetDescricao;
+
+    [SwagProp('medida','', True)]
+    property medida: String read FMedida write SetMedida;
+
+    constructor Create();
+    procedure Show();
+end;
+
+type RProdutos = Record
+  id:uInt64;
+  codigo:String;
+  descricao:String;
+  medida:String;
+End;
+
+implementation
+
+{ TAlmoxarifado }
+
+constructor TProdutos.Create;
+begin
+  inherited;
+  paramSetters.AddOrSetValue('id',
+    procedure (var Query: TFDQuery)
+    begin
+      Query.SetParam('id', Self.id);
+    end);
+
+  paramSetters.AddOrSetValue('codigo',
+    procedure (var Query: TFDQuery)
+    begin
+      Query.SetParam('codigo', Self.codigo);
+    end);
+
+  paramSetters.AddOrSetValue('descricao',
+    procedure (var Query: TFDQuery)
+    begin
+      Query.SetParam('descricao', Self.descricao);
+    end);
+
+  paramSetters.AddOrSetValue('medida',
+    procedure (var Query: TFDQuery)
+    begin
+      Query.SetParam('medida', Self.medida);
+    end);
+
+  isFilled.AddOrSetValue('id', False);
+  isFilled.AddOrSetValue('codigo', False);
+  isFilled.AddOrSetValue('descricao', False);
+  isFilled.AddOrSetValue('medida', False);
+
+  FId := 0;
+  FCodigo := '';
+  FDescricao := '';
+  FMedida := '';
+end;
+
+procedure TProdutos.SetMedida(data: String);
+var
+  columnName:String;
+begin
+  columnName := 'MEDIDA';
+  isFilled.Items[columnName.ToLower] := True;
+  FMedida := data;
+end;
+
+procedure TProdutos.SetCodigo(data: String);
+var
+  columnName:String;
+begin
+  columnName := 'CODIGO';
+  isFilled.Items[columnName.ToLower] := True;
+  FCodigo := data;
+end;
+
+procedure TProdutos.SetDescricao(data: String);
+var
+  columnName:String;
+begin
+  columnName := 'DESCRICAO';
+  isFilled.Items[columnName.ToLower] := True;
+  FDescricao := data;
+end;
+
+procedure TProdutos.SetId(data: uInt64);
+var
+  columnName:String;
+begin
+  columnName := 'ID';
+  isFilled.Items[columnName.ToLower] := True;
+  FId := data;
+end;
+
+procedure TProdutos.Show;
+begin
+  Writeln(Format('{ id: %s, codigo: %s, descricao, %s, medida: %s}',
+          [id.ToString,codigo,descricao,medida]));
+end;
+end.
+
+
+

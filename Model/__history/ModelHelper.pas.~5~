@@ -1,0 +1,114 @@
+unit ModelHelper;
+
+interface
+
+uses
+  FireDAC.Comp.Client,
+  System.JSON, Data.DB;
+
+type
+  TQueryHelper = class helper for TFDQuery
+  public
+    function ToJSONArray(): TJSONArray;
+  end;
+
+type
+  TFieldHelper = class helper for TField
+  public
+    function isDateTime(const field: TField): Boolean;
+    function Time(const field: TField): Boolean;
+    function isNumeric(const field: TField): Boolean;
+    function isString(const field: TField): Boolean;
+    function isDate(const field: TField): Boolean;
+  end;
+
+implementation
+
+uses
+  System.SysUtils;
+
+function TQueryHelper.ToJSONArray(): TJSONArray;
+var
+  arr: TJSONArray;
+  obj: TJSONObject;
+  I: Integer;
+  bookmark: TBookmark;
+begin
+  arr := TJSONArray.Create;
+
+  bookmark := Self.GetBookmark; // marca onde estava o cursor
+
+  // itera sobre os dados
+  Self.First;
+  while not Self.Eof do
+  begin
+    obj := TJSONObject.Create;
+
+    for I := 0 to Self.FieldCount - 1 do
+    begin
+      if (Self.Fields[I].isNumeric()) then
+        obj.AddPair(Self.Fields[I].FieldName, Self.Fields[I].AsString)
+      else if (Self.Fields[I].isString()) then
+        obj.AddPair(Self.Fields[I].FieldName, Self.Fields[I].AsString)
+      else if (Self.Fields[I].isDate()) then
+        obj.AddPair(Self.Fields[I].FieldName, Self.Fields[I].AsString);
+    end;
+
+    arr.AddElement(obj);
+    Self.Next;
+  end;
+
+  if not Self.BookmarkValid(bookmark) then
+    Abort;
+
+  Self.GotoBookmark(bookmark); // retorna o cursor para o valor original
+
+  Result := arr;
+
+end;
+
+{ TFieldHelper }
+
+function TFieldHelper.isDate(const field: TField): Boolean;
+begin
+  Result := (
+      (field.DataType = ftDate)
+    )
+end;
+
+function TFieldHelper.isDateTime(const field: TField): Boolean;
+begin
+  Result := (
+      (field.DataType = ftDateTime)
+    )
+end;
+
+function TFieldHelper.Time(const field: TField): Boolean;
+begin
+  Result := (
+      (field.DataType = ftTime)
+    )
+end;
+
+function TFieldHelper.isNumeric(const field: TField): Boolean;
+begin
+  Result := (
+      (field.DataType = ftInteger) or
+      (field.DataType = ftSmallint) or
+      (field.DataType = ftWord) or
+      (field.DataType = ftFloat) or
+      (field.DataType = ftCurrency)or
+      (field.DataType = ftBytes) or
+      (field.DataType = ftAutoInc) or
+      (field.DataType = ftLargeint)
+    );
+end;
+
+function TFieldHelper.isString(const field: TField): Boolean;
+begin
+  Result := (
+      (field.DataType = ftString)
+    )
+end;
+
+end.

@@ -1,0 +1,176 @@
+unit Controller.Produtos;
+
+interface
+
+uses Controller;
+
+type
+  TController = Controller.TController;
+
+type
+  TControllerProdutos = class(Controller.TController)
+  public
+    class procedure Get(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Post(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Put(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Delete(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+  end;
+
+implementation uses
+  Service.Produtos,
+  GBJSON.Helper,
+  Horse.Commons,
+  System.SysUtils,
+  System.Generics.Collections,
+  System.JSON, System.Rtti;
+var
+  FServiceProdutos: TServiceProdutos;
+  Context : TRttiContext;
+
+
+
+{ TControllerProdutos }
+
+class procedure TControllerProdutos.Put(Req: THorseRequest;
+  Res: THorseResponse; Next: TNextProc);
+var
+  updatedProdutos: TObjectList<TProdutos>;
+  Produto: TProdutos;
+  RecProduto: RProdutos;
+  jsonArray: TJSONArray;
+  jsonResponse: TJSONObject;
+  jsonBody: TJSONObject;
+begin
+  jsonBody := Req.Body<TJSONObject>;
+
+  if Req.Params.Items['id'].IsEmpty then
+    raise Exception.Create('erro na validacao de parametros. forneça id e ativo');
+
+  Produto := TProdutos.Create();
+  Produto.id := Req.Params.Items['id'].Trim.ToInt64;
+
+  if jsonBody.TryGetValue<String>
+  ('medida', RecProduto.medida) then
+    Produto.medida:= RecProduto.medida;
+
+  if jsonBody.TryGetValue<String>
+  ('codigo', RecProduto.codigo) then
+    Produto.codigo := RecProduto.codigo;
+
+  if jsonBody.TryGetValue<String>
+  ('descricao', RecProduto.descricao) then
+    Produto.descricao := RecProduto.descricao;
+
+  updatedProdutos := FServiceProdutos.Alterar(Produto);
+
+  jsonArray := TGBJSONDefault.Deserializer<TProdutos>
+                             .ListToJSONArray(updatedProdutos);
+
+  jsonResponse := TJSONObject.Create();
+  jsonResponse.AddPair('data', jsonArray);
+
+  Res.Status(THTTPStatus.OK).Send<TJSONObject>(jsonResponse);
+end;
+
+class procedure TControllerProdutos.Delete(Req: THorseRequest;
+  Res: THorseResponse; Next: TNextProc);
+var
+  deletedProdutos: TObjectList<TProdutos>;
+  Produto: TProdutos;
+  jsonArray: TJSONArray;
+begin
+  try
+    Produto := TProdutos.Create();
+    if not Req.Params.Items['id'].IsEmpty then
+      Produto.id := Req.Params.Items['id'].Trim.ToInt64;
+    if not Req.Params.Items['codigo'].IsEmpty then
+      Produto.codigo := Req.Params.Items['codigo'].Trim;
+
+    deletedProdutos := FServiceProdutos.Excluir(Produto);
+    jsonArray := TGBJSONDefault.Deserializer<TProdutos>
+                               .ListToJSONArray(deletedProdutos);
+
+    Res.Status(THTTPStatus.OK).Send<TJSONObject>(
+      TJSONObject.Create
+        .AddPair('data',jsonArray)
+    );
+
+  finally
+    Produto.Free;
+  end;
+end;
+
+class procedure TControllerProdutos.Get(Req: THorseRequest; Res: THorseResponse;
+  Next: TNextProc);
+var
+  Produto: TProdutos;
+  listProdutos: TObjectList<TProdutos>;
+  jsonArray: TJSONArray;
+  id: String;
+begin
+  try
+    // Inicializacao de Variaveis
+    Produto := TProdutos.Create();
+
+    // pega parametros da Requisicao
+    id := Req.Params.Items['id'];
+
+    // constroi input para o service
+    // fazendo cast nos parametros
+    if (not id.IsEmpty) then
+      Produto.id := id.Trim.ToInt64;
+
+    Writeln('- Realizando Consulta de Almoxarifado por id');
+
+    listProdutos := FServiceProdutos.Consulta(Produto);
+
+    // construindo resposta
+    jsonArray := TGBJSONDefault.Deserializer<TProdutos>
+                               .ListToJSONArray(listProdutos);
+    Res
+      .Status(THTTPStatus.OK)
+      .Send<TJSONObject>(
+        TJSONObject.Create()
+          .AddPair('data', jsonArray)
+      );
+  finally
+    Produto.free;
+    listProdutos.free;
+  end;
+end;
+
+class procedure TControllerProdutos.Post(Req: THorseRequest;
+  Res: THorseResponse; Next: TNextProc);
+var
+  Produto: TProdutos;
+begin
+  try
+    Produto := TProdutos.Create();
+    Produto.fromJSONObject(Req.Body<TJSONObject>);
+
+    Produto := FServiceProdutos.Criar(Produto);
+
+    Res.Status(THTTPStatus.Created).Send<TJSONObject>
+      (Produto.ToJSONObject());
+  finally
+    Produto.Free();
+  end;
+
+end;
+
+
+initialization
+
+FServiceProdutos := TServiceProdutos.Create();
+Context := TRttiContext.Create();
+
+finalization
+
+FServiceProdutos.Free;
+Context.Free;
+
+end.

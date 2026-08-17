@@ -1,0 +1,60 @@
+unit Database.Connection;
+
+interface uses
+  FireDAC.Stan.Def,
+  FireDAC.Dapt,
+  FireDAC.Phys.FB,
+  FireDAC.Phys,
+  FireDAC.Stan.Async,
+  FireDAC.Moni.FlatFile,
+  System.SysUtils,
+  FireDAC.Comp.Client,
+  FireDAC.Stan.Intf;
+
+type TDatabaseConnection = class
+public
+  class function GetConnection: TFDConnection;
+end;
+
+implementation
+
+var
+  TMoniFlatFileClientLink : TFDMoniFlatFileClientLink ;
+
+class function TDatabaseConnection.GetConnection(): TFDConnection;
+var
+  connection: TFDConnection;
+begin
+  try
+    connection := TFDConnection.Create(nil);
+    connection.LoginPrompt := False;
+    with connection.Params do
+    begin
+      DriverID := 'FB';
+      Database := ExpandFileName(
+        ExtractFilePath(ParamStr(0)) + '..\..\Data\DB.FDB'
+      );
+      UserName := 'SYSDBA';
+      Password := 'masterkey';
+      MonitorBy := TFDMonitorBy.mbFlatFile;
+    end;
+
+    Result := connection;
+
+    Result.Connected := True;
+
+    if Result.Connected then
+      Writeln('Banco conectado com sucesso');
+  except
+    on E:Exception do begin
+      Writeln('Erro ao conectar:' + E.Message);
+      Result := nil;
+    end;
+  end;
+end;
+
+initialization
+   TMoniFlatFileClientLink := TFDMoniFlatFileClientLink.Create(nil);
+   TMoniFlatFileClientLink.FileName := '..\..\Data\Monitor\trace.txt';
+   TMoniFlatFileClientLink.Tracing := True;
+end.

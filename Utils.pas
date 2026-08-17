@@ -1,0 +1,40 @@
+unit Utils;
+
+interface uses
+  Horse.Session,
+  System.SysUtils,
+  System.RegularExpressions;
+type
+  TUserSession = class(TSession)
+  public
+    Nome: String;
+    Senha: string;
+  end;
+
+function ConvertDateToJSONFormat(dateDBFormat:String): String;
+function isValidDateString(str:String): Boolean;
+
+implementation
+
+function ConvertDateToJSONFormat(dateDBFormat:String): String;
+var
+  pieces: TArray<String>;
+begin
+  writeln(dateDBFormat);
+  pieces := dateDBFormat.Split(['/']);
+  if length(pieces) = 0 then
+    Exit('');
+  Result := Format('%s-%s-%s', [
+    pieces[2],
+    pieces[1],
+    pieces[0]
+  ]);
+end;
+
+function isValidDateString(str:String): Boolean;
+begin
+  Result := TRegEx.IsMatch(str, '[0-9]{4}-[0-9]{2}-[0-9]{2}');
+end;
+
+
+end.

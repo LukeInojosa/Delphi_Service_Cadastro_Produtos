@@ -1,0 +1,86 @@
+unit Controller.Produtos;
+
+interface
+
+uses Controller;
+
+type
+  TController = Controller.TController;
+
+type
+  TControllerProdutos = class(Controller.TController)
+  public
+    class procedure Get(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Post(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Put(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Delete(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+  end;
+
+implementation uses
+  Service.Produtos,
+  GBJSON.Helper,
+  Horse.Commons,
+  System.SysUtils,
+  System.Generics.Collections,
+  System.JSON, System.Rtti;
+var
+  FServiceProdutos: TServiceProdutos;
+  Context : TRttiContext;
+
+
+
+{ TControllerProdutos }
+
+class procedure TControllerProdutos.Put(Req: THorseRequest;
+  Res: THorseResponse; Next: TNextProc);
+begin
+
+end;
+
+class procedure TControllerProdutos.Delete(Req: THorseRequest;
+  Res: THorseResponse; Next: TNextProc);
+begin
+
+end;
+
+class procedure TControllerProdutos.Get(Req: THorseRequest; Res: THorseResponse;
+  Next: TNextProc);
+begin
+
+end;
+
+class procedure TControllerProdutos.Post(Req: THorseRequest;
+  Res: THorseResponse; Next: TNextProc);
+var
+  Produto: TProdutos;
+begin
+  try
+    Produto := TProdutos.Create();
+    Produto.fromJSONObject(Req.Body<TJSONObject>);
+
+    Produto := FServiceProdutos.Criar(Produto);
+
+    Res.Status(THTTPStatus.Created).Send<TJSONObject>
+      (Produto.ToJSONObject());
+  finally
+    Produto.Free();
+  end;
+
+end;
+
+
+initialization
+
+FServiceProdutos := TServiceProdutos.Create();
+Context := TRttiContext.Create();
+
+finalization
+
+FServiceProdutos.Free;
+Context.Free;
+
+end.

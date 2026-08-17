@@ -1,0 +1,115 @@
+unit Service.Estoque;
+
+interface uses
+  Model.Estoque,
+  Service,
+  System.JSON,
+  FireDAC.Comp.Client,
+  Database.Query,
+  GBJSON.Helper,
+  System.Generics.Collections,
+  System.Rtti;
+type
+  IService = Service.IService;
+  TFDQuery = FireDAC.Comp.Client.TFDQuery;
+  TMovimentacao = Model.Estoque.TEstoque;
+  RMovimentacao = Model.Estoque.REstoque;
+
+type TServiceEstoque = class(TService)
+  private
+    Query: TFDQuery;
+  public
+    constructor Create();
+    destructor Destroy(); override;
+    function Criar(data: TEstoque): TObjectList<TEstoque>;
+    function Consulta(data: TEstoque): TObjectList<TEstoque>;
+    function ConsultaPorId(id: UInt64 =0): TEstoque;
+    function Excluir(data: TEstoque): TObjectList<TEstoque>;
+    function Alterar(data: TEstoque): TObjectList<TEstoque>;
+    function ExcluirPorId(id: UInt64 = 0): TEstoque;
+end;
+
+
+implementation
+
+uses
+  System.SysUtils;
+
+{ TServiceMovimentacao }
+
+function TServiceEstoque.Alterar(
+  data: TEstoque): TObjectList<TEstoque>;
+begin
+
+end;
+
+function TServiceEstoque.Consulta(
+  data: TEstoque): TObjectList<TEstoque>;
+var
+  jsonArray: TJSONArray;
+begin
+  if not (
+    Assigned(data)
+  ) then
+    raise Exception.Create('Erro validacao de ');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT * FROM ESTOQUE')
+    .AddToQuery('WHERE 1 = 1')
+
+  for paramName in data.isFilled.Keys do
+  begin
+    if data.isFilled.Items[paramName] then
+      Self.Query
+        .AddToQuery(' AND ' + paramName + ' = ' + ':' + paramName)
+  end;
+
+  Self.Query
+    .SetAllParams<TMovimentacao>(data)
+    .Open();
+
+  jsonArray := Self.Query.ConvertQueryToJSONArray();
+
+  Result := TGBJSONDefault.Serializer<TMovimentacao>
+                       .JsonStringToList(jsonArray.ToJSON);
+end;
+
+function TServiceEstoque.ConsultaPorId(id: UInt64): TEstoque;
+begin
+
+end;
+
+constructor TServiceEstoque.Create;
+begin
+  inherited;
+  Self.Query := TFDQuery.Create(nil);
+  Self.Query.ConnectToDatabase(
+    Self.FConnection
+  );
+end;
+
+function TServiceEstoque.Criar(
+  data: TEstoque): TObjectList<TEstoque>;
+begin
+
+end;
+
+destructor TServiceEstoque.Destroy;
+begin
+  Self.Query.Free;
+  inherited;
+end;
+
+function TServiceEstoque.Excluir(
+  data: TEstoque): TObjectList<TEstoque>;
+begin
+
+end;
+
+function TServiceEstoque.ExcluirPorId(id: UInt64): TEstoque;
+begin
+
+end;
+
+end.

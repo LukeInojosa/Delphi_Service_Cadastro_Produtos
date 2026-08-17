@@ -1,0 +1,164 @@
+unit Controller.Usuario;
+
+interface uses
+  Controller,
+  Utils;
+
+type
+  TController = Controller.TController;
+
+type
+  TControllerUsuario = class(Controller.TController)
+  public
+    class function LogIn(const AUsername, APassword: String): Boolean;
+    class procedure LogOut(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Cadastro(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Delete(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Get(Req: THorseRequest; Res: THorseResponse;
+    Next: TNextProc);
+  end;
+
+implementation uses
+  Service.Usuario,
+  GBJSON.Helper,
+  Horse.Commons,
+  System.SysUtils,
+  System.Generics.Collections,
+  System.JSON, System.Rtti,
+  System.Hash, Errors.Api;
+
+var
+  FServiceUsuario: TServiceUsuario;
+
+{ TControllerUsuario }
+
+class procedure TControllerUsuario.Cadastro(Req: THorseRequest;
+  Res: THorseResponse; Next: TNextProc);
+var
+  usuarioList: TObjectList<TUsuario>;
+  jsonBody : TJSONObject;
+  arrJson : TJSONArray;
+  RecUsuario: RUsuario;
+  Usuario: TUsuario;
+begin
+  jsonBody := Req.Body<TJsonObject>;
+
+  Usuario := TUsuario.Create;
+  if jsonBody.TryGetValue<String>('nome', RecUsuario.nome) then
+    Usuario.nome := RecUsuario.nome;
+
+  if jsonBody.TryGetValue<UInt64>('id_almoxarifado', RecUsuario.id_almoxarifado) then
+    Usuario.id_almoxarifado := RecUsuario.id_almoxarifado;
+
+  if jsonBody.TryGetValue<String>('senha', RecUsuario.senha) then
+    Usuario.senha := THashMD5.GetHashString(RecUsuario.senha + EnviromentVariables.Salt);
+
+  usuarioList := FServiceUsuario.Criar(Usuario);
+
+  arrJSON := TGBJSONDefault.Deserializer<TUsuario>
+                           .ListToJSONArray(usuarioList);
+
+  Res.Status(THttpStatus.Created)
+     .Send<TJSONObject>(
+        TJSONObject.Create
+        .AddPair('data', arrJSON)
+     );
+
+end;
+
+class procedure TControllerUsuario.Delete(Req: THorseRequest;
+  Res: THorseResponse; Next: TNextProc);
+var
+  Session: TUserSession;
+  Usuario: TUsuario;
+begin
+  Session := Req.Sessions.Session[TUserSession] as TUserSession;
+  if (
+    Session.Nome.isEmpty or
+    Session.Senha.isEmpty
+  ) then
+    raise ENotFound.Create('Nao ha usuario com estas credenciais');
+
+  Usuario := TUsuario.Create();
+  Usuario.nome := Session.Nome;
+  Usuario.senha := THashMD5.GetHashString(Session.Senha.Trim + EnviromentVariables.Salt);
+
+  if FServiceUsuario.Excluir(Usuario) then
+  begin
+    Res.Status(THttpStatus.OK)
+      .Send<TJSONObject>(
+        TJSONObject.Create
+        .AddPair('message', 'usuario excluido com sucesso' )
+        .AddPair('nome', Usuario.Nome )
+    );
+  end else
+  begin
+    Res.Status(THttpStatus.NotFound)
+      .Send<TJSONObject>(
+        TJSONObject.Create
+        .AddPair('message', 'Recurso nao encontrado' )
+        .AddPair('nome', Usuario.Nome )
+    );
+  end;
+
+
+end;
+
+class procedure TControllerUsuario.Get(Req: THorseRequest; Res: THorseResponse;
+  Next: TNextProc);
+var
+  jsonBody: TJSONObject;
+  RecUsuario: RUsuario;
+  Usuario: TUsuario;
+  listUsuario: TObjectList<TUsuario>;
+  jsonArray: TJSONArray;
+begin
+  try
+    Usuario := TUsuario.Create;
+    if System.SysUtils.TryStrToUInt64(Req.Params['id'], RecUsuario.id) then
+       Usuario.id := RecUsuario.id;
+
+    listUsuario := FServiceUsuario.Consulta(Usuario);
+
+    jsonArray := TGBJSONDefault.Deserializer<TUsuario>
+                               .ListToJSONArray(listUsuario);
+
+    Res
+      .Status(THTTPStatus.OK)
+      .Send<TJSONObject>(
+        TJSONObject.Create()
+        .AddPair('data', jsonArray));
+  finally
+    Usuario.Free;
+  end;
+end;
+
+class function TControllerUsuario.LogIn(const AUsername, APassword: String): Boolean;
+var
+  Usuario: TUsuario;
+  RecUsuario: RUsuario;
+begin
+  Usuario := TUsuario.Create;
+  Usuario.nome := AUsername.Trim;
+  Usuario.senha := THashMD5.GetHashString(APassword.Trim + EnviromentVariables.Salt);
+
+  Result := FServiceUsuario.CheckAutentication(Usuario);
+end;
+
+class procedure TControllerUsuario.LogOut(Req: THorseRequest;
+  Res: THorseResponse; Next: TNextProc);
+begin
+end;
+
+initialization
+
+FServiceUsuario := TServiceUsuario.Create();
+
+finalization
+
+FServiceUsuario.Free;
+
+end.
