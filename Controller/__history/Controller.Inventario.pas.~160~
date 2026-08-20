@@ -1,0 +1,311 @@
+unit Controller.Inventario;
+
+interface
+uses
+  Controller,
+  Model.Notas,
+  Model.Inventario,
+  GBSwagger.Path.Attributes,
+  Horse.GBSwagger.Registry,
+  Horse.GBSwagger.Controller;
+
+type
+  [SwagPath('inventario', 'Inventario')]
+  TControllerInventario = class(THorseGBSwagger)
+  public
+    [SwagPOST('Cria nota de inventario')]
+    [SwagParamBody('Nota de Inventario', TInventario)]
+    [SwagResponse(201, TNotas)]
+    procedure Post;
+
+    [SwagPUT('{id}', 'Altera Nota de Inventario')]
+    [SwagParamBody('Nota de Inventario', TInventario)]
+    [SwagResponse(200, TNotas)]
+    procedure Put;
+
+    [SwagDELETE('{id}', 'Deleta Nota de Inventario')]
+    [SwagResponse(200, TNotas)]
+    procedure Delete;
+  end;
+
+implementation uses
+  Service.Notas, Service.Produtos, Service.Movimentacao,
+  GBJSON.Helper,
+  Horse.Commons,
+  System.SysUtils,
+  System.Generics.Collections,
+  System.JSON, System.Rtti, Utils, Service.Usuario, Errors.Api,
+  Service.Almoxarifado, Service.Estoque;
+var
+  FServiceNotas: TServiceNotas;
+  FServiceProduto: TServiceProdutos;
+  FServiceMovimentacao: TServiceMovimentacao;
+  FServiceUsuario : TServiceUsuario;
+  FServiceAlmoxarifado: TServiceAlmoxarifado;
+  FServiceEstoque: TServiceEstoque;
+
+{ TControllerInventario }
+
+procedure TControllerInventario.Delete;
+var
+  RecNota : RNotas;
+  Nota: TNotas;
+  listMovimentacao: TObjectList<TMovimentacao>;
+  Movimentacao: TMovimentacao;
+begin
+  if not System.SysUtils.TryStrToUInt64(FRequest.Params['id_nota'], RecNota.id ) then
+    raise Exception.Create('forneca id da nota que se quer deletar');
+    
+  Nota := FServiceNotas.ConsultaPorId(RecNota.id);
+
+  if Nota.tipo_operacao <> 0 then
+    raise Exception.Create('Nota de Inventario nao existe');
+
+  if Nota.concluida then
+    raise Exception.Create('Nao eh possivel deletar nota de inventario concluida');
+
+  Movimentacao := TMovimentacao.Create;
+  Movimentacao.id_nota := Nota.id;
+  
+  listMovimentacao :=  FServiceMovimentacao.Consulta(Movimentacao);
+
+  Movimentacao.Free;
+  for Movimentacao in listMovimentacao do
+  begin
+    if not Assigned(FServiceMovimentacao.ExcluirPorId(Movimentacao.id)) then
+      raise Exception.Create('Nao foi possivel deletar todas as movimentacoes da nota, tente novamente');
+  end;
+
+  Nota := FServiceNotas.ExcluirPorId(Nota.id);
+
+  FResponse
+    .Status(THttpStatus.ok)
+    .Send(
+      TJSONObject.Create.AddPair('data', Nota.ToJSONObject)
+    );
+end;
+
+procedure TControllerInventario.Post;
+var
+  jsonBody: TJSONObject;
+  Nota: TNotas;
+  RecNota: RNotas;
+  Session: TUserSession;
+  listUsuario: TObjectList<TUsuario>;
+  Usuario: TUsuario;
+begin
+  Usuario := nil;
+  Nota := nil;
+
+  Session := FRequest.Sessions.Session[TUserSession] as TUserSession;
+  jsonBody := FRequest.Body<TJSONObject>;
+  try
+    // pega informacoes do usuario que esta criando a nota
+    Usuario := TUsuario.Create;
+    Usuario.nome := Session.Nome;
+    listUsuario := FServiceUsuario.Consulta(Usuario);
+
+    if listUsuario.Count = 0 then
+      raise EConflict.Create('nao foi possivel achar o usuario que esta criando a nota');
+
+    // cria nota
+    Nota := TNotas.Create;
+    Nota.tipo_operacao := 0; // tipo de operacao de nota de inventario eh 0
+    Nota.usuario_responsavel := listUsuario[0].id;
+    Nota.id_almoxarifado := listUsuario[0].id_almoxarifado;
+    Nota.concluida := False;
+    Nota.data_registro := Now(); // supoe dia atual se valor nao for passado
+
+    if jsonBody.TryGetValue<String>('observacao', RecNota.observacao) then
+      Nota.observacao := RecNota.observacao;
+
+    if jsonBody.TryGetValue<UInt64>('id_almoxarfado', RecNota.id_almoxarifado) then
+      Nota.id_almoxarifado := RecNota.id_almoxarifado;
+
+    if not (
+      FServiceAlmoxarifado.Existe(Nota.id_almoxarifado) and
+      FServiceAlmoxarifado.EstaAtivo(Nota.id_almoxarifado)
+    ) then
+      raise EConflict.Create('Nao existe almoxarifado com este id ou almoxarifado esta inativo');
+      
+    if jsonBody.TryGetValue<UInt64>('usuario_responsavel', RecNota.usuario_responsavel) then
+    begin
+      if not Assigned(FServiceUsuario.ConsultaPorId(RecNota.usuario_responsavel)) then
+        raise EConflict.Create('Usuario nao existe');
+
+      Nota.usuario_responsavel := RecNota.usuario_responsavel;
+    end;
+
+    if jsonBody.TryGetValue<TDateTime>('data_registro', RecNota.data_registro) then
+      Nota.data_registro := RecNota.data_registro;
+
+    Nota :=  FServiceNotas.Criar(Nota);
+
+    FResponse
+      .Status(THTTPStatus.Created)
+      .Send<TJSONObject>(
+        TJSONObject.Create
+          .AddPair('data', Nota.ToJSONObject())
+      );
+  finally
+    Nota.Free;
+    Usuario.Free;
+  end;
+end;
+
+procedure TControllerInventario.Put;
+var
+  jsonBody: TJSONObject;
+  NotaASerAtualizada: TNotas;
+  RecNota: RNotas;
+  listMovimentacao: TObjectList<TMovimentacao>;
+  Movimentacao: TMovimentacao;
+  NotaAjusteEntrada: TNotas;
+  NotaAjusteSaida: TNotas;
+  listNotas: TObjectList<TNotas>;
+  arrJSON: TJSONArray;
+  jsonResponse: TJSONObject;
+begin
+  jsonBody := FRequest.Body<TJSONObject>;
+  // Verifica se nota eh de inventario
+  if not System.SysUtils.TryStrToUInt64(FRequest.Params['id_nota'], RecNota.id) then
+    raise Exception.Create('Forneca id da nota que se deseja alterar');
+
+  NotaASerAtualizada := FServiceNotas.ConsultaPorId(RecNota.id);
+
+  if not Assigned(NotaASerAtualizada) then
+    raise Exception.Create('Nota de inventario nao existe');
+
+  if NotaASerAtualizada.tipo_operacao <> 0 then
+    raise Exception.Create('Nota de inventario nao existe');
+
+  if NotaASerAtualizada.concluida then
+    raise Exception.Create('Nao eh possivel atualizar nota de inventario que ja foi concluida');
+
+  // se campo concluida nao sera atualizado
+  if not jsonBody.TryGetValue<Boolean>('concluida', RecNota.concluida) then
+  begin
+    if jsonBody.TryGetValue<TDateTime>('data_registro', RecNota.data_registro) then
+      NotaASerAtualizada.data_registro := RecNota.data_registro;
+
+    if jsonBody.TryGetValue<UInt64>('id_almoxarifado', RecNota.id_almoxarifado) then
+    begin
+      // almoxarifado deve estar ativo para se atualizar uma nota
+      if not FServiceAlmoxarifado.EstaAtivo(RecNota.id_almoxarifado) then
+        raise Exception.Create('Almoxarifado nao existe ou nao esta ativo');
+          
+      NotaASerAtualizada.id_almoxarifado := RecNota.id_almoxarifado;
+    end;
+
+    if jsonBody.TryGetValue<String>('observacao', RecNota.observacao) then
+      NotaASerAtualizada.observacao := RecNota.observacao;
+
+    if jsonBody.TryGetValue<UInt64>('usuario_responsavel', RecNota.usuario_responsavel) then
+      NotaASerAtualizada.usuario_responsavel := RecNota.usuario_responsavel;
+
+    listNotas := FServiceNotas.Alterar(NotaASerAtualizada);
+
+    arrJSON := TGBJSONDefault.Deserializer<TNotas>
+                             .ListToJSONArray(listNotas);
+
+    FResponse.Status(THttpStatus.Created)
+       .Send<TJSONObject>(
+          TJSONObject.Create
+            .AddPair('data', arrJSON)
+       );
+  end
+  else if (not NotaASerAtualizada.concluida) and RecNota.concluida then
+  begin
+    if RecNota.concluida = NotaASerAtualizada.concluida then
+      raise EConflict.Create('Estado concluida da ja eh o estado da atualizacao');
+
+    //  almoxarifado deve estar ativo
+    if not FServiceAlmoxarifado.EstaAtivo(NotaASerAtualizada.id_almoxarifado) then
+      raise Exception.Create('Almoxarifado deve estar ativo para se poder criar nota');
+
+     // verificar se todos os produtos ativos do estoque estao aparecendo na nota
+    if not FServiceNotas.PossuiTodosProdutosDoEstoque(NotaASerAtualizada, False) then
+      raise Exception.Create('Nota deve possuir todos os produtos do estoque');
+
+    // nota - estoque
+    listMovimentacao := FServiceNotas.DiferencaEntreInventarioEEstoque(NotaASerAtualizada);
+
+    NotaAjusteEntrada := TNotas.Create;
+    NotaAjusteEntrada.tipo_operacao := 1;
+    NotaAjusteEntrada.data_registro := Now();
+    NotaAjusteEntrada.observacao := 'nota de ajuste de entrada';
+    NotaAjusteEntrada.usuario_responsavel := NotaASerAtualizada.usuario_responsavel ;
+    NotaAjusteEntrada.id_almoxarifado := NotaASerAtualizada.id_almoxarifado;
+
+    NotaAjusteEntrada := FServiceNotas.Criar(NotaAjusteEntrada);
+
+    NotaAjusteSaida := TNotas.Create;
+    NotaAjusteSaida.tipo_operacao := -1;
+    NotaAjusteSaida.data_registro := Now();
+    NotaAjusteSaida.observacao := 'nota de ajuste de saida';
+    NotaAjusteSaida.usuario_responsavel := NotaASerAtualizada.usuario_responsavel ;
+    NotaAjusteSaida.id_almoxarifado := NotaASerAtualizada.id_almoxarifado;
+
+    NotaAjusteSaida := FServiceNotas.Criar(NotaAjusteSaida);
+
+    try
+      for Movimentacao in listMovimentacao do
+      begin
+        Movimentacao.Show;
+        if (Movimentacao.quantidade > 0) then
+        begin
+          Movimentacao.id_nota := NotaAjusteEntrada.id;
+          FServiceMovimentacao.Criar(Movimentacao);
+        end
+        else if (Movimentacao.quantidade < 0) then
+        begin
+          Movimentacao.quantidade := Abs(Movimentacao.quantidade);
+          Movimentacao.id_nota := NotaAjusteSaida.id;
+          FServiceMovimentacao.Criar(Movimentacao);
+        end;
+      end;
+
+      if not (
+        FServiceNotas.Concluir(NotaAjusteSaida) and
+        FServiceNotas.Concluir(NotaAjusteEntrada) and
+        FServiceNotas.Concluir(NotaASerAtualizada)
+      ) then
+        raise Exception.Create('Nao foi possivel concluir as notas');
+    except
+      on E: Exception do
+      begin
+        FServiceNotas.ExcluirPorId(NotaAjusteSaida.id);
+        FServiceNotas.ExcluirPorId(NotaAjusteEntrada.id);
+      end;
+    end;
+
+    jsonResponse := TJSONObject.Create;
+
+    FResponse
+      .Status(THTTpStatus.OK)
+      .Send( TJSONObject.Create
+        .AddPair('data', jsonResponse
+          .AddPair('nota_ajuste_saida', NotaAjusteSaida.ToJSONObject())
+          .AddPair('nota_ajuste_entrada', NotaAjusteEntrada.ToJSONObject())
+          .AddPair('nota_de_inventario', NotaASerAtualizada.ToJSONObject()))
+      );
+  end
+end;
+
+
+initialization
+  THorseGBSwaggerRegistry.RegisterPath(TControllerInventario);
+  FServiceNotas:= TServiceNotas.Create;
+  FServiceProduto:= TServiceProdutos.Create;
+  FServiceMovimentacao:= TServiceMovimentacao.Create;
+  FServiceUsuario := TServiceUsuario.Create;
+  FServiceAlmoxarifado := TServiceAlmoxarifado.Create;
+  FServiceEstoque := TServiceEstoque.Create;
+finalization
+  FServiceNotas.Free;
+  FServiceProduto.Free;
+  FServiceMovimentacao.Free;
+  FServiceUsuario.Free;
+  FServiceAlmoxarifado.Free;
+  FServiceEstoque.free;
+end.

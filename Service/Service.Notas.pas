@@ -3,6 +3,7 @@ unit Service.Notas;
 interface uses
   Model.Notas,
   Service,
+  Model.Movimentacao,
   System.JSON,
   FireDAC.Comp.Client,
   Database.Query,
@@ -28,6 +29,10 @@ type TServiceNotas = class(TService)
     function ExcluirPorId(id: UInt64 = 0): TNotas;
     function Alterar(data: TNotas): TObjectList<TNotas>;
     function Concluir(data: TNotas): Boolean;
+    function PossuiTodosProdutosDoEstoque(data:TNotas;onlyAtivo: Boolean = True): Boolean;
+    function getMovimentacao(id: UInt64 = 0): TObjectList<TMovimentacao>;
+    function DiferencaEntreInventarioEEstoque(data: TNotas): TObjectList<TMovimentacao>;
+    function Existe(id: UInt64 = 0): Boolean;
 end;
 
 implementation uses
@@ -54,10 +59,10 @@ begin
     .StartQuery
     .AddToQuery('UPDATE NOTAS ')
     .AddToQuery('SET ')
-    .AddToQuery(data.updateStringFields())
+    .AddToQuery(data.updateStringFields(True))
     .AddToQuery('WHERE ID = :ID ')
     .AddToQuery('RETURNING ')
-    .AddToQuery(data.getAllFields())
+    .AddToQuery(data.getAllFields)
     .SetAllParams<TNotas>(data)
     .Open();
 
@@ -203,6 +208,38 @@ begin
   inherited;
 end;
 
+function TServiceNotas.DiferencaEntreInventarioEEstoque(
+  data: TNotas): TObjectList<TMovimentacao>;
+var
+  arrJson : TJSONArray;
+begin
+  if not (
+    Assigned(data) and
+    data.isFilled.Items['id'] and
+    data.isFilled.Items['id_almoxarifado'] and
+    (data.tipo_operacao = 0)
+  ) then
+    raise Exception.Create('Erro de validacao dos dados');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT M.ID_PRODUTO AS id_produto, ')
+    .AddToQuery('(M.quantidade - COALESCE(E.quantidade, 0)) AS quantidade, CAST(:id_nota AS BIGINT) AS id_nota')
+    .AddToQuery('FROM MOVIMENTACAO M ')
+    .AddToQuery('LEFT JOIN ESTOQUE E ')
+    .AddToQuery('ON E.id_produto = M.id_produto ')
+    .AddToQuery('WHERE E.id_almoxarifado = :id_almoxarifado')
+    .AddToQuery('AND M.id_nota = :ID_NOTA ')
+    .SetParam('ID_NOTA', data.id)
+    .SetParam('id_almoxarifado', data.id_almoxarifado)
+    .Open();
+
+  arrJson := Self.Query.ConvertQueryToJSONArray();
+
+  Result := TGBJSONDefault.Serializer<TMovimentacao>
+                          .JsonStringToList(arrJSON.ToJSON);
+end;
+
 function TServiceNotas.Excluir(data: TNotas): TNotas;
 var
   json : TJSONObject;
@@ -260,7 +297,7 @@ begin
     .StartQuery
     .AddToQuery('DELETE FROM NOTAS')
     .AddToQuery('WHERE ID  = :ID')
-    .AddToQuery('RETURNING ' + Result.getAllFields())
+    .AddToQuery('RETURNING ' + Result.getAllFields)
     .SetParam('ID', id)
     .Open();
 
@@ -271,6 +308,81 @@ begin
 
   Result.FromJSONObject(arrJson.Get(0) as TJSONObject);
 
+end;
+
+function TServiceNotas.Existe(id: UInt64): Boolean;
+begin
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT * FROM NOTAS WHERE ID = :ID')
+    .SetParam('ID', ID)
+    .Open();
+
+  Result := Self.Query.RecordCount > 0;
+end;
+
+function TServiceNotas.getMovimentacao(id: UInt64): TObjectList<TMovimentacao>;
+var
+  jsonResult : TJSONArray;
+begin
+  if id = 0 then
+    raise Exception.Create('Erro de Validacao');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT * FROM MOVIMENTACAO WHERE ID_NOTA = :ID_NOTA')
+    .SetParam('ID_NOTA', id)
+    .Open();
+
+  jsonResult := Self.Query.ConvertQueryToJSONArray();
+
+  if jsonResult.Count = 0 then
+    Exit(nil);
+
+  Result := TGBJSONDefault.Serializer<TMovimentacao>
+                          .JsonStringToList(jsonResult.ToJSON);
+end;
+
+function TServiceNotas.PossuiTodosProdutosDoEstoque(data: TNotas;
+  onlyAtivo: Boolean): Boolean;
+var
+  jsonArray: TJSONArray;
+  value: integer;
+begin
+  if not (
+    Assigned(data) and
+    data.isFilled.Items['id'] and
+    data.isFilled.Items['id_almoxarifado']
+  ) then
+    raise Exception.Create('Erro de validacao');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT SUM(CASE WHEN MOVIMENTACAO.QUANTIDADE IS NULL THEN 1 ELSE 0 END) AS qtd_nulls ')
+    .AddToQuery('FROM ESTOQUE LEFT JOIN MOVIMENTACAO ')
+    .AddToQUery('ON ESTOQUE.id_produto = MOVIMENTACAO.id_produto ')
+    .AddToQuery('AND MOVIMENTACAO.id_nota = :id_nota ')
+    .AddToQuery('WHERE ID_ALMOXARIFADO = :id_almoxarifado ')
+    .SetParam('id_almoxarifado', data.id_almoxarifado)
+    .SetParam('id_nota', data.id);
+
+  if onlyAtivo then
+    Self.Query
+      .AddToQuery('AND ESTOQUE.ATIVO = :ATIVO')
+      .SetParam('ATIVO', True);
+
+  Self.Query.Open();
+
+  jsonArray := Self.Query.ConvertQueryToJSONArray();
+
+  if jsonArray.Count = 0 then
+    Exit(False);
+
+  if not (jsonArray.Get(0) as TJSONObject).TryGetValue<Integer>('qtd_nulls', value) then
+    Exit(False);
+
+  // se valor de nulos eh igual a zero , entao a nota possui todos os valores
+  Result := value = 0;
 end;
 
 end.

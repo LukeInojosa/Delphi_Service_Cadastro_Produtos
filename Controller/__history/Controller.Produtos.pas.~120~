@@ -1,0 +1,278 @@
+unit Controller.Produtos;
+
+interface
+
+uses
+  Controller,
+  Model.Produtos,
+  GBSwagger.Path.Attributes,
+  Horse.GBSwagger.Registry,
+  Horse.GBSwagger.Controller;
+
+type
+  [SwagPath('produto', 'Produto')]
+  TControllerProdutos = class(THorseGBSwagger)
+  public
+    [SwagGET('{id}', 'Consulta Produtos')]
+    [SwagParamPath('id', 'id do produto' ,True,False)]
+    [SwagParamQuery('codigo')]
+    [SwagParamQuery('descricao')]
+    [SwagParamQuery('medida')]
+    [SwagResponse(200,TProdutos,True, 'Produtos')]
+    procedure GetPorId;
+
+    [SwagGET('{num_pagina}/{qtd_por_pagina}', 'Consulta Produtos: Pagina Resultado')]
+    [SwagParamPath('num_pagina','numero da pagina',True)]
+    [SwagParamPath('qtd_por_pagina','quantidade de registros retornados por pagina',True)]
+    [SwagParamQuery('codigo')]
+    [SwagParamQuery('descricao')]
+    [SwagParamQuery('medida')]
+    [SwagResponse(200,TProdutos,True, 'Produtos Paginado')]
+    procedure GetPaginado;
+
+    [SwagPOST('Cria novo Produto')]
+    [SwagParamBody('Produto', TProdutos)]
+    [SwagResponse(201, TProdutos, 'Produto Criado')]
+    procedure Post;
+
+    [SwagPUT('{id}','Altera dados do Produto')]
+    [SwagParamPath('id', 'id do produto a ser alterado' ,True)]
+    [SwagParamBody('Produto', TProdutos)]
+    [SwagResponse(200,TProdutos, 'Produto Alterado')]
+    procedure Put;
+
+    [SwagDELETE('{id}','Remove Produto')]
+    [SwagParamPath('id','id do produto', True)]
+    [SwagResponse(200,TProdutos, 'Produto Deletado')]
+    procedure Delete;
+  end;
+
+implementation uses
+  Service.Produtos,
+  GBJSON.Helper,
+  Horse.Commons,
+  System.SysUtils,
+  System.Generics.Collections,
+  System.JSON, System.Rtti;
+var
+  FServiceProdutos: TServiceProdutos;
+  Context : TRttiContext;
+
+
+
+{ TControllerProdutos }
+
+procedure TControllerProdutos.Put;
+var
+  updatedProdutos: TObjectList<TProdutos>;
+  Produto: TProdutos;
+  RecProduto: RProdutos;
+  jsonArray: TJSONArray;
+  jsonResponse: TJSONObject;
+  jsonBody: TJSONObject;
+begin
+  try
+    jsonBody := FRequest.Body<TJSONObject>;
+
+    if not System.SysUtils.TryStrToUInt64(FRequest.Params['id'], RecProduto.id) then
+      raise EValidation.Create('Forneca param id do produto que deseja deletar');
+
+    Produto := TProdutos.Create();
+    Produto.id := RecProduto.id;
+
+    if jsonBody.TryGetValue<String>
+    ('medida', RecProduto.medida) then
+      Produto.medida:= RecProduto.medida;
+
+    if jsonBody.TryGetValue<String>
+    ('codigo', RecProduto.codigo) then
+      Produto.codigo := RecProduto.codigo;
+
+    if jsonBody.TryGetValue<String>
+    ('descricao', RecProduto.descricao) then
+      Produto.descricao := RecProduto.descricao;
+
+    updatedProdutos := FServiceProdutos.Alterar(Produto);
+
+    jsonArray := TGBJSONDefault.Deserializer<TProdutos>
+                               .ListToJSONArray(updatedProdutos);
+
+    if jsonArray.Count = 0 then
+      jsonArray.Add(TJSONObject.Create);
+
+    FResponse
+      .Status(THTTPStatus.OK)
+      .Send<TJSONObject>(
+        TJSONObject.Create
+          .AddPair('data', jsonArray.Items[0])
+      );
+
+  finally
+    Produto.Free;
+  end;
+
+end;
+
+procedure TControllerProdutos.Delete;
+var
+  deletedProdutos: TObjectList<TProdutos>;
+  Produto: TProdutos;
+  jsonArray: TJSONArray;
+  id: UInt64;
+begin
+  try
+    Produto := TProdutos.Create();
+
+    if not System.SysUtils.TryStrToUInt64(FRequest.Params['id'],id) then
+      raise EValidation.Create('Forneca param id do produto que deseja deletar');
+
+    Produto.id := id;
+
+    deletedProdutos := FServiceProdutos.Excluir(Produto);
+
+    jsonArray := TGBJSONDefault.Deserializer<TProdutos>
+                               .ListToJSONArray(deletedProdutos);
+
+    if jsonArray.Count = 0 then
+      jsonArray.Add(TJSONObject.Create);
+
+    FResponse
+      .Status(THTTPStatus.OK)
+      .Send<TJSONObject>(
+        TJSONObject.Create
+          .AddPair('data', jsonArray.Items[0])
+      );
+
+  finally
+    Produto.Free;
+  end;
+end;
+
+procedure TControllerProdutos.GetPaginado;
+var
+  Produto: TProdutos;
+  listProdutos: TObjectList<TProdutos>;
+  jsonArray: TJSONArray;
+  id: UInt64;
+  num_pagina : Integer;
+  qtd_por_pagina: Integer;
+begin
+  Produto := Nil;
+  try
+    Produto := TProdutos.Create();
+
+    num_pagina := 0;
+    qtd_por_pagina := 0;
+
+    System.SysUtils.TryStrToInt(FRequest.Params['num_pagina'], num_pagina);
+    System.SysUtils.TryStrToInt(FRequest.Params['qtd_por_pagina'], qtd_por_pagina);
+
+    if (
+      ((num_pagina <> 0) and (qtd_por_pagina = 0)) or
+      ((num_pagina = 0) and (qtd_por_pagina <> 0))
+    )then
+      raise EValidation.Create('Param num_pagina ou qtd_por pagina faltantes');
+
+    if not FRequest.Query['descricao'].isEmpty then
+      Produto.descricao := FRequest.Query['descricao'];
+
+    if not FRequest.Query['codigo'].isEmpty then
+      Produto.codigo := FRequest.Query['codigo'];
+
+    if not FRequest.Query['medida'].isEmpty then
+      Produto.medida := FRequest.Query['medida'];
+
+    listProdutos := FServiceProdutos.Consulta(Produto, num_pagina, qtd_por_pagina);
+
+    jsonArray := TGBJSONDefault.Deserializer<TProdutos>
+                               .ListToJSONArray(listProdutos);
+
+    FResponse
+      .Status(THTTPStatus.OK)
+      .Send<TJSONObject>(
+        TJSONObject.Create()
+          .AddPair('data', jsonArray)
+      );
+  finally
+    Produto.free;
+    listProdutos.free;
+  end;
+end;
+
+procedure TControllerProdutos.GetPorId;
+var
+  Produto: TProdutos;
+  listProdutos: TObjectList<TProdutos>;
+  jsonArray: TJSONArray;
+  id: UInt64;
+  num_pagina : Integer;
+  qtd_por_pagina: Integer;
+begin
+  Produto := Nil;
+  try
+    Produto := TProdutos.Create();
+
+    if System.SysUtils.TryStrToUInt64(FRequest.Params['id'], id) then
+      Produto.id := id;
+
+    if not FRequest.Query['descricao'].isEmpty then
+      Produto.descricao := FRequest.Query['descricao'];
+
+    if not FRequest.Query['codigo'].isEmpty then
+      Produto.codigo := FRequest.Query['codigo'];
+
+    if not FRequest.Query['medida'].isEmpty then
+      Produto.medida := FRequest.Query['medida'];
+
+    listProdutos := FServiceProdutos.Consulta(Produto);
+
+    jsonArray := TGBJSONDefault.Deserializer<TProdutos>
+                               .ListToJSONArray(listProdutos);
+
+    FResponse
+      .Status(THTTPStatus.OK)
+      .Send<TJSONObject>(
+        TJSONObject.Create()
+          .AddPair('data', jsonArray)
+      );
+  finally
+    Produto.free;
+    listProdutos.free;
+  end;
+end;
+
+procedure TControllerProdutos.Post;
+var
+  Produto: TProdutos;
+begin
+  try
+    Produto := TProdutos.Create();
+    Produto.fromJSONObject(FRequest.Body<TJSONObject>);
+
+    Produto := FServiceProdutos.Criar(Produto);
+
+    FResponse
+      .Status(THTTPStatus.Created)
+      .Send<TJSONObject>(
+        TJSONObject.Create
+          .AddPair('data',Produto.ToJSONObject())
+      );
+
+  finally
+    Produto.Free();
+  end;
+
+end;
+
+
+initialization
+
+THorseGBSwaggerRegistry.RegisterPath(TControllerProdutos);
+FServiceProdutos := TServiceProdutos.Create();
+
+finalization
+
+FServiceProdutos.Free;
+Context.Free;
+
+end.

@@ -2,22 +2,40 @@ unit Controller.Almoxarifado;
 
 interface
 
-uses Controller;
+uses
+  Controller,
+  Model.Almoxarifado,
+  GBSwagger.Path.Attributes,
+  Horse.GBSwagger.Registry,
+  Horse.GBSwagger.Controller;
 
 type
-  TController = Controller.TController;
-
-type
-  TControllerAlmoxarifado = class(Controller.TController)
+  [SwagPath('almoxarifado', 'Almoxarifado')]
+  TControllerAlmoxarifado = class(THorseGBSwagger)
   public
-    class procedure Get(Req: THorseRequest; Res: THorseResponse;
-      Next: TNextProc);
-    class procedure Post(Req: THorseRequest; Res: THorseResponse;
-      Next: TNextProc);
-    class procedure Put(Req: THorseRequest; Res: THorseResponse;
-      Next: TNextProc);
-    class procedure Delete(Req: THorseRequest; Res: THorseResponse;
-      Next: TNextProc);
+    [SwagGET('{id}','Consulta Almoxarifado')]
+    [SwagParamPath('id', 'id do almoxarifado sendo buscado', True, False)]
+    [SwagParamQuery('codigo')]
+    [SwagParamQuery('descricao')]
+    [SwagParamQuery('ativo')]
+    [SwagResponse(200,TAlmoxarifado, True)]
+    procedure Get;
+
+    [SwagPOST('Cria Almoxarifado')]
+    [SwagParamBody('Almoxarifado', TAlmoxarifado)]
+    [SwagResponse(201, TAlmoxarifado)]
+    procedure Post;
+
+    [SwagPUT('{id}','Altera Almoxarifado')]
+    [SwagParamBody('Almoxarifado', TAlmoxarifado)]
+    [SwagParamPath('id', 'id do almoxarifado a ser alterado', True)]
+    [SwagResponse(200, TAlmoxarifado)]
+    procedure Put;
+
+    [SwagDELETE('{id}','Deleta Almoxarifado')]
+    [SwagParamPath('id', 'id do almoxarifado a deletar', True)]
+    [SwagResponse(200, TAlmoxarifado)]
+    procedure Delete;
   end;
 
 implementation
@@ -35,49 +53,60 @@ var
   Context : TRttiContext;
   { TControllerAlmoxarifado }
 
-class procedure TControllerAlmoxarifado.Put(Req: THorseRequest;
-  Res: THorseResponse; Next: TNextProc);
+procedure TControllerAlmoxarifado.Put;
 var
   updatedAlmoxarifados: TObjectList<TAlmoxarifado>;
   Almoxarifado: TAlmoxarifado;
   RecAlmoxarifado: RAlmoxarifado;
   jsonArray: TJSONArray;
-  jsonResponse: TJSONObject;
   jsonBody: TJSONObject;
 begin
-  jsonBody := Req.Body<TJSONObject>;
+  Almoxarifado := Nil;
+  try
+    jsonBody := FRequest.Body<TJSONObject>;
 
-  if Req.Params.Items['id'].IsEmpty then
-    raise Exception.Create('erro na validacao de parametros. forneça id e ativo');
+    if FRequest.Params.Items['id'].IsEmpty then
+      raise EValidation.Create('falta parametro: (id: inteiro)');
 
-  Almoxarifado := TAlmoxarifado.Create();
-  Almoxarifado.id := Req.Params.Items['id'].Trim.ToInt64;
+    Almoxarifado := TAlmoxarifado.Create();
+    Almoxarifado.id := FRequest.Params.Items['id'].Trim.ToInt64;
 
-  if jsonBody.TryGetValue<Boolean>
-  ('ativo', RecAlmoxarifado.ativo) then
-    Almoxarifado.ativo:= RecAlmoxarifado.ativo;
+    if jsonBody.TryGetValue<Boolean>
+    ('ativo', RecAlmoxarifado.ativo) then
+      Almoxarifado.ativo:= RecAlmoxarifado.ativo
+    else
+    begin
+      if FServiceAlmoxarifado.PossuiNota(Almoxarifado.id) then
+        raise EConflict.Create('Nao eh possivel alterar almoxarifado que possui registros de nota');
+    end;
 
-  if jsonBody.TryGetValue<String>
-  ('codigo', RecAlmoxarifado.codigo) then
-    Almoxarifado.codigo := RecAlmoxarifado.codigo;
+    if jsonBody.TryGetValue<String>
+    ('codigo', RecAlmoxarifado.codigo) then
+      Almoxarifado.codigo := RecAlmoxarifado.codigo;
 
-  if jsonBody.TryGetValue<String>
-  ('descricao', RecAlmoxarifado.descricao) then
-    Almoxarifado.descricao := RecAlmoxarifado.descricao;
+    if jsonBody.TryGetValue<String>
+    ('descricao', RecAlmoxarifado.descricao) then
+      Almoxarifado.descricao := RecAlmoxarifado.descricao;
 
-  updatedAlmoxarifados := FServiceAlmoxarifado.Alterar(Almoxarifado);
+    updatedAlmoxarifados := FServiceAlmoxarifado.Alterar(Almoxarifado);
 
-  jsonArray := TGBJSONDefault.Deserializer<TAlmoxarifado>
-                             .ListToJSONArray(updatedAlmoxarifados);
+    jsonArray := TGBJSONDefault.Deserializer<TAlmoxarifado>
+                               .ListToJSONArray(updatedAlmoxarifados);
+    if jsonArray.Count = 0 then
+      jsonArray.Add(TJSONObject.Create);
 
-  jsonResponse := TJSONObject.Create();
-  jsonResponse.AddPair('data', jsonArray);
-
-  Res.Status(THTTPStatus.OK).Send<TJSONObject>(jsonResponse);
+    FResponse
+      .Status(THTTPStatus.OK)
+      .Send<TJSONObject>(
+        TJSONObject.Create
+          .AddPair('data', jsonArray.Items[0])
+      );
+  finally
+    Almoxarifado.Free;
+  end;
 end;
 
-class procedure TControllerAlmoxarifado.Delete(Req: THorseRequest;
-  Res: THorseResponse; Next: TNextProc);
+procedure TControllerAlmoxarifado.Delete;
 var
   deletedAlmoxarifados: TObjectList<TAlmoxarifado>;
   Almoxarifado: TAlmoxarifado;
@@ -85,90 +114,119 @@ var
 begin
   try
     Almoxarifado := TAlmoxarifado.Create();
-    if not Req.Params.Items['id'].IsEmpty then
-      Almoxarifado.id := Req.Params.Items['id'].Trim.ToInt64;
-    if not Req.Params.Items['codigo'].IsEmpty then
-      Almoxarifado.codigo := Req.Params.Items['codigo'].Trim;
+    if not FRequest.Params.Items['id'].IsEmpty then
+      Almoxarifado.id := FRequest.Params.Items['id'].Trim.ToInt64;
+
+    if FServiceAlmoxarifado.PossuiNota(Almoxarifado.id) then
+      raise EConflict.Create('Nao eh possivel alterar almoxarifado que possui registros de nota');
+
+    if not FRequest.Params.Items['codigo'].IsEmpty then
+      Almoxarifado.codigo := FRequest.Params.Items['codigo'].Trim;
 
     deletedAlmoxarifados := FServiceAlmoxarifado.Excluir(Almoxarifado);
+
     jsonArray := TGBJSONDefault.Deserializer<TAlmoxarifado>
                                .ListToJSONArray(deletedAlmoxarifados);
 
-    Res.Status(THTTPStatus.OK).Send<TJSONObject>(
-      TJSONObject.Create
-        .AddPair('data',jsonArray)
-    );
 
+    if jsonArray.Count = 0 then
+      jsonArray.Add(TJSONObject.Create);
+
+    FResponse
+      .Status(THTTPStatus.OK)
+      .Send<TJSONObject>(
+        TJSONObject.Create
+          .AddPair('data',jsonArray.Items[0])
+      );
   finally
     Almoxarifado.Free;
   end;
 end;
 
-class procedure TControllerAlmoxarifado.Get(Req: THorseRequest;
-  Res: THorseResponse; Next: TNextProc);
+procedure TControllerAlmoxarifado.Get;
 var
   Almoxarifado: TAlmoxarifado;
   listAlmoxarifado: TObjectList<TAlmoxarifado>;
   jsonArray: TJSONArray;
-  id: String;
+  id: UInt64;
+  ativo: Boolean;
 begin
+  Almoxarifado := Nil;
   try
-    // Inicializacao de Variaveis
     Almoxarifado := TAlmoxarifado.Create();
 
-    // pega parametros da Requisicao
-    id := Req.Params.Items['id'];
+    if System.SysUtils.TryStrToUInt64(FRequest.Params['id'], id) then
+      Almoxarifado.id := id;
 
-    // constroi input para o service
-    // fazendo cast nos parametros
+    if not FRequest.Query['codigo'].IsEmpty then
+      Almoxarifado.codigo := FRequest.Query['codigo'];
 
-    if (not id.IsEmpty) then
-      Almoxarifado.id := id.Trim.ToInt64;
+    if not FRequest.Query['descricao'].IsEmpty then
+      Almoxarifado.descricao := FRequest.Query['descricao'];
 
-    Writeln('- Realizando Consulta de Almoxarifado por id');
+    if System.SysUtils.TryStrToBool(FRequest.Query['ativo'], ativo) then
+      Almoxarifado.ativo := ativo;
 
     listAlmoxarifado := FServiceAlmoxarifado.Consulta(Almoxarifado);
 
-    // construindo resposta
     jsonArray := TGBJSONDefault.Deserializer<TAlmoxarifado>.ListToJSONArray
       (listAlmoxarifado);
 
-    Res
+    FResponse
       .Status(THTTPStatus.OK)
       .Send<TJSONObject>(
         TJSONObject.Create()
         .AddPair('data', jsonArray)
       );
   finally
-    Almoxarifado.free;
+    Almoxarifado.Free;
     listAlmoxarifado.free;
   end;
 end;
 
-class procedure TControllerAlmoxarifado.Post(Req: THorseRequest;
-  Res: THorseResponse; Next: TNextProc);
+procedure TControllerAlmoxarifado.Post;
 var
   Almoxarifado: TAlmoxarifado;
+  RecAlmoxarifado: RAlmoxarifado;
+  jsonBody: TJsonObject;
 begin
+  Almoxarifado := Nil;
   try
+    jsonBody := FRequest.Body<TJsonObject>;
+
     Almoxarifado := TAlmoxarifado.Create();
-    Almoxarifado.fromJSONObject(Req.Body<TJSONObject>);
+    //a descricao do almoxarifado deve ser obrigatoria
+    if not jsonBody.TryGetValue<String>('descricao', RecAlmoxarifado.descricao) then
+      raise Exception.Create('Forneca a descricao do almoxarifado');
+
+    Almoxarifado.descricao := RecAlmoxarifado.descricao;
+
+    if jsonBody.TryGetValue<String>('codigo', RecAlmoxarifado.codigo) then
+      Almoxarifado.codigo := RecAlmoxarifado.codigo;
+
+    if jsonBody.TryGetValue<Boolean>('ativo', RecAlmoxarifado.ativo) then
+      Almoxarifado.ativo :=  RecAlmoxarifado.ativo
+    else
+      Almoxarifado.ativo := True;
 
     Almoxarifado := FServiceAlmoxarifado.Criar(Almoxarifado);
 
-    Res.Status(THTTPStatus.Created).Send<TJSONObject>
-      (Almoxarifado.ToJSONObject());
+    FResponse
+      .Status(THTTPStatus.Created)
+      .Send<TJSONObject>(
+        TJSONObject.Create
+        .AddPair('data', Almoxarifado.ToJSONObject())
+      );
   finally
     Almoxarifado.Free();
   end;
-
 end;
 
 
 initialization
 
+THorseGBSwaggerRegistry.RegisterPath(TControllerAlmoxarifado);
 FServiceAlmoxarifado := TServiceAlmoxarifado.Create();
-Context := TRttiContext.Create();
 
 finalization
 

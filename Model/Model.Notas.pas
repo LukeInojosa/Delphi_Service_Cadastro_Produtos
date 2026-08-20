@@ -28,12 +28,25 @@ type TNotas  = class(TModel)
 
   public
 
+    [SwagProp('id','',False, True)]
     property id: uInt64 read FId write SetId;
+
+    [SwagProp('tipo_operacao','', False)]
     property tipo_operacao: Integer read FTipoOperacao write SetTipoOperacao;
+
+    [SwagProp('data_registro','',False)]
     property data_registro: TDateTime read FDataRegistro write SetDataRegistro;
+
+    [SwagProp('observacao','',False)]
     property observacao: String read FObservacao write SetObservacao;
+
+    [SwagProp('concluida','',False)]
     property concluida: Boolean read FConcluida write SetConcluida;
+
+    [SwagProp('usuario_responsavel','',False)]
     property usuario_responsavel: uInt64 read FUsuarioResponsavel write SetUsuarioResponsavel;
+
+    [SwagProp('id_almoxarifado','',False)]
     property id_almoxarifado: uInt64 read FIdAlmoxarifado write SetIdAlmoxarifado;
 
     constructor Create();

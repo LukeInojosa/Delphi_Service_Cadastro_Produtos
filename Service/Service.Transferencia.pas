@@ -1,0 +1,147 @@
+unit Service.Transferencia;
+
+interface uses
+  Model.Transferencia,
+  Service,
+  System.JSON,
+  FireDAC.Comp.Client,
+  Database.Query,
+  GBJSON.Helper,
+  System.Generics.Collections,
+  System.Rtti;
+type
+  IService = Service.IService;
+  TFDQuery = FireDAC.Comp.Client.TFDQuery;
+  TTransferencia = Model.Transferencia.TTransferencia;
+  RTransferencia = Model.Transferencia.RTransferencia;
+
+type TServiceTransferencia = class(TService)
+  private
+    Query: TFDQuery;
+  public
+    constructor Create();
+    destructor Destroy(); override;
+    function Criar(data: TTransferencia): TTransferencia;
+    function Consulta(data: TTransferencia): TTransferencia; overload;
+    function Consulta(id_nota: UInt64): TTransferencia; overload;
+    function Excluir(data: TTransferencia): Boolean; overload;
+    function Excluir(id_nota: UInt64 = 0): Boolean; overload;
+    function Alterar(data: TTransferencia): TTransferencia;
+end;
+
+implementation
+
+uses
+  System.SysUtils;
+
+{ TServiceTransferencia }
+
+function TServiceTransferencia.Alterar(data: TTransferencia): TTransferencia;
+begin
+
+end;
+
+function TServiceTransferencia.Consulta(data: TTransferencia): TTransferencia;
+begin
+
+end;
+
+function TServiceTransferencia.Consulta(id_nota: UInt64): TTransferencia;
+var
+  jsonResult: TJSONArray;
+begin
+  if id_nota = 0 then
+    raise Exception.Create('Erro Validacao');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT * FROM TRANSFERENCIA WHERE ID_NOTA = :ID_NOTA')
+    .SetParam('ID_NOTA', id_nota)
+    .Open();
+
+  jsonResult := Self.Query.ConvertQueryToJSONArray();
+
+  if jsonResult.Count = 0 then
+    Exit(nil);
+
+  Result := TTransferencia.Create;
+  Result.FromJSONObject((jsonResult.Get(0) as TJSONObject));
+end;
+
+constructor TServiceTransferencia.Create;
+begin
+  inherited;
+  Self.Query := TFDQuery.Create(nil);
+  Self.Query.ConnectToDatabase(
+    Self.FConnection
+  );
+end;
+
+function TServiceTransferencia.Criar(data: TTransferencia): TTransferencia;
+var
+  jsonQuery: TJSONArray;
+begin
+   if not (
+      Assigned(data) and
+      data.isFilled.Items['id_nota'] and
+      data.isFilled.Items['id_almoxarifado_origem'] and
+      data.isFilled.Items['id_almoxarifado_destino']
+   ) then
+      raise Exception.Create('Erro de Validacao de dados');
+
+   Self.Query
+    .StartQuery
+    .AddToQuery('INSERT INTO TRANSFERENCIA (' + data.getAllFields + ') ')
+    .AddToQuery('VALUES (' + data.getAllFields(True,':') + ') ')
+    .AddToQuery('RETURNING ' + data.getAllFields)
+    .SetAllParams<TTransferencia>(data)
+    .Open();
+
+
+   jsonQuery := Self.Query.ConvertQueryToJSONArray(True, data.isFilled.Keys.ToArray);
+
+   Result := TTransferencia.Create;
+   Result.FromJSONObject(jsonQuery.Get(0) as TJSONObject);
+end;
+
+destructor TServiceTransferencia.Destroy;
+begin
+  Self.Query.Free;
+  inherited;
+end;
+
+function TServiceTransferencia.Excluir(id_nota: UInt64): Boolean;
+begin
+  if not (
+    id_nota <> 0
+  ) then
+    raise Exception.Create('Erro de Autenticacao');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('DELETE FROM TRANSFERENCIA')
+    .AddToQuery('WHERE ID_NOTA = :ID_NOTA')
+    .SetParam('ID_NOTA', id_nota)
+    .ExecSQL;
+
+  Result := Self.Query.RowsAffected > 0;
+end;
+
+function TServiceTransferencia.Excluir(data: TTransferencia): Boolean;
+begin
+  if not (
+    Assigned(data)
+  ) then
+    raise Exception.Create('Erro de Autenticacao');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('DELETE FROM TRANSFERENCIA')
+    .AddToQuery('WHERE ID_NOTA = :ID_NOTA')
+    .SetParam('ID_NOTA', data.id_nota)
+    .ExecSQL;
+
+  Result := Self.Query.RowsAffected > 0;
+end;
+
+end.

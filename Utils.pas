@@ -13,8 +13,20 @@ type
 
 function ConvertDateToJSONFormat(dateDBFormat:String): String;
 function isValidDateString(str:String): Boolean;
+function padZero(str:string = ''; qtd:Integer = 0): String;
 
 implementation
+
+function padZero(str:string; qtd:Integer): String;
+var
+  zerosToPad:Integer;
+begin
+  zerosToPad := qtd - Length(str);
+  if zerosTopad <= 0 then
+    Exit(str);
+
+  Result := StringOfChar('0', zerosToPad) + str;
+end;
 
 function ConvertDateToJSONFormat(dateDBFormat:String): String;
 var
@@ -25,10 +37,11 @@ begin
   if length(pieces) = 0 then
     Exit('');
   Result := Format('%s-%s-%s', [
-    pieces[2],
-    pieces[1],
-    pieces[0]
+    padZero(pieces[2],2),
+    padZero(pieces[0],2),
+    padZero(pieces[1],2)
   ]);
+  Writeln(Result);
 end;
 
 function isValidDateString(str:String): Boolean;

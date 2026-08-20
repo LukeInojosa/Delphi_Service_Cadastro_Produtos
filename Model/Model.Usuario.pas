@@ -19,15 +19,16 @@ type TUsuario  = class(TModel)
     procedure SetNome(data : String);
     procedure SetSenha(data : String);
     procedure SetIdAlmoxarifado(data : uInt64);
+
   public
 
-    [SwagProp('id','',True, True)]
+    [SwagProp('id','', True ,False, True)]
     property id: uInt64 read FId write SetId;
 
-    [SwagProp('codigo','')]
+    [SwagProp('nome','', True)]
     property nome: String read FNome write SetNome;
 
-    [SwagProp('descricao','', True)]
+    [SwagProp('senha','', True, False, True)]
     property senha: String read FSenha write SetSenha;
 
     [SwagProp('id_almoxarifado','', True)]

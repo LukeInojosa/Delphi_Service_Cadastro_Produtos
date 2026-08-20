@@ -1,0 +1,189 @@
+unit Service.Estoque;
+
+interface uses
+  Model.Estoque,
+  Service,
+  System.JSON,
+  FireDAC.Comp.Client,
+  Database.Query,
+  GBJSON.Helper,
+  System.Generics.Collections,
+  System.Rtti;
+type
+  IService = Service.IService;
+  TFDQuery = FireDAC.Comp.Client.TFDQuery;
+  TEstoque = Model.Estoque.TEstoque;
+  REstoque = Model.Estoque.REstoque;
+
+type TServiceEstoque = class(TService)
+  private
+    Query: TFDQuery;
+  public
+    constructor Create();
+    destructor Destroy(); override;
+    function Criar(data: TEstoque): TObjectList<TEstoque>;
+    function Consulta(data: TEstoque): TObjectList<TEstoque>; overload;
+    function Consulta(id_produto: UInt64 = 0; id_almoxarifado: UInt64 =0): TObjectList<TEstoque>; overload;
+    function Excluir(data: TEstoque): TObjectList<TEstoque>;
+    function Alterar(data: TEstoque): TObjectList<TEstoque>;
+    function ExcluirPorId(id: UInt64 = 0): TEstoque;
+    function getSaldo(id_almoxarifado: UInt64 = 0; id_produto: UInt64 = 0): Integer;
+    function verificaSaldoEstoqueAposMovimentacao(id_nota: UInt64): TObjectList<TEstoque>;
+end;
+
+
+implementation
+
+uses
+  System.SysUtils;
+
+{ TServiceMovimentacao }
+
+function TServiceEstoque.Alterar(
+  data: TEstoque): TObjectList<TEstoque>;
+begin
+
+end;
+
+function TServiceEstoque.Consulta(
+  data: TEstoque): TObjectList<TEstoque>;
+var
+  jsonArray: TJSONArray;
+  paramName: String;
+begin
+  if not (
+    Assigned(data)
+  ) then
+    raise Exception.Create('Erro validacao de ');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT * FROM ESTOQUE ')
+    .AddToQuery('WHERE 1 = 1 ');
+
+  for paramName in data.isFilled.Keys do
+  begin
+    if data.isFilled.Items[paramName] then
+      Self.Query
+        .AddToQuery(' AND ' + paramName + ' = ' + ':' + paramName)
+  end;
+
+  Self.Query
+    .SetAllParams<TEstoque>(data)
+    .Open();
+
+  jsonArray := Self.Query.ConvertQueryToJSONArray();
+
+  Result := TGBJSONDefault.Serializer<TEstoque>
+                          .JsonStringToList(jsonArray.ToJSON);
+end;
+
+
+function TServiceEstoque.Consulta(id_produto,
+  id_almoxarifado: UInt64): TObjectList<TEstoque>;
+var
+  jsonResult : TJSONObject;
+begin
+  if (id_produto = 0) or (id_almoxarifado  = 0) then
+    raise Exception.Create('Erro de validacao');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT * FROM ESTOQUE WHERE ID_ALMOXARIFADO = :ID_ALMOXARIFADO AND ID_PRODUTO  = :ID_PRODUTO')
+    .SetParam('ID_ALMOXARIFADO', id_almoxarifado)
+    .SetParam('ID_PRODUTO', id_produto)
+    .Open();
+
+  jsonResult := Self.Query.ConvertQueryToJSONArray();
+
+
+
+end;
+
+constructor TServiceEstoque.Create;
+begin
+  inherited;
+  Self.Query := TFDQuery.Create(nil);
+  Self.Query.ConnectToDatabase(
+    Self.FConnection
+  );
+end;
+
+function TServiceEstoque.Criar(
+  data: TEstoque): TObjectList<TEstoque>;
+begin
+
+end;
+
+destructor TServiceEstoque.Destroy;
+begin
+  Self.Query.Free;
+  inherited;
+end;
+
+function TServiceEstoque.Excluir(
+  data: TEstoque): TObjectList<TEstoque>;
+begin
+
+end;
+
+function TServiceEstoque.ExcluirPorId(id: UInt64): TEstoque;
+begin
+
+end;
+
+
+function TServiceEstoque.getSaldo(id_almoxarifado, id_produto: UInt64): Integer;
+var
+  jsonArr: TJSONArray;
+begin
+  if not (
+    (id_almoxarifado <> 0) and
+    (id_produto <> 0)
+  ) then
+    raise Exception.Create('Erro de validacao de dados');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT quantidade FROM ESTOQUE')
+    .AddToQuery('WHERE ID_ALMOXARIFADO = :ID_ALMOXARIFADO')
+    .AddToQuery('AND ID_PRODUTO = :ID_PRODUTO')
+    .SetParam('ID_ALMOXARIFADO', id_almoxarifado)
+    .SetParam('ID_PRODUTO', id_produto)
+    .Open();
+
+  jsonArr := Self.Query.ConvertQueryToJSONArray();
+
+  if jsonArr.Count = 0 then
+    Exit(0);
+
+  Result := (jsonArr.Items[0] as TJSONObject).GetValue('quantidade').ToString.ToInteger;
+end;
+
+function TServiceEstoque.verificaSaldoEstoqueAposMovimentacao(
+  id_nota: UInt64): TObjectList<TEstoque>;
+var
+  jsonResult: TJSONArray;
+begin
+  if id_nota = 0 then
+    raise Exception.Create('forneca id da nota que se quer analisar a movimentacao');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT M.ID_PRODUTO AS id_produto, ')
+    .AddToQuery('(COALESCE(E.quantidade, 0) - M.quantidade) AS quantidade, CAST(COALESCE(ativo, 1) AS CHAR(1)) AS ativo')
+    .AddToQuery('FROM MOVIMENTACAO M ')
+    .AddToQuery('LEFT JOIN ESTOQUE E ')
+    .AddToQuery('ON E.id_produto = M.id_produto ')
+    .AddToQuery('AND E.id_almoxarifado = (SELECT N.id_almoxarifado FROM NOTAS N WHERE N.id = :ID_NOTA) ')
+    .AddToQuery('WHERE M.id_nota = :ID_NOTA ')
+    .SetParam('ID_NOTA', id_nota)
+    .Open();
+
+  jsonResult := Self.Query.ConvertQueryToJSONArray();
+
+  Result := TGBJSONDefault.Serializer<TEstoque>
+                           .JsonStringToList(jsonResult.ToJSON);
+end;
+
+end.

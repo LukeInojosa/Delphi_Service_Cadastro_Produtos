@@ -2,19 +2,23 @@ unit Controller.Estoque;
 
 interface
 
-uses Controller, Model.Estoque;
+uses
+  Controller,
+  Model.Estoque,
+  GBSwagger.Path.Attributes,
+  Horse.GBSwagger.Registry,
+  Horse.GBSwagger.Controller;
 
 type
-  TControllerEstoque = class(Controller.TController)
+  [SwagPath('estoque', 'Estoque')]
+  TControllerEstoque = class(THorseGBSwagger)
   public
-    class procedure Get(Req: THorseRequest; Res: THorseResponse;
-      Next: TNextProc);
-    class procedure Post(Req: THorseRequest; Res: THorseResponse;
-      Next: TNextProc);
-    class procedure Put(Req: THorseRequest; Res: THorseResponse;
-      Next: TNextProc);
-    class procedure Delete(Req: THorseRequest; Res: THorseResponse;
-      Next: TNextProc);
+    [SwagGET('Lista Produtos no estoque')]
+    [SwagParamQuery('id_produto', 'id do produto em estoque', False, True)]
+    [SwagParamQuery('id_almoxarifado', 'id do almoxarifado', False, True)]
+    [SwagParamQuery('ativo', 'ativo')]
+    [SwagResponse(200,TEstoque)]
+    procedure Get;
   end;
 
 implementation uses
@@ -29,14 +33,7 @@ var
   FServiceEstoque: TServiceEstoque;
 
 { TControllerEstoque }
-
-class procedure TControllerEstoque.Delete(Req: THorseRequest;
-  Res: THorseResponse; Next: TNextProc);
-begin
-end;
-
-class procedure TControllerEstoque.Get(Req: THorseRequest; Res: THorseResponse;
-  Next: TNextProc);
+procedure TControllerEstoque.Get;
 var
   Estoque: TEstoque;
   RecEstoque: REstoque;
@@ -46,19 +43,16 @@ begin
   try
     Estoque := TEstoque.Create;
 
-    if System.SysUtils.TryStrToUInt64(Req.Params['id'],RecEstoque.id) then
-      Estoque.id := RecEstoque.id;
-
-    if System.SysUtils.TryStrToUInt64(Req.Query['id_produto'],RecEstoque.id_produto) then
+    if System.SysUtils.TryStrToUInt64(FRequest.Query['id_produto'],RecEstoque.id_produto) then
       Estoque.id_produto := RecEstoque.id_produto;
 
-    if System.SysUtils.TryStrToUInt64(Req.Query['id_almoxarifado'],RecEstoque.id_almoxarifado) then
+    if System.SysUtils.TryStrToUInt64(FRequest.Query['id_almoxarifado'],RecEstoque.id_almoxarifado) then
       Estoque.id_almoxarifado := RecEstoque.id_almoxarifado;
 
-    if System.SysUtils.TryStrToInt(Req.Query['quantidade'],RecEstoque.quantidade) then
+    if System.SysUtils.TryStrToInt(FRequest.Query['quantidade'],RecEstoque.quantidade) then
       Estoque.quantidade := RecEstoque.quantidade;
 
-    if System.SysUtils.TryStrToInt(Req.Query['ativo'],RecEstoque.quantidade) then
+    if System.SysUtils.TryStrToInt(FRequest.Query['ativo'],RecEstoque.quantidade) then
       Estoque.ativo := RecEstoque.ativo;
 
     listEstoque := FServiceEstoque.Consulta(Estoque);
@@ -66,7 +60,7 @@ begin
      // construindo resposta
     jsonArray := TGBJSONDefault.Deserializer<TEstoque>
                                .ListToJSONArray(listEstoque);
-    Res
+    FResponse
       .Status(THttpStatus.OK)
       .Send(
         TJSONObject.Create
@@ -78,19 +72,9 @@ begin
   end;
 end;
 
-class procedure TControllerEstoque.Post(Req: THorseRequest; Res: THorseResponse;
-  Next: TNextProc);
-begin
-
-end;
-
-class procedure TControllerEstoque.Put(Req: THorseRequest; Res: THorseResponse;
-  Next: TNextProc);
-begin
-
-end;
 
 initialization
+  THorseGBSwaggerRegistry.RegisterPath(TControllerEstoque);
   FServiceEstoque := TServiceEstoque.Create
 finalization
   FServiceEstoque.Free;

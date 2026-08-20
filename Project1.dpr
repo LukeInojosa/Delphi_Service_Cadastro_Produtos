@@ -4,12 +4,6 @@ program Project1;
 {$R *.res}
 
 uses
-  System.SysUtils,
-  Horse,
-  Horse.GBSwagger,
-  Horse.Jhonson,
-  Horse.CORS,
-  Horse.BasicAuthentication,
   Router in 'Routes\Router.pas',
   Database.Connection in 'Database\Database.Connection.pas',
   FieldHelper in 'Model\FieldHelper.pas',
@@ -18,7 +12,10 @@ uses
   Service in 'Service\Service.pas',
   Model.Almoxarifado in 'Model\Model.Almoxarifado.pas',
   Service.Almoxarifado in 'Service\Service.Almoxarifado.pas',
+  Service.Transferencia in 'Service\Service.Transferencia.pas',
+  Service.Estoque in 'Service\Service.Estoque.pas',
   Database.Query in 'Database\Database.Query.pas',
+  StartServer in 'StartServer.pas',
   Controller.Almoxarifado in 'Controller\Controller.Almoxarifado.pas',
   Middleware.Error in 'Middleware\Middleware.Error.pas',
   Model.Produtos in 'Model\Model.Produtos.pas',
@@ -30,49 +27,20 @@ uses
   Service.Usuario in 'Service\Service.Usuario.pas',
   Errors.Api in 'Errors\Errors.Api.pas',
   Utils in 'Utils.pas',
+  Model.Estoque in 'Model\Model.Estoque.pas',
+  Model.Transferencia in 'Model\Model.Transferencia.pas',
   Model.Notas in 'Model\Model.Notas.pas',
   Helper.TObject in 'Helper.TObject.pas',
   Controller.Notas in 'Controller\Controller.Notas.pas',
   Service.Notas in 'Service\Service.Notas.pas',
   Model.Movimentacao in 'Model\Model.Movimentacao.pas',
   Service.Movimentacao in 'Service\Service.Movimentacao.pas',
-  Controller.Movimentacao in 'Controller\Controller.Movimentacao.pas';
+  Controller.Movimentacao in 'Controller\Controller.Movimentacao.pas',
+  Controller.Estoque in 'Controller\Controller.Estoque.pas',
+  Controller.Transferencia in 'Controller\Controller.Transferencia.pas',
+  Controller.Inventario in 'Controller\Controller.Inventario.pas';
 
-var
-  App: THorse;
 begin
-  App := THorse.Create();
-
-  try
-    App
-      .Use(CORS)
-      .Use(Jhonson)
-      .Use(HorseSwagger)
-      .Use(HorseBasicAuthentication(TControllerUsuario.LogIn));
-
-    App.Use(
-    procedure (Req: THorseRequest; Res: THorseResponse;Next: TNextProc)
-    begin
-      try
-        Next();
-      except
-        on E:Exception do
-          GlobalErrorHandler(Req,Res,E);
-      end;
-    end);
-
-    RegisterRoutes(App);
-
-    App.Listen(Enviroment.Variables.PORT,
-    procedure
-    begin
-      Writeln(Format('Servidor iniciado com sucesso na porta %d', [Enviroment.Variables.PORT]));
-    end);
-
-  except
-    on E: Exception do
-      Writeln(E.ClassName, ': ', E.Message);
-  end;
-
+  StartServer.Start;
 end.
 

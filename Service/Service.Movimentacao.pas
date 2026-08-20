@@ -22,9 +22,10 @@ type TServiceMovimentacao = class(TService)
     constructor Create();
     destructor Destroy(); override;
     function Criar(data: TMovimentacao): TObjectList<TMovimentacao>;
-    function Consulta(  data: TMovimentacao; 
-                        tipo_operacao: Integer = -1000; 
-                        data_inicial: String = ''; 
+    function Consulta(  data: TMovimentacao;
+                        tipo_operacao: Integer = -1000;
+                        id_almoxarifado: UInt64 = 0 ;
+                        data_inicial: String = '';
                         data_final: String = '' ;
                         num_pagina: Integer = -1;
                         qtd_por_pagina: Integer = -1): TObjectList<TMovimentacao>;
@@ -82,7 +83,7 @@ end;
 
 
 function TServiceMovimentacao.Consulta(data: TMovimentacao;
-  tipo_operacao: Integer; data_inicial, data_final: String; num_pagina,
+  tipo_operacao: Integer; id_almoxarifado: UInt64; data_inicial, data_final: String; num_pagina,
   qtd_por_pagina: Integer): TObjectList<TMovimentacao>;
 var
   paramName: String;
@@ -100,17 +101,25 @@ begin
       .SetParam('SKIP', (qtd_por_pagina*(num_pagina - 1)).ToString);
   end;
 
-  Self.Query  
-   .AddToQuery('MOVIMENTACAO.ID AS ID, ID_PRODUTO, ID_NOTA, QUANTIDADE, TIPO_OPERACAO, DATA_REGISTRO ')
+  Self.Query
+   .AddToQuery('MOVIMENTACAO.ID, MOVIMENTACAO.ID_PRODUTO, ID_NOTA, QUANTIDADE, TIPO_OPERACAO, DATA_REGISTRO, ID_ALMOXARIFADO ')
    .AddToQuery('FROM MOVIMENTACAO INNER JOIN NOTAS ')
    .AddToQuery('ON MOVIMENTACAO.ID_NOTA = NOTAS.ID ')
    .AddToQuery('WHERE 1 = 1 ');
 
-  if tipo_operacao > -1000 then
+  if tipo_operacao >= -1 then
   begin
     Self.Query
       .AddToQuery('AND TIPO_OPERACAO = :TIPO_OPERACAO ')
       .SetParam('TIPO_OPERACAO', tipo_operacao);
+  end;
+
+  Writeln('id_almoxarifado' + id_almoxarifado.ToString);
+  if id_almoxarifado <> 0 then
+  begin
+    Self.Query
+      .AddToQuery('AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO')
+      .SetParam('ID_ALMOXARIFADO', id_almoxarifado);
   end;
 
   if not data_inicial.IsEmpty  then
@@ -131,7 +140,7 @@ begin
   begin
     if data.isFilled.Items[paramName] then
       Self.Query
-        .AddToQuery(' AND ' + paramName + ' = ' + ':' + paramName)
+        .AddToQuery(' AND ' + 'MOVIMENTACAO.'+  paramName + ' = ' + ':' + paramName)
   end;
 
   Self.Query
@@ -221,21 +230,13 @@ var
   excludedMov: TMovimentacao;
 begin
   if not (
-    Assigned(data)
-    and (  data.isFilled.Items['id'] or
-          (data.isFilled.Items['id_produto'] and data.isFilled.Items['id_nota'])
-        )
+    Assigned(data) and
+    data.isFilled.Items['id_produto'] and
+    data.isFilled.Items['id_nota']
   )then
     raise EValidation.Create('Erro De Validacao de Dados');
 
-  if data.isFilled.Items['id'] then
-  begin
-    excludedMov := Self.ExcluirPorId(data.id);
-  end
-  else
-  begin
-    excludedMov := Self.ExcluirPorProdutoEmNota(data.id_produto, data.id_nota);
-  end;
+  excludedMov := Self.ExcluirPorProdutoEmNota(data.id_produto, data.id_nota);
 
   Result := TObjectList<TMovimentacao>.Create;
   Result.Add(excludedMov);
@@ -297,5 +298,7 @@ begin
 
   end;
 end;
+
+
 
 end.

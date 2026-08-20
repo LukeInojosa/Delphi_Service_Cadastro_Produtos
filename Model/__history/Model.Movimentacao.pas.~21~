@@ -1,0 +1,186 @@
+unit Model.Movimentacao;
+interface uses
+  Model,
+  GBSwagger.Model.Attributes,
+  System.SysUtils,
+  Database.Query,
+  System.Generics.Collections,
+  Helper.TObject,
+  System.Rtti;
+
+type TMovimentacao  = class(TModel)
+  private
+    FId : uInt64;
+    FQuantidade : Integer;
+    FIdProduto : uInt64;
+    FIdNota : uInt64;
+
+    procedure SetId(data : uInt64);
+    procedure SetQuantidade(data : Integer);
+    procedure SetIdProduto(data : uInt64);
+    procedure SetIdNota(data : uInt64);
+  public
+
+    [SwagProp('id','',False, True)]
+    property id: uInt64 read FId write SetId;
+
+    [SwagProp('quantidade','')]
+    property quantidade: Integer read FQuantidade write SetQuantidade;
+
+    [SwagProp('id_produto','', True)]
+    property id_produto: uInt64 read FIdProduto write SetIdProduto;
+
+    [SwagProp('id_nota','', True)]
+    property id_nota: uInt64 read FIdNota write SetIdNota;
+
+    constructor Create();
+    procedure Show();
+end;
+
+type TMovimentacaoExtendedSchema  = class
+  private
+    FId : uInt64;
+    FQuantidade : Integer;
+    FIdProduto : uInt64;
+    FIdNota : uInt64;
+    FDescricaoProduto : String;
+    FTipoOperacao : Integer;
+  public
+
+    [SwagProp('id','',False, True)]
+    property id: uInt64 read FId write FId;
+
+    [SwagProp('quantidade','', True)]
+    property quantidade: Integer read FQuantidade write FQuantidade;
+
+    [SwagProp('id_produto','', True)]
+    property id_produto: uInt64 read FIdProduto write FIdProduto;
+
+    [SwagProp('id_nota','', True)]
+    property id_nota: uInt64 read FIdNota write FIdNota;
+
+    [SwagProp('descricao_produto','', False)]
+    property descricao_produto: String read FDescricaoProduto write FDescricaoProduto;
+
+    [SwagProp('tipo_operacao','', False)]
+    property tipo_operacao: Integer read FTipoOperacao write FTipoOperacao;
+end;
+
+type TMovimentacaoCadastroDireto  = class
+  private
+    FId : uInt64;
+    FQuantidade : Integer;
+    FIdProduto : uInt64;
+    FIdNota : uInt64;
+    FDescricaoProduto : String;
+    FTipoOperacao : Integer;
+    FDataRegistro: TDateTime;
+    FObservacao : String;
+    FUsuarioResponsavel : uInt64;
+    FIdAlmoxarifado: uInt64;
+    FConcluida: Boolean;
+  public
+
+    [SwagProp('id','',False, True)]
+    property id: uInt64 read FId write FId;
+
+    [SwagProp('quantidade','', True)]
+    property quantidade: Integer read FQuantidade write FQuantidade;
+
+    [SwagProp('id_produto','', True)]
+    property id_produto: uInt64 read FIdProduto write FIdProduto;
+
+    [SwagProp('tipo_operacao','', False)]
+    property tipo_operacao: Integer read FTipoOperacao write FTipoOperacao;
+
+    [SwagProp('data_registro','',False)]
+    property data_registro: TDateTime read FDataRegistro write FDataRegistro;
+
+    [SwagProp('observacao','',False)]
+    property observacao: String read FObservacao write FObservacao;
+
+    [SwagProp('usuario_responsavel','',False)]
+    property usuario_responsavel: uInt64 read FUsuarioResponsavel write FUsuarioResponsavel;
+
+    [SwagProp('id_almoxarifado','',False)]
+    property id_almoxarifado: uInt64 read FIdAlmoxarifado write FIdAlmoxarifado;
+
+    [SwagProp('concluida','',False)]
+    property concluida: Boolean read FConcluida write FConcluida;
+
+    [SwagProp('data_registro','',False)]
+    property data_registro: uInt64 read FDataRegistro write FDataRegistro;
+end;
+
+
+type RMovimentacao = Record
+  id : uInt64;
+  quantidade : Integer;
+  id_produto : uInt64;
+  id_nota : uInt64;
+End;
+
+implementation
+
+{ TMovimentacao }
+
+constructor TMovimentacao.Create;
+var
+  paramName: String;
+begin
+  inherited;
+  for paramName in Self.getPropNames() do
+    isFilled.AddOrSetValue(paramName, False);
+
+  FId := 0;
+  FQuantidade := -1;
+  FIdProduto := 0;
+  FIdNota := 0;
+end;
+
+procedure TMovimentacao.SetId(data: uInt64);
+var
+  columnName:String;
+begin
+  columnName := 'ID';
+  isFilled.Items[columnName.ToLower] := True;
+  FId := data;
+end;
+
+procedure TMovimentacao.SetIdNota(data: uInt64);
+var
+  columnName:String;
+begin
+  columnName := 'ID_NOTA';
+  isFilled.Items[columnName.ToLower] := True;
+  FIdNota := data;
+end;
+
+procedure TMovimentacao.SetIdProduto(data: uInt64);
+var
+  columnName:String;
+begin
+  columnName := 'ID_PRODUTO';
+  isFilled.Items[columnName.ToLower] := True;
+  FIdProduto := data;
+end;
+
+procedure TMovimentacao.SetQuantidade(data: Integer);
+var
+  columnName:String;
+begin
+  columnName := 'QUANTIDADE';
+  isFilled.Items[columnName.ToLower] := True;
+  FQuantidade := data;
+end;
+
+procedure TMovimentacao.Show;
+begin
+    Writeln(Format('{ id: %s, id_nota: %s, id_produto, %s, quantidade: %s}',
+          [id.ToString,
+          id_nota.ToString,
+          id_produto.ToString,
+          quantidade.ToString]))
+end;
+
+end.

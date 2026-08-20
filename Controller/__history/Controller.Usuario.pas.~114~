@@ -1,0 +1,176 @@
+unit Controller.Usuario;
+
+interface uses
+  Controller ,
+  Model.Usuario,
+  GBSwagger.Path.Attributes,
+  Horse.GBSwagger.Registry,
+  Horse.GBSwagger.Controller;
+
+type
+  [SwagPath('usuario', 'Usuario')]
+  TControllerUsuario = class(THorseGBSwagger)
+  public
+    class function LogIn(const AUsername, APassword: String): Boolean;
+
+    [SwagPOST('Cria novo Usuario')]
+    [SwagParamBody('Usuario', TUsuario)]
+    [SwagResponse(201, TUsuario, 'Usuario Criado')]
+    procedure Cadastro;
+
+    [SwagDELETE('Deleta Usuario Logado')]
+    [SwagResponse(200, TUsuario, 'Usuario Deletado')]
+    procedure Delete;
+
+    [SwagGET('', 'Consulta Usuarios')]
+    [SwagParamPath('id', 'id do produto' ,True,False)]
+    [SwagParamQuery('nome')]
+    [SwagParamQuery('id_almoxarifado')]
+    [SwagResponse(200, TUsuario, True, 'Usuarios')]
+    procedure Get;
+  end;
+
+implementation uses
+  Service.Usuario,
+  GBJSON.Helper,
+  Horse.Commons,
+  System.SysUtils,
+  System.Generics.Collections,
+  System.JSON, System.Rtti,
+  System.Hash, Errors.Api,
+  Utils;
+
+var
+  FServiceUsuario: TServiceUsuario;
+
+{ TControllerUsuario }
+
+procedure TControllerUsuario.Cadastro;
+var
+  usuarioList: TObjectList<TUsuario>;
+  jsonBody : TJSONObject;
+  arrJson : TJSONArray;
+  RecUsuario: RUsuario;
+  Usuario: TUsuario;
+begin
+  jsonBody := FRequest.Body<TJsonObject>;
+
+  Usuario := TUsuario.Create;
+  if not (
+    jsonBody.TryGetValue<String>('nome', RecUsuario.nome) and
+    jsonBody.TryGetValue<UInt64>('id_almoxarifado', RecUsuario.id_almoxarifado) and
+    jsonBody.TryGetValue<String>('senha', RecUsuario.senha)
+  )then
+    raise EValidation.Create('Forneca nome, senha e id_almoxarifado do usuario sendo criado');
+
+  Usuario.nome := RecUsuario.nome;
+  Usuario.id_almoxarifado := RecUsuario.id_almoxarifado;
+  Usuario.senha := THashMD5.GetHashString(RecUsuario.senha + EnviromentVariables.Salt);
+
+  usuarioList := FServiceUsuario.Criar(Usuario);
+
+  arrJSON := TGBJSONDefault.Deserializer<TUsuario>
+                           .ListToJSONArray(usuarioList);
+
+  if arrJSON.Count = 0 then
+    arrJSON.Add(TJSONOBject.Create);
+
+  FResponse.Status(THttpStatus.Created)
+     .Send<TJSONObject>(
+        TJSONObject.Create
+        .AddPair('data', arrJSON.Items[0])
+     );
+
+end;
+
+procedure TControllerUsuario.Delete;
+var
+  Session: TUserSession;
+  Usuario: TUsuario;
+  listUsuario : TObjectList<TUsuario>;
+  jsonArray: TJSONArray;
+begin
+  Session := FRequest.Sessions.Session[TUserSession] as TUserSession;
+  if (
+    Session.Nome.isEmpty or
+    Session.Senha.isEmpty
+  ) then
+    raise ENotFound.Create('Nao ha usuario com estas credenciais');
+
+  Usuario := TUsuario.Create();
+  Usuario.nome := Session.Nome;
+  Usuario.senha := THashMD5.GetHashString(Session.Senha.Trim + EnviromentVariables.Salt);
+
+  listUsuario := FServiceUsuario.Excluir(Usuario);
+
+  jsonArray := TGBJSONDefault.Deserializer<TUsuario>
+                             .ListToJSONArray(listUsuario);
+
+  if jsonArray.Count = 0 then
+    jsonArray.Add(TJSONObject.Create);
+
+  FResponse.Status(THttpStatus.OK)
+    .Send<TJSONObject>(
+      TJSONObject.Create
+      .AddPair('data', jsonArray.Items[0])
+  );
+
+end;
+
+procedure TControllerUsuario.Get;
+var
+  jsonBody: TJSONObject;
+  RecUsuario: RUsuario;
+  Usuario: TUsuario;
+  listUsuario: TObjectList<TUsuario>;
+  jsonArray: TJSONArray;
+begin
+  try
+    Usuario := TUsuario.Create;
+    if TryStrToUInt64(FRequest.Params['id'], RecUsuario.id) then
+       Usuario.id := RecUsuario.id;
+
+    if TryStrToUInt64(FRequest.Query['id_almoxarifado'], RecUsuario.id_almoxarifado) then
+       Usuario.id_almoxarifado := RecUsuario.id_almoxarifado;
+
+    if not FRequest.Query['nome'].IsEmpty then
+       Usuario.nome := FRequest.Query['nome'];
+
+    listUsuario := FServiceUsuario.Consulta(Usuario);
+
+    jsonArray := TGBJSONDefault.Deserializer<TUsuario>
+                               .ListToJSONArray(listUsuario);
+
+    FResponse
+      .Status(THTTPStatus.OK)
+      .Send<TJSONObject>(
+        TJSONObject.Create()
+        .AddPair('data', jsonArray)
+      );
+  finally
+    Usuario.Free;
+  end;
+end;
+
+class function TControllerUsuario.LogIn(const AUsername, APassword: String): Boolean;
+var
+  Usuario: TUsuario;
+  RecUsuario: RUsuario;
+begin
+  Usuario := TUsuario.Create;
+  Usuario.nome := AUsername.Trim;
+  Usuario.senha := THashMD5.GetHashString(APassword.Trim + EnviromentVariables.Salt);
+
+  Result := FServiceUsuario.CheckAutentication(Usuario);
+end;
+
+initialization
+
+THorseGBSwaggerRegistry.RegisterPath(TControllerUsuario);
+FServiceUsuario := TServiceUsuario.Create();
+
+finalization
+
+FServiceUsuario.Free;
+
+end.

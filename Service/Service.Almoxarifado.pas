@@ -25,6 +25,9 @@ type TServiceAlmoxarifado = class(TService)
     function Consulta(data: TAlmoxarifado): TObjectList<TAlmoxarifado>;
     function Excluir(data:TAlmoxarifado):  TObjectList<TAlmoxarifado>;
     function Alterar(data: TAlmoxarifado): TObjectList<TAlmoxarifado>;
+    function EstaAtivo(id: UInt64 = 0): Boolean;
+    function Existe(id: UInt64 = 0): Boolean;
+    function PossuiNota(id:UInt64 = 0): Boolean;
 end;
 
 implementation uses
@@ -110,32 +113,26 @@ function TServiceAlmoxarifado.Consulta(data: TAlmoxarifado): TObjectList<TAlmoxa
 var
   arrJSON: TJSONArray;
   obj: TJSONObject;
+  paramName: String;
 begin
-  Writeln('- Almoxarifado : Realizando Consulta');
-
-  // constroi Query
   Self.Query
     .StartQuery
     .AddToQuery('SELECT * FROM ALMOXARIFADO WHERE 1 = 1 ');
 
-  if Assigned(data) and data.isFilled.Items['id'] then
+  if Assigned(data) then
+  begin
+    for paramName in data.getFilledFields do
+      Self.Query
+        .AddToQuery(' AND ' + paramName + ' = ' + ':' + paramName);
+
     Self.Query
-      .AddToQuery('AND ID = :ID ')
-      .SetParam('ID', data.id);
+      .SetAllParams<TAlmoxarifado>(data);
+  end;
 
   Self.Query.Open();
 
-  // trata saida da query
   arrJSON := Self.Query.ConvertQueryToJSONArray();
 
-  // constroi array de retorno
-  if arrJSON.Count = 0 then
-  begin
-    Writeln('Nenhum dado foi encontrado');
-    Exit(TObjectList<TAlmoxarifado>.Create);
-  end;
-
-  writeln(arrJSON.ToJSON);
   Result := TGBJSONDefault.Serializer<TAlmoxarifado>
                                     .JsonStringToList(arrJSON.ToJSON);
 end;
@@ -152,10 +149,9 @@ var
   field: TField;
   json: TJSONObject;
 begin
-  Writeln('- Almoxarifado : Criando Almoxarifado');
   Result:= nil;
   if not Assigned(data) then
-    exit(data);
+    raise Exception.Create('Erro de Autenticacao');
 
   Self.Query
     .StartQuery
@@ -167,10 +163,6 @@ begin
     .AddToQuery(data.getAllFields)
     .SetAllParams<TAlmoxarifado>(data)
     .Open();
-
-  Writeln(data.getAllFields);
-
-  Self.Query.Open();
 
   json := TJSONObject.Create();
 
@@ -188,9 +180,30 @@ begin
     end;
   end;
 
-  Writeln('Query Executada: ' + Self.Query.Text);
   Result := TAlmoxarifado.Create();
   Result.fromJSONObject(json);
+end;
+
+function TServiceAlmoxarifado.EstaAtivo(id: UInt64 = 0): Boolean;
+var
+  jsonArray: TJSONArray;
+begin
+  if (id = 0) then
+    raise Exception.Create('forneca id do almoxarifado');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT ATIVO FROM ALMOXARIFADO WHERE ID = :ID ')
+    .SetParam('ID', id )
+    .Open();
+
+  jsonArray := Self.Query.ConvertQueryToJSONArray();
+
+  if jsonArray.Count = 0 then
+    Exit(False);
+
+  if not (jsonArray.Get(0) as TJsonObject).TryGetValue<Boolean>('ativo', Result) then
+    raise Exception.Create('Erro em Parse de Ativo');
 end;
 
 function TServiceAlmoxarifado.Excluir(data: TAlmoxarifado): TObjectList<TAlmoxarifado>;
@@ -234,6 +247,35 @@ begin
 
     Result := TGBJSONDefault.Serializer<TAlmoxarifado>
                                     .JsonStringToList(arrJSON.ToJSON);
+end;
+
+function TServiceAlmoxarifado.Existe(id: UInt64): Boolean;
+begin
+   if id = 0 then
+    raise Exception.Create('Erro de validacao de dados');
+
+   Self.Query
+    .StartQuery
+    .AddToQuery('SELECT * FROM ALMOXARIFADO WHERE ID = :ID')
+    .SetParam('ID', id)
+    .Open();
+
+   Result := (Self.Query.RecordCount > 0);
+end;
+
+function TServiceAlmoxarifado.PossuiNota(id: UInt64): Boolean;
+begin
+  if id  = 0 then
+    raise Exception.Create('Forneca id do almoxarifado');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT * FROM NOTAS ')
+    .AddToQuery('WHERE id_almoxarifado = :id_almoxarifado ')
+    .SetParam('id_almoxarifado', id)
+    .Open();
+
+  Result := (Self.Query.RecordCount > 0);
 end;
 
 end.

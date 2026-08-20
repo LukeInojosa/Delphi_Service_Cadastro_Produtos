@@ -1,0 +1,29 @@
+unit Controller;
+
+interface uses
+  Horse,
+  Horse.Commons,
+  System.JSON,
+  System.SysUtils,
+  GBJSON.Interfaces,
+  Horse.GBSwagger.Controller,
+  Enviroment,
+  Errors.Api;
+
+type THorseRequest = Horse.THorseRequest;
+     THorseResponse = Horse.THorseResponse;
+     TNextProc  =  Horse.TNextProc;
+     TGBJSonConfig = GBJSON.Interfaces.TGBJSONConfig;
+     TJSONObject = System.JSON.TJSONObject;
+     TGBJSONDefault = GBJSON.Interfaces.TGBJSONDefault;
+     EnviromentVariables = Enviroment.Variables;
+     CustomException = Errors.Api.CustomException;
+     EValidation = Errors.Api.EValidation;
+   type TController = class
+     public
+   end;
+implementation
+
+initialization
+  TGBJSonConfig.GetInstance.IgnoreEmptyValues(false);
+end.

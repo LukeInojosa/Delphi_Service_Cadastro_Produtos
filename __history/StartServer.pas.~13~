@@ -1,0 +1,52 @@
+unit StartServer;
+interface uses
+  Horse,
+  Horse.GBSwagger,
+  Horse.Jhonson,
+  Horse.CORS,
+  Horse.BasicAuthentication,
+  Controller.Usuario,
+  Middleware.Error,
+  System.SysUtils,
+  Enviroment;
+
+procedure Start;
+
+implementation
+
+initialization
+  Swagger.Info
+    .Title('Api Controle de Estoque')
+    .Description('Api de Controle de Estoque')
+    .&End
+    .BasePath('/');
+
+  try
+    THorse
+      .Use(CORS)
+      .Use(Jhonson)
+      .Use(HorseSwagger)
+      .Use(HorseBasicAuthentication(TControllerUsuario.LogIn, THorseBasicAuthenticationConfig.New.SkipRoutes(['/usuario', '/swagger/doc/html'])));
+
+    THorse.Use(
+    procedure (Req: THorseRequest; Res: THorseResponse;Next: TNextProc)
+    begin
+      try
+        Next();
+      except
+        on E:Exception do
+          GlobalErrorHandler(Req,Res,E);
+      end;
+    end);
+
+    THorse.Listen(Enviroment.Variables.PORT,
+    procedure
+    begin
+      Writeln(Format('Servidor iniciado com sucesso na porta %d', [Enviroment.Variables.PORT]));
+    end);
+
+  except
+    on E: Exception do
+      Writeln(E.ClassName, ': ', E.Message);
+  end;
+end.

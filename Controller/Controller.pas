@@ -6,7 +6,9 @@ interface uses
   System.JSON,
   System.SysUtils,
   GBJSON.Interfaces,
-  Enviroment;
+  Horse.GBSwagger.Controller,
+  Enviroment,
+  Errors.Api;
 
 type THorseRequest = Horse.THorseRequest;
      THorseResponse = Horse.THorseResponse;
@@ -15,9 +17,12 @@ type THorseRequest = Horse.THorseRequest;
      TJSONObject = System.JSON.TJSONObject;
      TGBJSONDefault = GBJSON.Interfaces.TGBJSONDefault;
      EnviromentVariables = Enviroment.Variables;
+     CustomException = Errors.Api.CustomException;
+     EValidation = Errors.Api.EValidation;
+     EConflict = Errors.Api.EConflict ;
+     ENotFound = Errors.Api.ENotFound;
 
    type TController = class
-     private
      public
    end;
 implementation

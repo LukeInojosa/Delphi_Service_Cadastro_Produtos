@@ -21,7 +21,7 @@ type TMovimentacao  = class(TModel)
     procedure SetIdNota(data : uInt64);
   public
 
-    [SwagProp('id','',True, True)]
+    [SwagProp('id','',False, True)]
     property id: uInt64 read FId write SetId;
 
     [SwagProp('quantidade','')]
@@ -36,6 +36,89 @@ type TMovimentacao  = class(TModel)
     constructor Create();
     procedure Show();
 end;
+
+type TMovimentacaoExtendedSchema  = class
+  private
+    FId : uInt64;
+    FQuantidade : Integer;
+    FIdProduto : uInt64;
+    FIdNota : uInt64;
+    FDescricaoProduto : String;
+    FTipoOperacao : Integer;
+  public
+
+    [SwagProp('id','',False, True)]
+    property id: uInt64 read FId write FId;
+
+    [SwagProp('quantidade','', True)]
+    property quantidade: Integer read FQuantidade write FQuantidade;
+
+    [SwagProp('id_produto','', True)]
+    property id_produto: uInt64 read FIdProduto write FIdProduto;
+
+    [SwagProp('id_nota','', True)]
+    property id_nota: uInt64 read FIdNota write FIdNota;
+
+    [SwagProp('descricao_produto','', False)]
+    property descricao_produto: String read FDescricaoProduto write FDescricaoProduto;
+
+    [SwagProp('tipo_operacao','', False)]
+    property tipo_operacao: Integer read FTipoOperacao write FTipoOperacao;
+end;
+
+type TMovimentacaoCadastroDireto  = class
+  private
+    FId : uInt64;
+    FQuantidade : Integer;
+    FIdProduto : uInt64;
+    FIdNota : uInt64;
+    FDescricaoProduto : String;
+    FTipoOperacao : Integer;
+    FDataRegistro: TDateTime;
+    FObservacao : String;
+    FUsuarioResponsavel : uInt64;
+    FIdAlmoxarifado: uInt64;
+    FConcluida: Boolean;
+    FIdAlmoxarifadoDestino:UInt64;
+  public
+
+    [SwagProp('id','',False, True)]
+    property id: uInt64 read FId write FId;
+
+    [SwagProp('quantidade','', True)]
+    property quantidade: Integer read FQuantidade write FQuantidade;
+
+    [SwagProp('id_produto','', True)]
+    property id_produto: uInt64 read FIdProduto write FIdProduto;
+
+    [SwagProp('id_nota','', False, True)]
+    property id_nota: uInt64 read FIdNota write FIdNota;
+
+    [SwagProp('descricao_produto','', False, True)]
+    property descricao_produto: String read FDescricaoProduto write FDescricaoProduto;
+
+    [SwagProp('tipo_operacao','', False)]
+    property tipo_operacao: Integer read FTipoOperacao write FTipoOperacao;
+
+    [SwagProp('data_registro','',False)]
+    property data_registro: TDateTime read FDataRegistro write FDataRegistro;
+
+    [SwagProp('observacao','',False)]
+    property observacao: String read FObservacao write FObservacao;
+
+    [SwagProp('usuario_responsavel','',False)]
+    property usuario_responsavel: uInt64 read FUsuarioResponsavel write FUsuarioResponsavel;
+
+    [SwagProp('id_almoxarifado','',False)]
+    property id_almoxarifado: uInt64 read FIdAlmoxarifado write FIdAlmoxarifado;
+
+    [SwagProp('id_almoxarifado_destino','', False)]
+    property id_almoxarifado_destino: uInt64 read FIdAlmoxarifadoDestino write FIdAlmoxarifadoDestino;
+
+    [SwagProp('concluida','',False, True)]
+    property concluida: Boolean read FConcluida write FConcluida;
+end;
+
 
 type RMovimentacao = Record
   id : uInt64;

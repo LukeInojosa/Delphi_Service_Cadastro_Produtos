@@ -1,0 +1,777 @@
+unit Controller.Movimentacao;
+
+interface
+
+uses
+  Controller,
+  Model.Movimentacao,
+  GBSwagger.Path.Attributes,
+  Horse.GBSwagger.Registry,
+  Horse.GBSwagger.Controller;
+
+type
+  [SwagPath('movimentacao', 'Movimentacao')]
+  TControllerMovimentacao = class(THorseGBSwagger)
+  public
+    [SwagGET('{id}', 'Consulta Movimentacao Por ID')]
+    [SwagParamPath('id', 'id da movimentacao' ,True,False)]
+    [SwagParamQuery('id_produto', '',False, True)]
+    [SwagParamQuery('id_nota', '',False, True)]
+    [SwagParamQuery('data_inicial')]
+    [SwagParamQuery('data_final')]
+    [SwagParamQuery('tipo_operacao', '',False, True)]
+    [SwagParamQuery('id_almoxarifado', '',False, True)]
+    [SwagResponse(200,TMovimentacaoCadastroDireto,True, 'Movimentacoes')]
+    procedure GetPorId;
+
+
+    [SwagGET('{num_pagina}/{qtd_por_pagina}', 'Consulta Movimentacao Por ID')]
+    [SwagParamPath('num_pagina', 'numero da pagina' ,True,True)]
+    [SwagParamPath('qtd_por_pagina', 'quantidade de registros por pagina' ,True,True)]
+    [SwagParamQuery('id_produto', '',False, True)]
+    [SwagParamQuery('id_nota', '',False, True)]
+    [SwagParamQuery('data_inicial')]
+    [SwagParamQuery('data_final')]
+    [SwagParamQuery('tipo_operacao', '',False, True)]
+    [SwagParamQuery('id_almoxarifado', '',False, True)]
+    [SwagResponse(200,TMovimentacaoCadastroDireto,True, 'Movimentacoes')]
+    procedure GetPaginado;
+
+    [SwagPOST('nota', 'Cria Movimentacao em nota')]
+    [SwagParamBody('Movimentacao',TMovimentacao)]
+    [SwagResponse(201, TMovimentacaoCadastroDireto)]
+    procedure Post;
+
+    [SwagPOST('direto', 'Cria Movimentacao direta')]
+    [SwagParamBody('Movimentacao',TMovimentacaoCadastroDireto)]
+    [SwagResponse(201, TMovimentacaoCadastroDireto)]
+    procedure PostMovimentacaoDireta;
+
+    [SwagPUT('{id}', 'Atualiza Movimentacao')]
+    [SwagParamPath('id', 'id da movimentacao a ser atualizada', True, True)]
+    [SwagParamBody('Movimentacao', TMovimentacao)]
+    [SwagResponse(200, TMovimentacaoCadastroDireto)]
+    procedure Put;
+
+    [SwagDELETE('{id}', 'Deleta Movimentacao')]
+    [SwagParamPath('id', 'id da movimentacao a ser atualizada', True, True)]
+    [SwagResponse(200, TMovimentacaoCadastroDireto)]
+    procedure Delete;
+  end;
+
+implementation uses
+  Service.Notas, Service.Produtos, Service.Movimentacao,
+  Service.Transferencia,
+  GBJSON.Helper,
+  Horse.Commons,
+  System.SysUtils,
+  System.Generics.Collections,
+  System.JSON, System.Rtti, Utils, Service.Usuario, Errors.Api, Model.Notas,
+  Service.Almoxarifado, Service.Estoque, Model.Transferencia;
+var
+  FServiceNotas: TServiceNotas;
+  FServiceProduto: TServiceProdutos;
+  FServiceMovimentacao: TServiceMovimentacao;
+  FServiceUsuario : TServiceUsuario;
+  FServiceAlmoxarifado: TServiceAlmoxarifado;
+  FServiceEstoque: TServiceEstoque;
+  FServiceTransferencia: TServiceTransferencia;
+
+{ TControllerMovimentacao }
+
+procedure TControllerMovimentacao.Delete;
+var
+  RecMovimentacao: RMovimentacao;
+  Movimentacao: TMovimentacao;
+  listMovimentacao: TObjectList<TMovimentacao>;
+  Nota: TNotas;
+  Produto: TProdutos;
+  jsonValue : TJsonObject;
+  Transferencia: TTransferencia;
+begin
+  try
+    Movimentacao := TMovimentacao.Create;
+
+    if System.SysUtils.TryStrToUInt64(FRequest.Params['id'], RecMovimentacao.id) then
+      Movimentacao.id := RecMovimentacao.id;
+
+    Movimentacao := FServiceMovimentacao.ConsultaPorId(RecMovimentacao.id);
+
+    if not Assigned(Movimentacao) then
+      raise EConflict.Create('Movimentacao tentando ser deletada nao existe');
+
+    Nota := FServiceNotas.ConsultaPorId(Movimentacao.id_nota);
+
+    if Nota.concluida then
+      raise EConflict.Create('Nao eh possivel excluir movimentacao de nota concluida');
+
+    FServiceMovimentacao.ExcluirPorId(Movimentacao.id);
+
+    Produto := FServiceProduto.ConsultaPorId(Movimentacao.id_produto);
+
+    if not (
+      Assigned(Nota) and
+      Assigned(Produto)
+    ) then
+      raise Exception.Create('Nao foi encotrado Nota ou Produto da Movimentacao');
+
+    jsonValue := Movimentacao.ToJSONObject;
+
+    if Nota.tipo_operacao = 2 then
+    begin
+      Transferencia := FServiceTransferencia.Consulta(Nota.id);
+      jsonValue.AddPair('id_almoxarifado_destino', TJSONNumber.Create(Transferencia.id_almoxarifado_destino));
+    end;
+
+
+    jsonValue.AddPair('descricao_produto', Produto.descricao);
+    jsonValue.AddPair('tipo_operacao', TJSONNumber.Create(Nota.tipo_operacao));
+    jsonValue.AddPair('concluida', TJSONBool.Create(Nota.concluida));
+    jsonValue.AddPair('data_registro',FormatDateTime('yyyymmdd', Nota.data_registro));
+    jsonValue.AddPair('observacao', Nota.observacao);
+    jsonValue.AddPair('id_almoxarifado',  TJSONNumber.Create(Nota.id_almoxarifado));
+
+    FResponse
+      .Status(THTTPStatus.OK)
+      .Send(jsonValue);
+  finally
+  end;
+
+end;
+
+procedure TControllerMovimentacao.GetPaginado;
+var
+  listMovimentacao: TObjectList<TMovimentacao>;
+  RecMovimentacao : RMovimentacao;
+  Movimentacao: TMovimentacao;
+  Nota: TNotas;
+  Produto: TProdutos;
+  arrResponse: TJSONArray;
+  jsonValue: TJSONObject;
+  data_inicial : String;
+  data_final:String;
+  tipo_operacao:Integer;
+  num_pagina:Integer;
+  qtd_por_pagina:Integer;
+  id_almoxarifado: UInt64;
+  Transferenica: TTransferencia;
+begin
+  Movimentacao := nil;
+  try
+    Movimentacao := TMovimentacao.Create;
+    num_pagina := 0;
+    qtd_por_pagina := 0;
+    tipo_operacao := -1000;
+    id_almoxarifado := 0;
+
+    if (
+      (not FRequest.Params['num_pagina'].isEmpty) and
+      (not FRequest.Params['qtd_por_pagina'].isEmpty) and
+      System.SysUtils.TryStrToInt(FRequest.Params['num_pagina'],num_pagina) and
+      System.SysUtils.TryStrToInt(FRequest.Params['qtd_por_pagina'],qtd_por_pagina)
+    ) then
+    begin
+      if (num_pagina <> 0) and (qtd_por_pagina = 0) then
+        raise EValidation.Create('Forneca qtd_por_pagina');
+    end;
+
+    if System.SysUtils.TryStrToUInt64(FRequest.Query['id_produto'],RecMovimentacao.id_produto) then
+      Movimentacao.id_produto := RecMovimentacao.id_produto;
+
+    if System.SysUtils.TryStrToUInt64(FRequest.Query['id_nota'],RecMovimentacao.id_nota) then
+      Movimentacao.id_nota := RecMovimentacao.id_nota;
+
+    if System.SysUtils.TryStrToInt(FRequest.Query['quantidade'],RecMovimentacao.quantidade) then
+      Movimentacao.quantidade := RecMovimentacao.quantidade;
+
+    if (
+      (not FRequest.Query['data_inicial'].IsEmpty)
+      and isValidDateString(FRequest.Query['data_inicial'])
+    )then
+      data_inicial := FRequest.Query['data_inicial'];
+
+    if (
+      (not FRequest.Query['data_final'].IsEmpty)
+      and isValidDateString(FRequest.Query['data_final'])
+    )then
+      data_final := FRequest.Query['data_final'];
+
+    if not FRequest.Query['tipo_operacao'].isEmpty then
+      System.SysUtils.TryStrToInt(FRequest.Query['tipo_operacao'], tipo_operacao);
+
+    if not FRequest.Query['id_almoxarifado'].isEmpty then
+      System.SysUtils.TryStrToUInt64(FRequest.Query['id_almoxarifado'], id_almoxarifado);
+
+    listMovimentacao := FServiceMovimentacao.Consulta(
+      Movimentacao,
+      tipo_operacao,
+      id_almoxarifado,
+      data_inicial,
+      data_final,
+      num_pagina,
+      qtd_por_pagina);
+
+    arrResponse := TJSONArray.Create;
+
+    FreeAndNil(Movimentacao);
+    for Movimentacao in listMovimentacao do
+    begin
+      Nota := FServiceNotas.ConsultaPorId(Movimentacao.id_nota);
+      Produto := FServiceProduto.ConsultaPorId(Movimentacao.id_produto);
+
+      if not (
+        Assigned(Nota) and
+        Assigned(Produto)
+      ) then
+        raise EConflict.Create('Nao foi encotrado Nota ou Produto da Movimentacao');
+
+      jsonValue := Movimentacao.ToJSONObject;
+
+      if Nota.tipo_operacao = 2 then
+      begin
+        Transferenica := FServiceTransferencia.Consulta(Nota.id);
+        jsonValue.AddPair('id_almoxarifado_destino', TJSONNumber.Create(Transferenica.id_almoxarifado_destino));
+      end;
+
+      jsonValue.AddPair('descricao_produto', Produto.descricao);
+      jsonValue.AddPair('tipo_operacao', TJSONNumber.Create(Nota.tipo_operacao));
+      jsonValue.AddPair('concluida', TJSONBool.Create(Nota.concluida));
+      jsonValue.AddPair('data_registro', FormatDateTime('yyyymmdd', Nota.data_registro));
+      jsonValue.AddPair('observacao', Nota.observacao);
+      jsonValue.AddPair('id_almoxarifado',  TJSONNumber.Create(Nota.id_almoxarifado));
+
+      arrResponse.AddElement(jsonValue);
+    end;
+
+    FResponse
+      .Status(THTTPStatus.OK)
+      .Send(arrResponse);
+
+  finally
+    Movimentacao.Free;
+  end;
+end;
+
+procedure TControllerMovimentacao.GetPorId;
+var
+  listMovimentacao: TObjectList<TMovimentacao>;
+  RecMovimentacao : RMovimentacao;
+  Movimentacao: TMovimentacao;
+  Nota: TNotas;
+  Produto: TProdutos;
+  arrResponse: TJSONArray;
+  jsonValue: TJSONObject;
+  data_inicial : String;
+  data_final:String;
+  tipo_operacao:Integer;
+  id_almoxarifado: UInt64;
+  Transferencia: TTransferencia;
+begin
+  Movimentacao := nil;
+  try
+    Movimentacao := TMovimentacao.Create;
+    tipo_operacao := -1000;
+    id_almoxarifado := 0;
+
+    if System.SysUtils.TryStrToUInt64(FRequest.Params['id'],RecMovimentacao.id) then
+      Movimentacao.id := RecMovimentacao.id;
+
+    if System.SysUtils.TryStrToUInt64(FRequest.Query['id_produto'],RecMovimentacao.id_produto) then
+      Movimentacao.id_produto := RecMovimentacao.id_produto;
+
+    if System.SysUtils.TryStrToUInt64(FRequest.Query['id_nota'],RecMovimentacao.id_nota) then
+      Movimentacao.id_nota := RecMovimentacao.id_nota;
+
+    if System.SysUtils.TryStrToInt(FRequest.Query['quantidade'],RecMovimentacao.quantidade) then
+      Movimentacao.quantidade := RecMovimentacao.quantidade;
+
+    if (
+      (not FRequest.Query['data_inicial'].IsEmpty)
+      and isValidDateString(FRequest.Query['data_inicial'])
+    )then
+      data_inicial := FRequest.Query['data_inicial'];
+
+    if (
+      (not FRequest.Query['data_final'].IsEmpty)
+      and isValidDateString(FRequest.Query['data_final'])
+    )then
+      data_final := FRequest.Query['data_final'];
+
+    if not FRequest.Query['tipo_operacao'].isEmpty then
+      System.SysUtils.TryStrToInt(FRequest.Query['tipo_operacao'], tipo_operacao);
+
+    if not FRequest.Query['id_almoxarifado'].isEmpty then
+      System.SysUtils.TryStrToUInt64(FRequest.Query['id_almoxarifado'], id_almoxarifado);
+
+    listMovimentacao := FServiceMovimentacao.Consulta(
+      Movimentacao,
+      tipo_operacao,
+      id_almoxarifado,
+      data_inicial,
+      data_final);
+
+    arrResponse := TJSONArray.Create;
+
+    Movimentacao.Free;
+    for Movimentacao in listMovimentacao do
+    begin
+      Nota := FServiceNotas.ConsultaPorId(Movimentacao.id_nota);
+      Produto := FServiceProduto.ConsultaPorId(Movimentacao.id_produto);
+
+      if not (
+        Assigned(Nota) and
+        Assigned(Produto)
+      ) then
+        raise EConflict.Create('Nao foi encotrado Nota ou Produto da Movimentacao');
+
+      jsonValue := Movimentacao.ToJSONObject;
+
+      if Nota.tipo_operacao = 2 then
+      begin
+        Transferencia := FServiceTransferencia.Consulta(Nota.id);
+        jsonValue.AddPair('id_almoxarifado_destino', TJSONNumber.Create(Transferencia.id_almoxarifado_destino));
+      end;
+
+      jsonValue.AddPair('descricao_produto', Produto.descricao);
+      jsonValue.AddPair('tipo_operacao', TJSONNumber.Create(Nota.tipo_operacao));
+      jsonValue.AddPair('concluida', TJSONBool.Create(Nota.concluida));
+      jsonValue.AddPair('data_registro', FormatDateTime('yyyymmdd', Nota.data_registro));
+      jsonValue.AddPair('observacao', Nota.observacao);
+      jsonValue.AddPair('id_almoxarifado',  TJSONNumber.Create(Nota.id_almoxarifado));
+
+      arrResponse.AddElement(jsonValue);
+    end;
+
+    FResponse
+      .Status(THTTPStatus.OK)
+      .Send(arrResponse);
+
+  finally
+    Movimentacao.Free;
+  end;
+
+end;
+
+procedure TControllerMovimentacao.Post;
+var
+  listMovimentacao: TObjectList<TMovimentacao>;
+  Movimentacao: TMovimentacao;
+  RecMovimentacao: RMovimentacao;
+  Produto : TProdutos;
+  Nota: TNotas;
+  jsonBody: TJSONObject;
+  jsonResponse: TJSONObject;
+  Session: TUserSession;
+  RecNota: RNotas;
+  listUsuario: TObjectList<TUsuario>;
+  Usuario: TUsuario;
+  Almoxarifado: TAlmoxarifado;
+  saldo: Integer;
+  Transferencia : TTransferencia;
+begin
+  Nota := nil;
+  Usuario := nil;
+  Almoxarifado := nil;
+  Movimentacao := nil;
+  Produto := nil;
+  try
+    jsonBody := FRequest.Body<TJSONObject>;
+    Movimentacao := TMovimentacao.Create;
+
+    if not (
+      jsonBody.TryGetValue('id_produto', RecMovimentacao.id_produto) and
+      jsonBody.TryGetValue('quantidade', RecMovimentacao.quantidade) and
+      jsonBody.TryGetValue('id_nota', RecMovimentacao.id_nota)
+    ) then
+      raise EValidation.Create('Forneca id_produto, quantiadade e id_nota para realizar a movimentacao');
+
+    if RecMovimentacao.quantidade < 0 then
+      raise EConflict.Create('Movimentacao nao pode ter quantidade < 0');
+
+    if not FServiceProduto.Existe(RecMovimentacao.id_produto) then
+      raise EConflict.Create('Produto da movimentacao nao existe');
+
+    if not FServiceNotas.Existe(RecMovimentacao.id_nota) then
+      raise EConflict.Create('Nota da movimentacao nao existe');
+
+    Movimentacao.id_produto := RecMovimentacao.id_produto;
+    Movimentacao.quantidade := RecMovimentacao.quantidade;
+    Movimentacao.id_nota := RecMovimentacao.id_nota;
+
+    Produto := FServiceProduto.ConsultaPorId(RecMovimentacao.id_produto);
+    Nota := FServiceNotas.ConsultaPorId(RecMovimentacao.id_nota);
+
+    // verifica se almoxarifado esta ativo
+    if not FServiceAlmoxarifado.EstaAtivo(Nota.id_almoxarifado) then
+      raise EConflict.Create('Nao eh possivel fazer movimentacao em almoxarifado inativo');
+
+    if not FServiceProduto.EstaAtivo(Movimentacao.id_produto, Nota.id_almoxarifado) then
+     raise EConflict.Create('Nao eh possivel realizar movimentacao em produto inativo');
+
+    if Nota.concluida then
+       raise EConflict.Create('Nao eh possivel realizar movimentacao em nota concluida');
+
+    listMovimentacao := FServiceMovimentacao.Criar(Movimentacao);
+
+    if listMovimentacao.Count = 0 then
+      raise Exception.Create('Nao foi possivel criar movimentacao');
+
+    jsonResponse := listMovimentacao[0].ToJSONObject();
+
+    if Nota.tipo_operacao = 2 then
+    begin
+      Transferencia := FServiceTransferencia.Consulta(Nota.id);
+      jsonResponse.AddPair('id_almoxarifado_destino', TJSONNumber.Create(Transferencia.id_almoxarifado_destino));
+    end;
+
+    jsonResponse.AddPair('descricao_produto', Produto.descricao);
+    jsonResponse.AddPair('tipo_operacao', TJSONNumber.Create(Nota.tipo_operacao));
+    jsonResponse.AddPair('concluida', TJSONBool.Create(Nota.concluida));
+    jsonResponse.AddPair('data_registro', FormatDateTime('yyyymmdd', Nota.data_registro));
+    jsonResponse.AddPair('observacao', Nota.observacao);
+    jsonResponse.AddPair('id_almoxarifado',  TJSONNumber.Create(Nota.id_almoxarifado));
+
+    FResponse
+      .Status(THttpStatus.OK)
+      .Send(
+        TJSONObject.Create
+        .AddPair('data', jsonResponse)
+      );
+  finally
+    Usuario.Free;
+    Almoxarifado.Free;
+    Movimentacao.free;
+    Nota.Free;
+    Produto.Free;
+  end;
+end;
+
+procedure TControllerMovimentacao.PostMovimentacaoDireta;
+var
+  listMovimentacao: TObjectList<TMovimentacao>;
+  Movimentacao: TMovimentacao;
+  RecMovimentacao: RMovimentacao;
+  Produto : TProdutos;
+  Nota: TNotas;
+  jsonBody: TJSONObject;
+  jsonResponse: TJSONObject;
+  Session: TUserSession;
+  RecNota: RNotas;
+  listUsuario: TObjectList<TUsuario>;
+  Usuario: TUsuario;
+  Almoxarifado: TAlmoxarifado;
+  saldo: Integer;
+  Transferencia: TTransferencia;
+begin
+  jsonBody := FRequest.Body<TJSONObject>;
+  Nota := nil;
+  Usuario := nil;
+  Almoxarifado := nil;
+  Movimentacao := nil;
+  Produto := nil;
+  try
+    Session := FRequest.Sessions.Session[TUserSession] as TUserSession;
+    Usuario := TUsuario.Create;
+    Usuario.nome := Session.Nome;
+    listUsuario := FServiceUsuario.Consulta(Usuario);
+
+    if listUsuario.Count = 0 then
+      raise EValidation.Create('Erro de autenticacao usuario');
+
+    Usuario := listUsuario[0];
+
+
+    Nota := TNotas.Create;
+    Nota.data_registro := Now();
+    Nota.id_almoxarifado := Usuario.id_almoxarifado;
+    Nota.tipo_operacao := 1;
+    Nota.usuario_responsavel := Usuario.id;
+
+    if jsonBody.TryGetValue<Integer>('tipo_operacao', RecNota.tipo_operacao) then
+    begin
+      if not (
+        (RecNota.tipo_operacao = 2) or
+        (RecNota.tipo_operacao = 1) or
+        (RecNota.tipo_operacao = -1)
+      ) then
+        raise EValidation.Create('Nao eh possivel fazer movimentacao direta em nota de inventario');
+
+      Nota.tipo_operacao := RecNota.tipo_operacao;
+    end;
+
+
+    if jsonBody.TryGetValue<TDateTime>('data_registro', RecNota.data_registro) then
+      Nota.data_registro := RecNota.data_registro;
+
+    if jsonBody.TryGetValue<UInt64>('id_almoxarifado', RecNota.id_almoxarifado) then
+    begin
+      if not FServiceAlmoxarifado.Existe(RecNota.id_almoxarifado) then
+        raise EConflict.Create('Almoxarifado nao existe');
+
+      Nota.id_almoxarifado := RecNota.id_almoxarifado;
+    end;
+
+    if jsonBody.TryGetValue<UInt64>('usuario_responsavel', RecNota.usuario_responsavel) then
+    begin
+      if not Assigned(FServiceUsuario.ConsultaPorId(RecNota.usuario_responsavel)) then
+        raise EConflict.Create('Nao foi possivel encontrar usuario indicado para fazer a movimentacao');
+
+      Nota.usuario_responsavel := RecNota.usuario_responsavel;
+    end;
+
+    Movimentacao := TMovimentacao.Create;
+
+    if not (
+      jsonBody.TryGetValue('id_produto', RecMovimentacao.id_produto) and
+      jsonBody.TryGetValue('quantidade', RecMovimentacao.quantidade)
+    ) then
+      raise EValidation.Create('Forneca id_produto e quantiadade para realizar a movimentacao');
+
+    Movimentacao.id_produto := RecMovimentacao.id_produto;
+    Movimentacao.quantidade := RecMovimentacao.quantidade;
+
+    if not FServiceProduto.Existe(Movimentacao.id_produto) then
+      raise EConflict.Create('Produto que se quer movimentar nao existe');
+
+    if not FServiceProduto.EstaAtivo(Movimentacao.id_produto, Nota.id_almoxarifado) then
+      raise EConflict.Create('Nao eh possivel movimentar produto que nao esta ativo');
+
+
+    case Nota.tipo_operacao of
+      -1: // nota de saida
+      begin
+        saldo := FServiceEstoque.getSaldo(Nota.id_almoxarifado,Movimentacao.id_produto);
+        if saldo < Movimentacao.quantidade then
+          raise EConflict.Create('Saldo insuficiente para realizar movimentacao de saida');
+
+        try
+          Nota := FServiceNotas.Criar(Nota);
+          Movimentacao.id_nota := Nota.id;
+          Movimentacao := FServiceMovimentacao.Criar(Movimentacao)[0];
+          FServiceNotas.Concluir(Nota);
+        except
+          on E: Exception do
+          begin
+            if Movimentacao.isFilled['id'] then
+              FServiceMovimentacao.Excluir(Movimentacao);
+            if Nota.isFilled['id'] then
+              FServiceNotas.Excluir(Nota);
+          end;
+        end;
+      end;
+      1: // nota de entrada
+      begin
+        try
+          Nota := FServiceNotas.Criar(Nota);
+          Movimentacao.id_nota := Nota.id;
+          Movimentacao := FServiceMovimentacao.Criar(Movimentacao)[0];
+          Nota.concluida := FServiceNotas.Concluir(Nota);
+        except
+          on E: Exception do
+          begin
+            if Movimentacao.isFilled['id'] then
+              FServiceMovimentacao.Excluir(Movimentacao);
+            if Nota.isFilled['id'] then
+              FServiceNotas.Excluir(Nota);
+          end;
+        end;
+      end;
+      2: // nota de trasferencia
+      begin
+        Transferencia := TTransferencia.Create;
+
+        if not jsonBody.TryGetValue<UInt64>('id_almoxarifado_destino', RecNota.id_almoxarifado) then
+          raise EConflict.Create('Forneca o if_almoxarifado_destino da movimentacao de transferencia');
+
+        if RecNota.id_almoxarifado = Nota.id_almoxarifado then
+          raise EConflict.Create('id do almoxarifado de origem e destino da trasferencia devem ser distintos');
+
+        if not FServiceAlmoxarifado.Existe(RecNota.id_almoxarifado) then
+          raise EConflict.Create('Almoxarifado nao existe');
+
+        Transferencia.id_almoxarifado_origem := Nota.id_almoxarifado;
+        Transferencia.id_almoxarifado_destino := RecNota.id_almoxarifado;
+
+        if not FServiceProduto.EstaAtivo(Movimentacao.id_produto, Transferencia.id_almoxarifado_destino) then
+           raise EConflict.Create('Nao eh possivel concluir movimentacao de produto que nao esta ativo');
+
+        saldo := FServiceEstoque.getSaldo(Transferencia.id_almoxarifado_origem, Movimentacao.id_produto);
+
+        if saldo < Movimentacao.quantidade then
+           raise EConflict.Create('Saldo insuficiente para realizar movimentacao de saida no almoxarifado de origem');
+
+        try
+          Nota := FServiceNotas.Criar(Nota);
+          Transferencia.id_nota :=  Nota.id;
+          Transferencia := FServiceTransferencia.Criar(Transferencia);
+          Movimentacao.id_nota := Nota.id;
+          Movimentacao := FServiceMovimentacao.Criar(Movimentacao)[0];
+          FServiceNotas.Concluir(Nota);
+        except
+          on E: Exception do
+          begin
+            if Movimentacao.isFilled['id'] then
+               FServiceMovimentacao.ExcluirPorId(Movimentacao.id);
+            if Transferencia.isFilled['id_nota'] then
+              FServiceTransferencia.Excluir(Transferencia);
+            if Nota.isFilled['id'] then
+              FServiceNotas.ExcluirPorId(Nota.id);
+          end;
+        end;
+      end;
+    end;
+
+
+
+    jsonResponse := Movimentacao.ToJSONObject;
+
+    if Nota.tipo_operacao = 2 then
+      jsonResponse.AddPair('id_almoxarifado_destino', TJSONNumber.Create(Transferencia.id_almoxarifado_destino));
+
+    Produto := FServiceProduto.ConsultaPorId(Movimentacao.id_produto);
+
+    jsonResponse.AddPair('descricao_produto', Produto.descricao);
+    jsonResponse.AddPair('tipo_operacao', TJSONNumber.Create(Nota.tipo_operacao));
+    jsonResponse.AddPair('concluida', TJSONBool.Create(Nota.concluida));
+    jsonResponse.AddPair('data_registro', FormatDateTime('yyyymmdd', Nota.data_registro));
+    jsonResponse.AddPair('observacao', Nota.observacao);
+    jsonResponse.AddPair('id_almoxarifado',  TJSONNumber.Create(Nota.id_almoxarifado));
+
+
+    FResponse
+      .Status(THTTPStatus.Created)
+      .Send(TJSONObject.Create
+        .AddPair('data', jsonResponse));
+
+  finally
+    Nota.Free;
+    Usuario.Free;
+    Almoxarifado.Free;
+    Movimentacao.Free;
+    Produto.Free;
+  end;
+end;
+
+procedure TControllerMovimentacao.Put;
+var
+  listMovimentacao: TObjectList<TMovimentacao>;
+  Movimentacao : TMovimentacao;
+  RecMovimentacao: RMovimentacao;
+  jsonResponse: TJSONObject;
+  Nota: TNotas;
+  Produto: TProdutos;
+  jsonBody: TJSONObject;
+  Transferencia: TTransferencia;
+begin
+  try
+    Movimentacao := TMovimentacao.Create;
+
+    if not System.SysUtils.TryStrToUInt64(FRequest.Params['id'],RecMovimentacao.id) then
+      raise Evalidation.Create('Erro de validacao de dados: Forneca id da movimentacao que se deseja alterar');
+    
+    Movimentacao := FServiceMovimentacao.ConsultaPorId(RecMovimentacao.id); 
+
+    if not Assigned(Movimentacao) then
+      raise EConflict.Create('Nao foi possivel encontrar movimentacao');
+
+    // nota de origem da movimentacao nao pode estar concluida
+    Nota := FServiceNotas.ConsultaPorId(Movimentacao.id_nota);
+    if Nota.concluida = True then
+      raise Exception.Create('Nao eh possivel alterar movimentacao, pois nota de origem ja foi concluida');
+
+    Movimentacao.Free;
+    Movimentacao := TMovimentacao.Create;
+    Movimentacao.id := RecMovimentacao.id;
+    
+    if (
+      jsonBody.TryGetValue<UInt64>('id_produto', RecMovimentacao.id_produto)
+    ) then
+    begin
+      if not FServiceProduto.Existe(RecMovimentacao.id_produto) then
+        raise EConflict.Create('Produto inexistente');
+
+       Movimentacao.id_produto := RecMovimentacao.id_produto;
+    end;
+
+
+    if (
+      jsonBody.TryGetValue<UInt64>('id_nota', RecMovimentacao.id_nota)
+    ) then
+    begin
+      if not FServiceNotas.Existe(RecMovimentacao.id_nota) then
+         raise EConflict.Create('Nota Inexistente');
+
+       Movimentacao.id_nota := RecMovimentacao.id_nota;
+    end;
+
+
+    if jsonBody.TryGetValue<Integer>('quantidade', RecMovimentacao.quantidade) then
+      Movimentacao.quantidade := RecMovimentacao.quantidade;
+
+    if RecMovimentacao.quantidade < 0 then
+      raise Exception.Create('Movimentacao nao pode ter quantidade < 0');
+
+    if (
+      Movimentacao.isFilled.Items['id_nota']
+    ) then
+    begin
+      Nota := FServiceNotas.ConsultaPorId(Movimentacao.id_nota);
+       // nao eh possivel alterar movimentacao para nota de destino concluida
+      if Nota.concluida = True then
+        raise EConflict.Create('Nao eh possuvel alterar movimentacao em nota concluida');
+    end;
+
+    listMovimentacao := FServiceMovimentacao.Alterar(Movimentacao);
+
+    if listMovimentacao.Count = 0 then
+      raise Exception.Create('Nao foi possivel alterar a movimentacao');
+
+    Nota := FServiceNotas.ConsultaPorId(listMovimentacao[0].id_nota);
+    Produto := FServiceProduto.ConsultaPorId(listMovimentacao[0].id_produto);
+
+    jsonResponse := listMovimentacao[0].ToJSONObject();
+
+    if Nota.tipo_operacao = 2 then
+    begin
+      Transferencia := FServiceTransferencia.Consulta(Nota.id);
+      jsonResponse.AddPair('id_almoxarifado_destino', TJSONNumber.Create(Transferencia.id_almoxarifado_destino));
+    end;
+
+    Produto := FServiceProduto.ConsultaPorId(Movimentacao.id_produto);
+
+    jsonResponse.AddPair('descricao_produto', Produto.descricao);
+    jsonResponse.AddPair('tipo_operacao', TJSONNumber.Create(Nota.tipo_operacao));
+    jsonResponse.AddPair('concluida', TJSONBool.Create(Nota.concluida));
+    jsonResponse.AddPair('data_registro', FormatDateTime('yyyymmdd', Nota.data_registro));
+    jsonResponse.AddPair('observacao', Nota.observacao);
+    jsonResponse.AddPair('id_almoxarifado',  TJSONNumber.Create(Nota.id_almoxarifado));
+
+    FResponse
+      .Status(THttpStatus.OK)
+      .Send(
+        TJSONObject.Create
+        .AddPair('data', jsonResponse)
+      );
+  finally
+    Movimentacao.Free;
+  end;
+end;
+
+initialization
+  THorseGBSwaggerRegistry.RegisterPath(TControllerMovimentacao);
+  FServiceNotas:= TServiceNotas.Create;
+  FServiceProduto:= TServiceProdutos.Create;
+  FServiceMovimentacao:= TServiceMovimentacao.Create;
+  FServiceUsuario := TServiceUsuario.Create;
+  FServiceAlmoxarifado := TServiceAlmoxarifado.Create;
+  FServiceEstoque := TServiceEstoque.Create;
+  FServiceTransferencia := TServiceTransferencia.Create;
+finalization
+  FServiceNotas.Free;
+  FServiceProduto.Free;
+  FServiceMovimentacao.Free;
+  FServiceUsuario.Free;
+  FServiceAlmoxarifado.Free;
+  FServiceEstoque.free;
+  FServiceTransferencia.Free;
+end.

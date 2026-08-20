@@ -1,0 +1,28 @@
+unit StartServer;
+interface uses
+  Horse,
+  Horse.GBSwagger,
+  Horse.Jhonson,
+  Horse.CORS,
+  Horse.BasicAuthentication,
+  Controller.Usuario,
+  Middleware.Error,
+  System.SysUtils,
+  Enviroment;
+
+procedure Start;
+
+implementation
+
+procedure Start;
+begin
+
+end;
+
+initialization
+  Swagger.Info
+    .Title('Api Controle de Estoque')
+    .Description('Api de Controle de Estoque')
+    .&End
+    .BasePath('/');
+end.

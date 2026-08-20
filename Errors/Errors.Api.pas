@@ -4,39 +4,57 @@ interface uses
   System.SysUtils,
   Horse.Commons;
 
-type EHelperAPI = class helper for Exception
-  function Status: Integer;
+type CustomException = class(Exception)
+  protected
+    FStatus: Integer;
+  public
+    property Status: Integer read FStatus write FStatus;
+    constructor Create(mensagem: String = 'Custom Error'; Status: Integer = 500);
 end;
 
-type EValidation = class(Exception)
-  function Status: Integer;
+type EValidation = class(CustomException)
+  public
+    constructor Create(mensagem: String = 'Custom Error');
 end;
 
-type ENotFound = class(Exception)
-  function Status: Integer;
+
+type ENotFound = class(CustomException)
+  public
+    constructor Create(mensagem: String = 'Custom Error');
 end;
 
+type EConflict = class(CustomException)
+  public
+    constructor Create(mensagem: String = 'Custom Error');
+end;
 
 implementation
-{ EValidation }
 
-function EValidation.Status: Integer;
+constructor CustomException.Create(mensagem: String; Status: Integer);
 begin
-  Result := THttpStatus.BadRequest.ToInteger;
+  inherited Create(mensagem);
+  FStatus := Status;
 end;
 
-{ EHelperAPI }
+{ EValidation }
 
-function EHelperAPI.Status: Integer;
+constructor EValidation.Create(mensagem: String);
 begin
-  Result :=  0;
+  inherited Create(mensagem,THttpStatus.BadRequest.ToInteger);
 end;
 
 { ENotFound }
 
-function ENotFound.Status: Integer;
+constructor ENotFound.Create(mensagem: String);
 begin
-  Result := THttpStatus.NotFound.ToInteger;
+  inherited Create(mensagem,THttpStatus.NotFound.ToInteger);
+end;
+
+
+{ EConflict }
+constructor EConflict.Create(mensagem: String);
+begin
+   inherited Create(mensagem,THttpStatus.Conflict.ToInteger);
 end;
 
 end.

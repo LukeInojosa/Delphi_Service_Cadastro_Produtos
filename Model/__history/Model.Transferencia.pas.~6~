@@ -1,0 +1,82 @@
+unit Model.Transferencia;
+
+interface uses
+  Model,
+  GBSwagger.Model.Attributes,
+  System.SysUtils,
+  Database.Query,
+  System.Generics.Collections,
+  Helper.TObject,
+  System.Rtti;
+
+type TTransferencia = class(TModel)
+  private
+    FIdNota : uInt64;
+    FIdAlmoxarifadoOrigem: uInt64;
+    FIdAlmoxarifadoDestino : uInt64;
+
+    procedure SetIdNota(data : uInt64);
+    procedure SetIdAlmoxarifadoOrigem(data : uInt64);
+    procedure SetIdAlmoxarifadoDestino(data : uInt64);
+  public
+
+    property id_nota: uInt64 read FIdNota write SetIdNota;
+
+    property id_almoxarifado_origem: uInt64 read FIdAlmoxarifadoOrigem write SetIdAlmoxarifadoOrigem;
+
+    property id_almoxarifado_destino: uInt64 read FIdAlmoxarifadoDestino write SetIdAlmoxarifadoDestino;
+
+    constructor Create();
+    procedure Show();
+end;
+
+type RTransferencia = Record
+  id_nota : uInt64;
+  id_almoxarifado_origem : uInt64;
+  id_almoxarifado_destino : uInt64;
+End;
+
+
+implementation
+
+{ TTransferencia }
+
+constructor TTransferencia.Create;
+var
+  paramName: String;
+begin
+  inherited;
+  for paramName in Self.getPropNames() do
+    isFilled.AddOrSetValue(paramName, False);
+
+  FIdNota := 0;
+  FIdAlmoxarifadoOrigem := 0;
+  FIdAlmoxarifadoDestino := 0;
+end;
+
+procedure TTransferencia.SetIdAlmoxarifadoDestino(data: uInt64);
+var
+  columnName:String;
+begin
+  columnName := 'ID_ALMOXARIFADO_DESTINO';
+  isFilled.Items[columnName.ToLower] := True;
+  FIdAlmoxarifado := data;
+
+end;
+
+procedure TTransferencia.SetIdAlmoxarifadoOrigem(data: uInt64);
+begin
+
+end;
+
+procedure TTransferencia.SetIdNota(data: uInt64);
+begin
+
+end;
+
+procedure TTransferencia.Show;
+begin
+
+end;
+
+end.

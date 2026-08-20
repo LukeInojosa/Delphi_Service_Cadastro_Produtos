@@ -10,20 +10,16 @@ interface uses
 
 type TEstoque = class(TModel)
   private
-    FId : uInt64;
     FIdProduto : uInt64;
     FIdAlmoxarifado : uInt64;
     FQuantidade : Integer;
     FAtivo: Boolean;
 
-    procedure SetId(data : uInt64);
     procedure SetIdProduto(data : uInt64);
     procedure SetIdAlmoxarifado(data : uInt64);
     procedure SetQuantidade(data : Integer);
     procedure SetAtivo(data : Boolean);
   public
-
-    property id: uInt64 read FId write SetId;
 
     property id_produto: uInt64 read FIdProduto write SetIdProduto;
 
@@ -38,7 +34,6 @@ type TEstoque = class(TModel)
 end;
 
 type REstoque = Record
-  id : uInt64;
   id_produto : uInt64;
   id_almoxarifado : uInt64;
   quantidade : Integer;
@@ -58,7 +53,6 @@ begin
   for paramName in Self.getPropNames() do
     isFilled.AddOrSetValue(paramName, False);
 
-  FId := 0;
   FIdProduto := 0;
   FIdAlmoxarifado := 0;
   FQuantidade := 0;
@@ -72,15 +66,6 @@ begin
   columnName := 'ATIVO';
   isFilled.Items[columnName.ToLower] := True;
   FAtivo := data;
-end;
-
-procedure TEstoque.SetId(data: uInt64);
-var
-  columnName:String;
-begin
-  columnName := 'ID';
-  isFilled.Items[columnName.ToLower] := True;
-  FId := data;
 end;
 
 procedure TEstoque.SetIdAlmoxarifado(data: uInt64);
@@ -112,9 +97,8 @@ end;
 
 procedure TEstoque.Show;
 begin
-      Writeln(Format('{ id: %s, id_produto: %s, id_almoxarifado, %s, quantidade: %s, ativo: %s}',
-          [id.ToString,
-          id_produto.ToString,
+      Writeln(Format('{id_produto: %s, id_almoxarifado, %s, quantidade: %s, ativo: %s}',
+          [id_produto.ToString,
           id_almoxarifado.ToString,
           quantidade.ToString,
           ativo.ToString]))

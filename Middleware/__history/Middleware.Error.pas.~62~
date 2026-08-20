@@ -1,0 +1,45 @@
+unit Middleware.Error;
+
+interface uses
+  Horse,
+  Horse.Commons,
+  System.SysUtils;
+
+  procedure GlobalErrorHandler(const Req: THorseRequest;const Res: THorseResponse;const Exc: Exception);
+
+implementation uses
+  System.JSON, Errors.Api;
+
+  procedure GlobalErrorHandler(const Req: THorseRequest;const Res: THorseResponse;const Exc: Exception);
+  var
+    jsonResponse: TJSONObject;
+  begin
+    jsonResponse := TJSONObject.Create();
+    if Exc is EConvertError then
+    begin
+      Res
+        .Status(THTTPStatus.BadRequest)
+        .Send<TJSONObject>(
+           jsonResponse
+            .AddPair('message', 'Erro na validacao de dados')
+        );
+    end
+    else if Exc is EValidation then
+    begin
+      Res
+        .Status(Exc.Status)
+        .Send<TJSONObject>(
+          jsonResponse
+            .AddPair('message', Exc.Message)
+        );
+    end else begin
+      Res
+        .Status(THTTPStatus.BadRequest)
+        .Send<TJSONObject>(
+           jsonResponse
+            .AddPair('message', Exc.Message)
+        );
+    end;
+  end;
+
+end.

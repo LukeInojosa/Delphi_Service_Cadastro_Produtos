@@ -23,7 +23,7 @@ type TServiceUsuario = class(TService)
     destructor Destroy(); override;
     function Criar(data: TUsuario): TObjectList<TUsuario>;
     function Consulta(data: TUsuario): TObjectList<TUsuario>;
-    function Excluir(data: TUsuario): Boolean;
+    function Excluir(data: TUsuario): TObjectList<TUsuario>;
     function Alterar(data: TUsuario): TObjectList<TUsuario>;
     function CheckAutentication(data: TUsuario): Boolean;
     function ConsultaPorId(id: Uint64): TUsuario;
@@ -190,7 +190,9 @@ begin
   inherited;
 end;
 
-function TServiceUsuario.Excluir(data: TUsuario): Boolean;
+function TServiceUsuario.Excluir(data: TUsuario): TObjectList<TUsuario>;
+var
+  jsonResult : TJSONArray;
 begin
   if not (
     Assigned(data) and
@@ -206,9 +208,13 @@ begin
     .AddToQuery('AND SENHA = :SENHA')
     .SetParam('NOME', data.nome)
     .SetParam('SENHA', data.senha)
-    .ExecSQL();
+    .AddToQuery('RETURNING NOME, ID_ALMOXARIFADO')
+    .Open();
 
-  Result := (Self.Query.RowsAffected > 0);
+  jsonResult := Self.Query.ConvertQueryToJSONArray(True,['nome','id_almoxarifado']);
+
+  Result := TGBJSONDefault.Serializer<TUsuario>
+                          .JsonStringToList(jsonResult.ToJSON);
 end;
 
 end.

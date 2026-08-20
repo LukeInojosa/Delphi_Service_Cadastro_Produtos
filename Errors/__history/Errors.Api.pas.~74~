@@ -1,0 +1,53 @@
+unit Errors.Api;
+
+interface uses
+  System.SysUtils,
+  Horse.Commons;
+
+type CustomException = class(Exception)
+  protected
+    FStatus: Integer;
+  public
+    property Status: Integer read FStatus write FStatus;
+    constructor Create(mensagem: String = 'Custom Error'; Status: Integer = 500);
+end;
+
+type EValidation = class(CustomException)
+  private
+    FStatus: Integer;
+  public
+    property Status: Integer read FStatus write FStatus;
+    constructor Create(mensagem: String = 'Custom Error');
+end;
+
+type ENotFound = class(CustomException)
+  private
+    FStatus: Integer;
+  public
+    property Status: Integer read FStatus write FStatus;
+    constructor Create(mensagem: String = 'Custom Error');
+end;
+
+implementation
+
+constructor CustomError.Create(mensagem: String; Status: Integer);
+begin
+  inherited Create(mensagem);
+  FStatus := Status;
+end;
+
+{ EValidation }
+
+constructor EValidation.Create(mensagem: String);
+begin
+  inherited Create(mensagem,THttpStatus.BadRequest.ToInteger);
+end;
+
+{ ENotFound }
+
+constructor ENotFound.Create(mensagem: String);
+begin
+  inherited Create(mensagem,THttpStatus.NotFound.ToInteger);
+end;
+
+end.

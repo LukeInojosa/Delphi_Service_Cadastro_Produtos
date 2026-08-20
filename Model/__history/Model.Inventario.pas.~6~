@@ -1,0 +1,46 @@
+unit Model.Inventario;
+
+interface uses
+  Model,
+  GBSwagger.Model.Attributes,
+  System.SysUtils,
+  Database.Query,
+  Helper.TObject,
+  System.Rtti,
+  GBJSON.DateTime.Helper;
+
+type TInventario  = class(TModel)
+  private
+    FId : uInt64;
+    FDataRegistro : TDateTime;
+    FObservacao : String;
+    FConcluida : Boolean;
+    FUsuarioResponsavel : uInt64;
+    FIdAlmoxarifado : uInt64;
+  public
+
+    [SwagProp('id','',False, True)]
+    property id: uInt64 read FId write FId;
+
+    [SwagProp('data_registro','',False)]
+    property data_registro: TDateTime read FDataRegistro write FDataRegistro;
+
+    [SwagProp('observacao','',False)]
+    property observacao: String read FObservacao write FObservacao;
+
+    [SwagProp('concluida','',False)]
+    property concluida: Boolean read FConcluida write FConcluida;
+
+    [SwagProp('usuario_responsavel','',False)]
+    property usuario_responsavel: uInt64 read FUsuarioResponsavel write FUsuarioResponsavel;
+
+    [SwagProp('id_almoxarifado','',False)]
+    property id_almoxarifado: uInt64 read FIdAlmoxarifado write FIdAlmoxarifado;
+
+    constructor Create();
+    procedure Show();
+end;
+
+implementation
+
+end.

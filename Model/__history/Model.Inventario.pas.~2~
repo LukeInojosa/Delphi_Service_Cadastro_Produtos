@@ -1,0 +1,44 @@
+unit Model.Inventario;
+
+interface uses
+  Model,
+  GBSwagger.Model.Attributes,
+  System.SysUtils,
+  Database.Query,
+  System.Generics.Collections,
+  Helper.TObject,
+  System.Rtti;
+
+type TUsuario  = class(TModel)
+  private
+    FId : uInt64;
+    FNome : String;
+    FSenha : String;
+    FIdAlmoxarifado : uInt64;
+
+    procedure SetId(data : uInt64);
+    procedure SetNome(data : String);
+    procedure SetSenha(data : String);
+    procedure SetIdAlmoxarifado(data : uInt64);
+
+  public
+
+    [SwagProp('id','', True ,False, True)]
+    property id: uInt64 read FId write SetId;
+
+    [SwagProp('nome','', True)]
+    property nome: String read FNome write SetNome;
+
+    [SwagProp('senha','', True, False, True)]
+    property senha: String read FSenha write SetSenha;
+
+    [SwagProp('id_almoxarifado','', True)]
+    property id_almoxarifado: uInt64 read FIdAlmoxarifado write SetIdAlmoxarifado;
+
+    constructor Create();
+    procedure Show();
+end;
+
+implementation
+
+end.

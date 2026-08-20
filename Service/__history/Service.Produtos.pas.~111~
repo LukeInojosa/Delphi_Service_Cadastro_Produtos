@@ -1,0 +1,266 @@
+unit Service.Produtos;
+
+interface uses
+  Model.Produtos,
+  Service,
+  System.JSON,
+  FireDAC.Comp.Client,
+  Database.Query,
+  GBJSON.Helper,
+  System.Generics.Collections,
+  System.Rtti;
+type
+  TFDQuery = FireDAC.Comp.Client.TFDQuery;
+  TProdutos = Model.Produtos.TProdutos;
+  RProdutos = Model.Produtos.RProdutos;
+
+type TServiceProdutos = class(TService)
+  private
+    Query: TFDQuery;
+  public
+    constructor Create();
+    destructor Destroy(); override;
+    function Criar(data: TProdutos): TProdutos;
+    function Consulta(data: TProdutos; num_paginas: Integer = 0; qtd_por_pagina: Integer = 0): TObjectList<TProdutos>;
+    function Excluir(data:TProdutos):  TObjectList<TProdutos>;
+    function Alterar(data: TProdutos): TObjectList<TProdutos>;
+    function ConsultaPorId(id: UInt64 = 0): TProdutos;
+    function EstaAtivo(id_produto:UInt64 = 0; id_almoxarifado: UInt64 = 0): Boolean;
+    function Existe(id_produto: UInt64 = 0): Boolean;
+end;
+
+implementation uses
+    System.SysUtils, Data.DB;
+
+
+{ TServiceProdutos }
+function TServiceProdutos.Alterar(data: TProdutos): TObjectList<TProdutos>;
+var
+  arrJSON : TJSONArray;
+  fieldName: String;
+  I : Integer;
+  filledFields: TList<String>;
+  field: TField;
+  json: TJSONObject;
+begin
+  Writeln('- Produtos : Alterando Produtos');
+  if not (Assigned(data) and  data.isFilled.Items['id']) then
+    raise Exception.Create('erro na validacao de parametros. forneça id');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('UPDATE PRODUTOS')
+    .AddToQuery('SET ');
+
+  filledFields := data.getFilledFields;
+  for I := 0 to filledFields.Count - 1 do
+  begin
+    if I <> 0 then
+      Self.Query
+        .AddToQuery(',');
+    Self.Query
+      .AddToQuery(
+        filledFields[I] + ' = '+
+        ':' + filledFields[I]);
+  end;
+
+  Self.Query
+    .AddToQuery('WHERE ID = :ID')
+    .AddToQuery('RETURNING ' + data.getAllFields)
+    .SetAllParams<TProdutos>(data)
+    .Open();;
+
+  json := TJSONObject.Create();
+  for fieldName in data.isFilled.Keys.ToArray do
+  begin
+    field := Self.Query.FindField(fieldName);
+    if not Assigned(field) then
+      continue;
+
+    json.AddPair(fieldName, field.AsString);
+  end;
+
+  arrJSON := TJSONArray.Create;
+  arrJSON.AddElement(json);
+
+  Result := TGBJSONDefault.Serializer<TProdutos>
+                          .JsonStringToList(arrJSON.ToJSON);
+end;
+
+function TServiceProdutos.Consulta(data: TProdutos; num_paginas: Integer = 0; qtd_por_pagina: Integer = 0): TObjectList<TProdutos>;
+var
+  arrJSON: TJSONArray;
+  obj: TJSONObject;
+begin
+  // constroi Query
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT ');
+
+  if (num_paginas > 0) and (qtd_por_pagina > 0) then
+    Self.Query
+      .AddToQuery('FIRST :FIRST SKIP :SKIP ')
+      .SetParam('FIRST', qtd_por_pagina)
+      .SetParam('SKIP', qtd_por_pagina*(num_paginas -1));
+
+  Self.Query
+    .AddToQuery(' * FROM PRODUTOS WHERE 1 = 1 ');
+    .AddToQuery(data.updateStringFields())
+    .SetAllParams<TProdutos>(data)
+    .AddToQuery('ORDER BY DESCRICAO ASC')
+    .Open();
+
+  arrJSON := Self.Query.ConvertQueryToJSONArray();
+
+  Result := TGBJSONDefault.Serializer<TProdutos>
+                                    .JsonStringToList(arrJSON.ToJSON);
+end;
+
+function TServiceProdutos.ConsultaPorId(id: UInt64): TProdutos;
+var
+  arrJson: TJSONArray;
+begin
+  Result := TProdutos.Create;
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT * FROM PRODUTOS WHERE ID = :ID')
+    .SetParam('ID', id)
+    .Open();
+
+  if Self.Query.RecordCount = 0 then
+    Exit(nil);
+
+  arrJson := Self.Query.ConvertQueryToJSONArray(True, Result.isFilled.Keys.ToArray);
+
+  Result.FromJSONObject(arrJson.Get(0) as TJSONObject);
+end;
+
+constructor TServiceProdutos.Create();
+begin
+  inherited Create;
+  Self.Query := TFDQuery.Create(nil);
+  Self.Query.ConnectToDatabase(
+    Self.FConnection
+  );
+end;
+
+function TServiceProdutos.Criar(data: TProdutos): TProdutos;
+var
+  fieldName: String;
+  field: TField;
+  json: TJSONObject;
+begin
+  Writeln('- Produtos : Criando Produto');
+  Result:= nil;
+  if not Assigned(data) then
+    exit(data);
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('INSERT INTO PRODUTOS ')
+    .AddToQuery('(' + data.getAllFields(True) + ')')
+    .AddToQuery('VALUES ')
+    .AddToQuery('(' + data.getAllFields(True,':') + ')')
+    .AddToQuery('RETURNING ')
+    .AddToQuery(data.getAllFields)
+    .SetAllParams<TProdutos>(data)
+    .Open();;
+
+  json := TJSONObject.Create();
+  for fieldName in data.isFilled.Keys.ToArray do
+  begin
+    field := Self.Query.FindField(fieldName);
+    if not Assigned(field) then
+      continue;
+
+    json.AddPair(fieldName, field.AsString);
+  end;
+
+  Writeln('Query Executada: ' + Self.Query.Text);
+  Result := Tprodutos.Create();
+  Result.fromJSONObject(json);
+end;
+
+destructor TServiceProdutos.Destroy();
+begin
+  Self.Query.free;
+  inherited Destroy;
+end;
+
+
+function TServiceProdutos.EstaAtivo(id_produto,
+  id_almoxarifado: UInt64): Boolean;
+var
+  arrJson: TJSONArray;
+begin
+  if (id_produto = 0) or (id_almoxarifado = 0) then
+    raise Exception.Create('produto ou alomoxarifado nao fornecido');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT ATIVO FROM ESTOQUE ')
+    .AddToQuery('WHERE ID_PRODUTO = :ID_PRODUTO ')
+    .AddToQuery('AND ID_ALMOXARIFADO = :ID_ALMOXARIFADO ')
+    .SetParam('ID_PRODUTO', id_produto)
+    .SetParam('ID_ALMOXARIFADO',  id_almoxarifado)
+    .Open();
+
+
+  arrJson := Self.Query.ConvertQueryToJSONArray();
+
+  if arrJson.Count = 0 then
+    Exit(True);
+
+  Result := arrJson.Get(0).getValue<Boolean>('ativo');
+end;
+
+function TServiceProdutos.Excluir(data: TProdutos): TObjectList<TProdutos>;
+var
+  Produto: TProdutos;
+  arrJSON: TJSONArray;
+  fieldName: String;
+  field: TField;
+  json: TJSONObject;
+begin
+  Writeln('- Produto : Deletando Produto');
+  Result := nil;
+  if not (Assigned(data) and data.isFilled.Items['id']) then
+    exit;
+
+    Self.Query
+      .StartQuery
+      .AddToQuery('DELETE FROM PRODUTOS')
+      .AddToQuery('WHERE ID = :ID')
+      .AddToQuery('RETURNING ' + data.getAllFields)
+      .SetAllParams<TProdutos>(data)
+      .Open();
+
+    json := TJSONObject.Create();
+    for fieldName in data.isFilled.Keys.ToArray do
+    begin
+      field := Self.Query.FindField(fieldName);
+      if not Assigned(field) then
+        continue;
+      json.AddPair(fieldName, field.AsString);
+    end;
+
+    arrJSON := TJSONArray.Create;
+    arrJSON.AddElement(json);
+
+    Result := TGBJSONDefault.Serializer<TProdutos>
+                                    .JsonStringToList(arrJSON.ToJSON);
+end;
+
+function TServiceProdutos.Existe(id_produto: UInt64): Boolean;
+begin
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT * FROM PRODUTOS WHERE ID = :ID')
+    .SetParam('ID', id_produto)
+    .Open();
+
+  Result := Self.Query.RecordCount > 0;
+end;
+
+end.

@@ -1,0 +1,286 @@
+unit Controller.Transferencia;
+
+interface uses
+  Controller;
+
+type
+  TControllerTransferencia = class(Controller.TController)
+  public
+    class procedure Post(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Put(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+    class procedure Delete(Req: THorseRequest; Res: THorseResponse;
+      Next: TNextProc);
+  end;
+
+implementation uses
+  Service.Notas, Service.Produtos,
+  Service.Movimentacao, Service.Transferencia,
+  GBJSON.Helper,
+  Horse.Commons,
+  System.SysUtils,
+  System.Generics.Collections,
+  System.JSON, System.Rtti, Utils, Service.Usuario, Errors.Api, Model.Notas,
+  Service.Almoxarifado, Service.Estoque;
+var
+  FServiceNotas: TServiceNotas;
+  FServiceProduto: TServiceProdutos;
+  FServiceMovimentacao: TServiceMovimentacao;
+  FServiceUsuario : TServiceUsuario;
+  FServiceAlmoxarifado: TServiceAlmoxarifado;
+  FServiceEstoque: TServiceEstoque;
+  FServiceTransferencia: TServiceTransferencia;
+
+
+
+
+{ TControllerTransferencia }
+
+class procedure TControllerTransferencia.Delete(Req: THorseRequest;
+  Res: THorseResponse; Next: TNextProc);
+begin
+
+end;
+
+class procedure TControllerTransferencia.Post(Req: THorseRequest;
+  Res: THorseResponse; Next: TNextProc);
+var
+  jsonBody: TJSONObject;
+  RecTransferencia : RTransferencia;
+  Transferencia: TTransferencia;
+  RecNota: RNOtas;
+  Session: TUserSession;
+  Usuario: TUsuario;
+  Nota: TNotas;
+begin
+  Usuario := nil;
+  Nota := nil;
+  Transferencia := nil;
+  try
+    Session := Req.Sessions.Session[TUserSession] as TUserSession;
+    Usuario := TUsuario.Create;
+    Usuario.nome := Session.Nome;
+    Usuario := FServiceUsuario.Consulta(Usuario)[0];
+
+    jsonBody := Req.Body<TJSONObject>;
+
+    Transferencia := TTransferencia.Create;
+    Transferencia.id_almoxarifado_origem := Usuario.id_almoxarifado;
+
+    if not (
+      jsonBody.TryGetValue<UInt64>('id_almoxarifado_destino', RecTransferencia.id_almoxarifado_destino)
+    )then
+      raise Exception.Create('Forneca almoxarifado  destino para poder realizar uma transferencia');
+
+     Transferencia.id_almoxarifado_destino := RecTransferencia.id_almoxarifado_destino;
+
+    if jsonBody.TryGetValue<UInt64>('id_almoxarifado_origem', RecTransferencia.id_almoxarifado_origem) then
+      Transferencia.id_almoxarifado_origem := RecTransferencia.id_almoxarifado_origem;
+
+    if RecTransferencia.id_almoxarifado_origem = RecTransferencia.id_almoxarifado_destino then
+      raise Exception.Create('Almoxarifado de origem deve ser distinto do almoxarifado de destino');
+
+    if not (
+      FServiceAlmoxarifado.Existe(Transferencia.id_almoxarifado_origem) and
+      FServiceAlmoxarifado.Existe(Transferencia.id_almoxarifado_destino)
+    ) then
+      raise Exception.Create('Nao eh possivel fazer trasferencia para almoxarifado inexistente');
+
+    Nota := TNotas.Create;
+    Nota.tipo_operacao := 2;
+    Nota.data_registro := Now();
+    Nota.concluida := False;
+    Nota.usuario_responsavel :=  Usuario.id;
+    Nota.observacao := 'Nota de Transferencia';
+    Nota.id_almoxarifado := Transferencia.id_almoxarifado_origem;
+
+    if jsonBody.TryGetValue<String>('observacao', RecNota.observacao) then
+      Nota.observacao := RecNota.observacao;
+
+    if jsonBody.TryGetValue<UInt64>('usuario_responsavel', RecNota.usuario_responsavel) then
+      Nota.usuario_responsavel := RecNota.usuario_responsavel;
+
+    if jsonBody.TryGetValue<TDateTime>('data_registro', RecNota.data_registro) then
+      Nota.data_registro := RecNota.data_registro;
+
+    try
+      Nota := FServiceNotas.Criar(Nota);
+      Transferencia.id_nota := Nota.id;
+      Transferencia := FServiceTransferencia.Criar(Transferencia);
+    except
+      on E: Exception do
+      begin
+        FServiceTransferencia.Excluir(Transferencia);
+        if Nota.isFilled.Items['id'] then
+          FServiceNotas.ExcluirPorId(Nota.id);
+        raise;
+      end;
+    end;
+
+    Res
+      .Status(THTTPStatus.Created)
+      .Send(
+        TJSONObject
+          .Create
+          .AddPair('Nota', Nota.ToJSONObject)
+          .AddPair('Transferencia', Transferencia.ToJSONObject));
+  finally
+    Usuario.Free;
+    Nota.Free;
+    Transferencia.free;
+  end;
+end;
+
+class procedure TControllerTransferencia.Put(Req: THorseRequest;
+  Res: THorseResponse; Next: TNextProc);
+var
+  RecNota: RNotas;
+  Nota: TNotas;
+  Transferencia: TTransferencia;
+  jsonBody : TJSONObject;
+  jsonResponse: TJSONObject;
+  MovimentacoesDaTransferencia : TObjectList<TMovimentacao>;
+  Movimentacao: TMovimentacao;
+  EstoqueOrigem: TEstoque;
+  EstoqueDestino: TEstoque;
+  RecTransferencia: RTransferencia;
+begin
+  jsonBody := Req.Body<TJSONObject>;
+
+  if not System.SysUtils.TryStrToUInt64(Req.Params['id_nota'], RecNota.id) then
+    raise Exception.Create('Forneca id valido da nota que se deseja alterar');
+
+  Nota := FServiceNotas.ConsultaPorId(RecNota.id);
+  //verifica se nota eh de transferencia
+  if (Nota.tipo_operacao <> 2) then
+    raise Exception.Create('Nota de transferencia nao existe');
+
+  // se nota ja foi concluida, nao eh possivel modificar nada
+  if Nota.concluida then
+    raise Exception.Create('Nao eh possivel modificar nota concluida');
+
+  // pega dados da transferencia
+  Transferencia := FServiceTransferencia.Consulta(Nota.id);
+  if not Assigned(Transferencia) then
+    raise Exception.Create('Nao foi possivel encontrar os dados da transferencia');
+
+  jsonResponse := TJSONObject.Create;
+  // se for modificar status da nota
+  if jsonBody.TryGetValue<Boolean>('concluida', RecNota.concluida) then
+  begin
+    if RecNota.concluida = Nota.concluida then
+    begin
+      Res
+        .Status(THTTPStatus.OK)
+        .Send(jsonResponse
+          .AddPair('Nota', Nota.ToJSONObject)
+          .AddPair('Transferencia', Transferencia.ToJSONObject));
+      Next();
+    end;
+
+
+    // os dois almoxarifados devem estar ativos
+    if not (
+      FServiceAlmoxarifado.EstaAtivo(Transferencia.id_almoxarifado_origem) and
+      FServiceAlmoxarifado.EstaAtivo(Transferencia.id_almoxarifado_destino)
+    ) then
+      raise Exception.Create('Os dois almoxarifados devems estar ativos para se realizar a trasferencia');
+
+    // se for realizar a conclusao da nota
+    if (not Nota.concluida) and RecNota.concluida then
+    begin
+       MovimentacoesDaTransferencia := FServiceNotas.getMovimentacao(Nota.id);
+
+       for Movimentacao in MovimentacoesDaTransferencia do
+       begin
+        EstoqueOrigem := FServiceEstoque.Consulta(Movimentacao.id_produto, Transferencia.id_almoxarifado_origem);
+
+        // verifica se almoxarifado de origem possui produto
+        // se produto esta ativo
+        // se ha saldo suficiente
+        if not (
+          Assigned(EstoqueOrigem) and
+          EstoqueOrigem.ativo and
+          (EstoqueOrigem.quantidade >= Movimentacao.quantidade)
+        ) then
+          raise Exception.Create('Estoque de origem nao possui produto da transferencia');
+
+        // verifica se produto esta ativo no almoxarifado de destino
+        if not FServiceProduto.EstaAtivo(Movimentacao.id_produto,Transferencia.id_almoxarifado_destino) then
+          raise Exception.Create('Produto da trasferencia nao esta ativo no estoque de destino');
+       end;
+
+      if not FServiceNotas.Concluir(Nota) then
+        raise Exception.Create('Nao foi possivel concluir a nota');
+
+      Nota.concluida := True;
+      Res
+        .Status(THTTPStatus.OK)
+        .Send(jsonResponse
+          .AddPair('Nota', Nota.ToJSONObject)
+          .AddPair('Transferencia', Nota.ToJSONObject));
+    end
+    else
+    begin
+      Res
+        .Status(THTTPStatus.OK)
+        .Send(jsonResponse.AddPair('message', 'nao eh possivel desconcluir nota de trasferencia'));
+    end;
+  end
+  else // caso status nao va ser modificado
+  begin
+    if jsonBody.TryGetValue<UInt64>('id_almoxarifado_origem',RecTransferencia.id_almoxarifado_origem ) then
+    begin
+      Transferencia.id_almoxarifado_origem := RecTransferencia.id_almoxarifado_origem;
+      Nota.id_almoxarifado := RecTransferencia.id_almoxarifado_origem;
+    end;
+
+    if jsonBody.TryGetValue<UInt64>('id_almoxarifado_destino',RecTransferencia.id_almoxarifado_destino ) then
+      Transferencia.id_almoxarifado_destino := RecTransferencia.id_almoxarifado_destino ;
+
+    if not (
+      FServiceAlmoxarifado.Existe(Transferencia.id_almoxarifado_origem) and
+      FServiceAlmoxarifado.Existe(Transferencia.id_almoxarifado_destino)
+    ) then
+      raise Exception.Create('Nao eh possivel fazer trasferencia para almoxarifado inexistente');
+
+    if jsonBody.TryGetValue<String>('observacao',RecNota.observacao ) then
+      Nota.observacao := RecNota.observacao;
+
+    if jsonBody.TryGetValue<TDateTime>('data_registro',RecNota.data_registro ) then
+      Nota.data_registro := RecNota.data_registro;
+
+    if jsonBody.TryGetValue<UInt64>('usuario_responsavel',RecNota.usuario_responsavel ) then
+      Nota.usuario_responsavel := RecNota.usuario_responsavel;
+
+
+    FServiceNotas.Alterar(Nota);
+    FServiceTransferencia.Alterar(Transferencia);
+
+    Res
+      .Status(THTTPStatus.OK)
+      .Send(jsonResponse
+        .AddPair('Nota', Nota.ToJSONObject)
+        .AddPair('Transferencia', Transferencia.ToJSONObject));
+  end;
+end;
+
+initialization
+  FServiceNotas:= TServiceNotas.Create;
+  FServiceProduto:= TServiceProdutos.Create;
+  FServiceMovimentacao:= TServiceMovimentacao.Create;
+  FServiceUsuario := TServiceUsuario.Create;
+  FServiceAlmoxarifado := TServiceAlmoxarifado.Create;
+  FServiceEstoque := TServiceEstoque.Create;
+  FServiceTransferencia := TServiceTransferencia.Create;
+finalization
+  FServiceNotas.Free;
+  FServiceProduto.Free;
+  FServiceMovimentacao.Free;
+  FServiceUsuario.Free;
+  FServiceAlmoxarifado.Free;
+  FServiceEstoque.free;
+  FServiceTransferencia.Free;
+
+end.

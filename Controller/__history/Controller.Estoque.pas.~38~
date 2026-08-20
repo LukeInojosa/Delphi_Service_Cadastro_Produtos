@@ -1,0 +1,80 @@
+unit Controller.Estoque;
+
+interface
+
+uses
+  Controller,
+  Model.Estoque,
+  GBSwagger.Path.Attributes,
+  Horse.GBSwagger.Registry,
+  Horse.GBSwagger.Controller;
+
+type
+  [SwagPath('estoque', 'Estoque')]
+  TControllerEstoque = class(THorseGBSwagger)
+  public
+    [SwagGET('Lista Produtos no estoque')]
+    [SwagParamQuery('id_produto', 'id do produto em estoque', True)]
+    [SwagParamQuery('id_almoxarifado', 'id do almoxarifado', True)]
+    [SwagParamQuery('ativo', 'id do almoxarifado')]
+    procedure Get;
+  end;
+
+implementation uses
+  Service.Estoque,
+  GBJSON.Helper,
+  Horse.Commons,
+  System.SysUtils,
+  System.Generics.Collections,
+  System.JSON, Errors.Api;
+
+var
+  FServiceEstoque: TServiceEstoque;
+
+{ TControllerEstoque }
+procedure TControllerEstoque.Get;
+var
+  Estoque: TEstoque;
+  RecEstoque: REstoque;
+  listEstoque: TObjectList<TEstoque>;
+  jsonArray: TJSONArray;
+begin
+  try
+    Estoque := TEstoque.Create;
+
+    if System.SysUtils.TryStrToUInt64(FRequest.Query['id_produto'],RecEstoque.id_produto) then
+      Estoque.id_produto := RecEstoque.id_produto;
+
+    if System.SysUtils.TryStrToUInt64(FRequest.Query['id_almoxarifado'],RecEstoque.id_almoxarifado) then
+      Estoque.id_almoxarifado := RecEstoque.id_almoxarifado;
+
+    if System.SysUtils.TryStrToInt(FRequest.Query['quantidade'],RecEstoque.quantidade) then
+      Estoque.quantidade := RecEstoque.quantidade;
+
+    if System.SysUtils.TryStrToInt(FRequest.Query['ativo'],RecEstoque.quantidade) then
+      Estoque.ativo := RecEstoque.ativo;
+
+    listEstoque := FServiceEstoque.Consulta(Estoque);
+
+     // construindo resposta
+    jsonArray := TGBJSONDefault.Deserializer<TEstoque>
+                               .ListToJSONArray(listEstoque);
+    FResponse
+      .Status(THttpStatus.OK)
+      .Send(
+        TJSONObject.Create
+        .AddPair('data', jsonArray)
+      );
+
+  finally
+    Estoque.Free;
+  end;
+end;
+
+
+initialization
+  THorseGBSwaggerRegistry.RegisterPath(TControllerEstoque);
+  FServiceEstoque := TServiceEstoque.Create
+finalization
+  FServiceEstoque.Free;
+end.

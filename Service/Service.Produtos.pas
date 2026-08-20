@@ -21,11 +21,13 @@ type TServiceProdutos = class(TService)
     constructor Create();
     destructor Destroy(); override;
     function Criar(data: TProdutos): TProdutos;
-    function Consulta(data: TProdutos): TObjectList<TProdutos>;
+    function Consulta(data: TProdutos; num_paginas: Integer = 0; qtd_por_pagina: Integer = 0): TObjectList<TProdutos>;
     function Excluir(data:TProdutos):  TObjectList<TProdutos>;
     function Alterar(data: TProdutos): TObjectList<TProdutos>;
     function ConsultaPorId(id: UInt64 = 0): TProdutos;
     function EstaAtivo(id_produto:UInt64 = 0; id_almoxarifado: UInt64 = 0): Boolean;
+    function Existe(id_produto: UInt64 = 0): Boolean;
+    function PossuiMovimentacao(id_produto: UInt64 = 0): Boolean;
 end;
 
 implementation uses
@@ -86,36 +88,31 @@ begin
                           .JsonStringToList(arrJSON.ToJSON);
 end;
 
-function TServiceProdutos.Consulta(data: TProdutos): TObjectList<TProdutos>;
+function TServiceProdutos.Consulta(data: TProdutos; num_paginas: Integer = 0; qtd_por_pagina: Integer = 0): TObjectList<TProdutos>;
 var
   arrJSON: TJSONArray;
   obj: TJSONObject;
 begin
-  Writeln('- Produto : Realizando Consulta');
-
   // constroi Query
   Self.Query
     .StartQuery
-    .AddToQuery('SELECT * FROM PRODUTOS WHERE 1 = 1 ');
+    .AddToQuery('SELECT ');
 
-  if Assigned(data) and data.isFilled.Items['id'] then
+  if (num_paginas > 0) and (qtd_por_pagina > 0) then
     Self.Query
-      .AddToQuery('AND ID = :ID ')
-      .SetParam('ID', data.id);
+      .AddToQuery('FIRST :FIRST SKIP :SKIP ')
+      .SetParam('FIRST', qtd_por_pagina)
+      .SetParam('SKIP', qtd_por_pagina*(num_paginas -1));
 
-  Self.Query.Open();
+  Self.Query
+    .AddToQuery('* FROM PRODUTOS WHERE 1 = 1 ')
+    .AddToQuery(data.updateStringFields)
+    .SetAllParams<TProdutos>(data)
+    .AddToQuery('ORDER BY DESCRICAO ASC')
+    .Open();
 
-  // trata saida da query
   arrJSON := Self.Query.ConvertQueryToJSONArray();
 
-  // constroi array de retorno
-  if arrJSON.Count = 0 then
-  begin
-    Writeln('Nenhum dado foi encontrado');
-    Exit(TObjectList<TProdutos>.Create);
-  end;
-
-  writeln(arrJSON.ToJSON);
   Result := TGBJSONDefault.Serializer<TProdutos>
                                     .JsonStringToList(arrJSON.ToJSON);
 end;
@@ -155,7 +152,6 @@ var
   field: TField;
   json: TJSONObject;
 begin
-  Writeln('- Produtos : Criando Produto');
   Result:= nil;
   if not Assigned(data) then
     exit(data);
@@ -254,6 +250,31 @@ begin
 
     Result := TGBJSONDefault.Serializer<TProdutos>
                                     .JsonStringToList(arrJSON.ToJSON);
+end;
+
+function TServiceProdutos.Existe(id_produto: UInt64): Boolean;
+begin
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT * FROM PRODUTOS WHERE ID = :ID')
+    .SetParam('ID', id_produto)
+    .Open();
+
+  Result := Self.Query.RecordCount > 0;
+end;
+
+function TServiceProdutos.PossuiMovimentacao(id_produto: UInt64): Boolean;
+begin
+  if id_produto = 0 then
+    raise Exception.Create('Forneca id do produto');
+
+  Self.Query
+    .StartQuery
+    .AddToQuery('SELECT * FROM MOVIMENTACAO WHERE ID_PRODUTO = :ID_PRODUTO')
+    .SetParam('ID_PRODUTO', id_produto)
+    .Open();
+
+  Result := Self.Query.RecordCount > 0;
 end;
 
 end.

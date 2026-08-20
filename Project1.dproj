@@ -80,7 +80,7 @@
         <DCC_UsePackage>RESTComponents;emsclientfiredac;DataSnapFireDAC;FireDACIBDriver;emsclient;FireDACCommon;RESTBackendComponents;soapserver;CloudService;FireDACCommonDriver;inet;FireDAC;FireDACSqliteDriver;soaprtl;soapmidas;$(DCC_UsePackage)</DCC_UsePackage>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <SanitizedProjectName>Project1</SanitizedProjectName>
-        <DCC_UnitSearchPath>..\modules\.dcp;..\modules\.dcu;..\modules;..\modules\horse\src;..\modules\jhonson\src;..\modules\horse-cors\src;..\modules\gbjson\Source;..\modules\gbswagger\Source\Core;..\modules\gbswagger\Source\Datasnap;..\modules\gbswagger\Source\Horse;..\modules\gbswagger\Source\Validator;..\modules\horse-basic-auth\src;modules\.dcp;modules\.dcu;modules;modules\gbjson\Source;modules\gbswagger\Source\Core;modules\gbswagger\Source\Datasnap;modules\gbswagger\Source\Horse;modules\gbswagger\Source\Validator;modules\horse\src;modules\horse-basic-auth\src;modules\horse-cors\src;modules\jhonson\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\modules\.dcp;..\modules\.dcu;..\modules;..\modules\horse\src;..\modules\jhonson\src;..\modules\horse-cors\src;..\modules\gbjson\Source;..\modules\gbswagger\Source\Core;..\modules\gbswagger\Source\Datasnap;..\modules\gbswagger\Source\Horse;..\modules\gbswagger\Source\Validator;..\modules\horse-basic-auth\src;modules\.dcp;modules\.dcu;modules;modules\github_com_gabrielbaltazar_gbjson\Source;modules\github_com_gabrielbaltazar_gbswagger\Source\Core;modules\github_com_gabrielbaltazar_gbswagger\Source\Datasnap;modules\github_com_gabrielbaltazar_gbswagger\Source\Horse;modules\github_com_gabrielbaltazar_gbswagger\Source\Validator;modules\github_com_hashload_horse\src;modules\github_com_hashload_horse-basic-auth\src;modules\github_com_hashload_horse-cors\src;modules\github_com_hashload_jhonson\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_UsePackage>DBXSqliteDriver;DBXInterBaseDriver;tethering;bindcompfmx;FmxTeeUI;fmx;FireDACDBXDriver;dbexpress;IndyCore;dsnap;DataSnapCommon;bindengine;DataSnapClient;bindcompdbx;IndyIPCommon;IndyIPServer;IndySystem;fmxFireDAC;ibmonitor;FMXTee;DbxCommonDriver;ibxpress;xmlrtl;DataSnapNativeClient;ibxbindings;rtl;FireDACDSDriver;DbxClientDriver;CustomIPTransport;bindcomp;IndyIPClient;dbxcds;dsnapxml;DataSnapProviderClient;dbrtl;IndyProtocols;$(DCC_UsePackage)</DCC_UsePackage>
@@ -156,7 +156,10 @@
         <DCCReference Include="Service\Service.pas"/>
         <DCCReference Include="Model\Model.Almoxarifado.pas"/>
         <DCCReference Include="Service\Service.Almoxarifado.pas"/>
+        <DCCReference Include="Service\Service.Transferencia.pas"/>
+        <DCCReference Include="Service\Service.Estoque.pas"/>
         <DCCReference Include="Database\Database.Query.pas"/>
+        <DCCReference Include="StartServer.pas"/>
         <DCCReference Include="Controller\Controller.Almoxarifado.pas"/>
         <DCCReference Include="Middleware\Middleware.Error.pas"/>
         <DCCReference Include="Model\Model.Produtos.pas"/>
@@ -168,6 +171,8 @@
         <DCCReference Include="Service\Service.Usuario.pas"/>
         <DCCReference Include="Errors\Errors.Api.pas"/>
         <DCCReference Include="Utils.pas"/>
+        <DCCReference Include="Model\Model.Estoque.pas"/>
+        <DCCReference Include="Model\Model.Transferencia.pas"/>
         <DCCReference Include="Model\Model.Notas.pas"/>
         <DCCReference Include="Helper.TObject.pas"/>
         <DCCReference Include="Controller\Controller.Notas.pas"/>
@@ -175,6 +180,9 @@
         <DCCReference Include="Model\Model.Movimentacao.pas"/>
         <DCCReference Include="Service\Service.Movimentacao.pas"/>
         <DCCReference Include="Controller\Controller.Movimentacao.pas"/>
+        <DCCReference Include="Controller\Controller.Estoque.pas"/>
+        <DCCReference Include="Controller\Controller.Transferencia.pas"/>
+        <DCCReference Include="Controller\Controller.Inventario.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
